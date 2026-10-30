@@ -26,6 +26,8 @@ BYL.ui = (() => {
     // lyric time t plays at t + offset + d, with d interpolated between points,
     // so one part of the song can be fixed without throwing off the rest.
     warps: {},
+    trans: null, // candidate shown as a second language under each line
+    transMap: null, // cache: { c, m: { lineIndex: text } }
     sourceStatus: {},
     overlayOn: false,
     karaokeLoadedFor: null,
@@ -107,6 +109,13 @@ BYL.ui = (() => {
       border-radius: 4px; opacity: 0; }
     .ln:hover .pin { opacity: .8; }
     .pin:hover { opacity: 1; background: var(--line); }
+    .ln .tr { font-size: 13px; font-weight: 400; color: var(--fg2); }
+    .ln.active .tr { color: var(--fg); opacity: .75; }
+    .ln .ts { display: inline-block; min-width: 3.4em; font-size: 11px; font-weight: 400; color: var(--fg2); font-variant-numeric: tabular-nums; }
+    .ln.tapnext { outline: 2px dashed rgba(255,46,99,.75); outline-offset: -2px; }
+    .tapbar { margin: 0 12px 8px; padding: 8px; border-radius: 8px; background: rgba(255,46,99,.12); font-size: 12px; line-height: 1.45; }
+    .tapbar .tapnow { font-size: 14px; font-weight: 600; margin: 6px 0; }
+    .tapbar .row { padding: 0; }
     .empty { padding: 16px 12px; color: var(--fg2); font-size: 13px; line-height: 1.5; }
     a { color: inherit; }
     .klist { padding: 0 8px 8px; max-height: min(60vh, 560px); overflow-y: auto; }
@@ -281,6 +290,7 @@ BYL.ui = (() => {
     .prev, .next { font-size: var(--next, .8em); }
     .prev { opacity: .6; margin-bottom: .15em; }
     .next { opacity: .8; margin-top: .2em; }
+    .tr { font-size: var(--trs, .7em); margin-top: .1em; }
     .hint { font-size: .45em; color: #fff; opacity: .85; -webkit-text-stroke: 0; filter: none; text-shadow: 0 1px 3px #000; font-weight: 500; font-family: Roboto, Arial, sans-serif; }
 
     :host([data-shape=box]) .ov { background: var(--bg); backdrop-filter: blur(6px); padding: .35em .9em .45em; border-radius: .45em; }
@@ -293,6 +303,8 @@ BYL.ui = (() => {
     :host([data-layout=stagger]) .next { text-align: right; opacity: 1; margin-top: .15em; }
     :host([data-layout=stagger]) .ov.flip .cur { text-align: right; order: 2; margin-top: .15em; }
     :host([data-layout=stagger]) .ov.flip .next { text-align: left; order: 1; margin-top: 0; }
+    :host([data-layout=stagger]) .tr { text-align: left; }
+    :host([data-layout=stagger]) .ov.flip .tr { text-align: right; order: 3; }
     :host([data-layout=center2]) .prev { display: none; }
     :host([data-layout=single]) .prev, :host([data-layout=single]) .next { display: none; }
   `;
@@ -312,6 +324,7 @@ BYL.ui = (() => {
     s.setProperty('--shadow', look.shadow ? 'drop-shadow(.03em .06em .02em rgba(0,0,0,.6)) drop-shadow(0 0 .12em rgba(0,0,0,.35))' : 'none');
     s.setProperty('--bg', rgba(look.bg, look.bgAlpha));
     s.setProperty('--next', look.nextScale / 100 + 'em');
+    s.setProperty('--trs', (look.nextScale * 0.7) / 100 + 'em');
     // Shorts keep their channel name and caption at the bottom: stay above.
     s.setProperty('--my', (BYL.isShorts() && !host.hasAttribute('data-pip') && BYL.settings.value.overlayPosition !== 'top' ? Math.max(look.margin, 24) : look.margin) + '%');
     host.dataset.layout = look.layout;
@@ -429,6 +442,13 @@ BYL.ui = (() => {
     pipBtn.title = 'Mở lời trong một cửa sổ nhỏ luôn nằm trên cùng, kéo đi đâu cũng được (kể cả khi chuyển tab)';
     row1.append(select, overlayBtn, pipBtn);
 
+    const rowT = el('div', 'row');
+    const transSel = el('select');
+    transSel.title = 'Hiện thêm một bản lời khác (thường là lời dịch) dưới mỗi dòng';
+    const swapBtn = el('button', '', '⇅');
+    swapBtn.title = 'Đổi chỗ lời chính và lời dịch';
+    rowT.append(el('span', 'muted', '🌐 Song ngữ'), transSel, swapBtn);
+
     const row2 = el('div', 'row');
     const syncBtn = el('button', 'sync', '🎯 Tự canh theo phụ đề');
     syncBtn.title = 'Khớp lời với phụ đề YouTube của video để lời tự chạy đúng nhịp';
@@ -465,7 +485,12 @@ BYL.ui = (() => {
     open.rel = 'noopener';
     const editBtn = el('button', '', '✏️ Sửa lời');
     editBtn.title = 'Sửa lời đang hiện, hoặc tự nhập / dịch lời. Bản sửa được nhớ cho video này.';
-    row4.append(editBtn, copy, open);
+    const tapBtn = el('button', '', '⏱ Gõ nhịp');
+    tapBtn.title = 'Phát bài và bấm Space mỗi khi bắt đầu hát một dòng: ghi thời gian chính xác cho từng dòng';
+    row4.append(editBtn, tapBtn, copy, open);
+
+    const tapbar = el('div', 'tapbar');
+    tapbar.hidden = true;
 
     const editor = el('div', 'editor');
     editor.hidden = true;
@@ -475,7 +500,7 @@ BYL.ui = (() => {
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
     grip.title = 'Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)';
-    lyricTab.append(status, row1, row2, row3, studio, warn, note, editor, lines, grip, row4);
+    lyricTab.append(status, row1, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4);
     makeResizable(lines, grip);
 
     // Karaoke tab
@@ -490,8 +515,15 @@ BYL.ui = (() => {
     root.append(wrap);
 
     P = { wrap, songTitle, songArtist, status, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
-      row2, row3, row4, lookSel, posBtn, studioBtn, studio, note, syncBtn, editor, grip, pinCount };
+      row2, row3, row4, lookSel, posBtn, studioBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
+      tapBtn, tapbar };
     editBtn.addEventListener('click', () => openEditor());
+    tapBtn.addEventListener('click', () => (TAP ? stopTap(false) : startTap()));
+    transSel.addEventListener('change', () => {
+      const id = transSel.value;
+      setTrans(state.candidates.find((x) => x.id === id) || (state.trans?.id === id ? state.trans : null), true);
+    });
+    swapBtn.addEventListener('click', () => state.trans && choose(state.trans, true));
 
     syncBtn.addEventListener('click', () => state.current && autoSync(state.current, false));
     header.addEventListener('click', () => {
@@ -555,7 +587,8 @@ BYL.ui = (() => {
     lines.addEventListener('click', (e) => {
       const ln = e.target.closest('.ln');
       if (!ln || !ln.dataset.i) return;
-      if (e.target.closest('.pin')) pinLine(Number(ln.dataset.i));
+      if (TAP) tapJump(Number(ln.dataset.i));
+      else if (e.target.closest('.pin')) pinLine(Number(ln.dataset.i));
       else onLineClick(Number(ln.dataset.i));
     });
     renderLookSelect();
@@ -779,6 +812,8 @@ BYL.ui = (() => {
       offset: saved?.offset || 0,
       anchor: null,
       warps: saved?.warps || {},
+      trans: null,
+      transMap: null,
       sourceStatus: {},
       karaokeLoadedFor: null,
       lastActive: -2,
@@ -796,22 +831,27 @@ BYL.ui = (() => {
     P.kchips.replaceChildren();
     P.offLabel.textContent = fmtOffset(state.offset);
     closeEditor();
+    endTap();
     renderLines();
     // The user's own lyrics come back first, then whatever they last picked.
-    const mine = saved?.custom?.text ? customCandidate(saved.custom.text, saved.custom.label) : null;
-    if (mine && saved.pick?.source !== 'custom') state.candidates.push(mine);
+    const mine = CUSTOM_SLOTS.filter((id) => saved?.[id]?.text).map((id) => customCandidate(saved[id].text, saved[id].label, id));
+    for (const m of mine) if (baseId(saved.pick) !== m.id) state.candidates.push(m);
+    if (saved?.trans) {
+      state.trans = mine.find((m) => m.id === saved.trans.id) || saved.trans;
+      if (!state.candidates.some((x) => x.id === state.trans.id)) state.candidates.push(state.trans);
+    }
     if (saved?.pick) {
       // Picks saved before ">>" (caption speaker marks) were cleaned out.
       saved.pick.lines = saved.pick.lines.map((l) => (l.text?.includes('>>') ? { ...l, text: BYL.makeLine(l.text).text } : l));
       state.candidates.push(saved.pick);
     }
-    const first = saved?.pick || mine;
+    const first = saved?.pick || mine[0];
+    renderSelect();
     if (first) {
-      renderSelect();
       choose(first, false);
       state.manual = true;
     }
-    if (mine) setSourceStatus('custom', 'ok', 1);
+    if (mine.length) setSourceStatus('custom', 'ok', mine.length);
     setOverlay(!!BYL.settings.value.overlayOnByDefault, false);
     pipTitle();
   }
@@ -898,14 +938,20 @@ BYL.ui = (() => {
   }
 
   function choose(c, byUser) {
+    if (TAP) stopTap(false);
+    const prev = state.current;
+    // Picking the translation as the main lyrics swaps the two.
+    if (state.trans && baseId(state.trans) === baseId(c)) state.trans = prev && prev !== c ? prev : null;
     state.current = c;
     state.anchor = null;
+    state.transMap = null;
     state.lastActive = -2;
     if (byUser) {
       state.manual = true;
-      BYL.videoStore.patch(state.videoId, { pick: c });
+      BYL.videoStore.patch(state.videoId, { pick: c, trans: state.trans });
     }
     P.select.value = c.id;
+    renderTransSelect();
     P.warn.textContent = c.warn || '';
     P.note.textContent = '';
     P.open.hidden = !c.url;
@@ -987,13 +1033,21 @@ BYL.ui = (() => {
 
   // ---------- editing lyrics ----------
 
+  // Two slots for the user's own lyrics, so a translation and a re-timed
+  // original can both be kept for one video.
+  const CUSTOM_SLOTS = ['custom', 'custom2'];
+  const baseId = (c) => String(c?.id || '').replace(/#sync$/, '');
+  // Where an edit of c is saved: its own slot if it is one, otherwise the
+  // slot not holding the translation shown under it.
+  const slotFor = (c) => (c?.source === 'custom' && CUSTOM_SLOTS.includes(baseId(c)) ? baseId(c) : baseId(state.trans) === 'custom' ? 'custom2' : 'custom');
+
   // Text with [mm:ss] stamps on most lines is timed; anything else is plain.
-  function customCandidate(text, label) {
+  function customCandidate(text, label, id = 'custom') {
     const rows = text.split('\n').filter((l) => l.trim());
     const stamped = rows.filter((l) => /^\s*\[\d{1,2}:\d{2}/.test(l)).length;
     const synced = rows.length > 0 && stamped >= rows.length * 0.5;
     return {
-      id: 'custom',
+      id,
       source: 'custom',
       label: label || 'Bản đã sửa',
       synced,
@@ -1005,6 +1059,7 @@ BYL.ui = (() => {
   function openEditor() {
     const box = P.editor;
     if (!box.hidden) return closeEditor();
+    if (TAP) stopTap(false);
     const c = state.current;
     box.replaceChildren();
     const tip = el(
@@ -1051,7 +1106,7 @@ BYL.ui = (() => {
     fromCaps.title = 'Điền lời từ phụ đề YouTube kèm thời gian, bạn chỉ cần sửa chữ (hoặc thay bằng lời dịch)';
     fromCaps.hidden = !api.hasCaptions?.();
     const del = el('button', '', '🗑 Xoá bản của bạn');
-    del.hidden = !state.candidates.some((x) => x.source === 'custom');
+    del.hidden = c?.source !== 'custom';
     row.append(save, cancel, fromCaps, del);
     box.append(tip, search, taWrap, tools, row);
     box.hidden = false;
@@ -1094,13 +1149,21 @@ BYL.ui = (() => {
     up.addEventListener('click', () => jumpHit(ED.hit - 1));
     down.addEventListener('click', () => jumpHit(ED.hit + 1));
 
-    save.addEventListener('click', () => saveCustom(ta.value, c?.source === 'custom' ? c.label : c ? 'Sửa từ ' + S[c.source].name : 'Tự nhập'));
+    save.addEventListener('click', () =>
+      saveCustom(ta.value, c?.source === 'custom' ? c.label : c ? 'Sửa từ ' + S[c.source].name : 'Tự nhập', slotFor(c))
+    );
     cancel.addEventListener('click', closeEditor);
     del.addEventListener('click', () => {
-      state.candidates = state.candidates.filter((x) => x.source !== 'custom');
-      BYL.videoStore.patch(state.videoId, { custom: null, pick: null });
-      delete state.sourceStatus.custom;
-      P.status.querySelector('[data-k="custom"]')?.remove();
+      const slot = slotFor(c);
+      state.candidates = state.candidates.filter((x) => baseId(x) !== slot);
+      if (baseId(state.trans) === slot) state.trans = null;
+      BYL.videoStore.patch(state.videoId, { [slot]: null, pick: null, trans: state.trans });
+      const left = state.candidates.filter((x) => x.source === 'custom').length;
+      if (left) setSourceStatus('custom', 'ok', left);
+      else {
+        delete state.sourceStatus.custom;
+        P.status.querySelector('[data-k="custom"]')?.remove();
+      }
       state.manual = false;
       state.current = null;
       closeEditor();
@@ -1253,22 +1316,22 @@ BYL.ui = (() => {
     if (ED.follow.checked && Date.now() > ED.quietUntil) scrollEditorTo(best);
   }
 
-  function saveCustom(text, label) {
+  function saveCustom(text, label, slot = 'custom') {
     text = String(text || '').replace(/\r/g, '').trim();
     if (!text) return say('Chưa có lời để lưu.');
-    const c = customCandidate(text, label);
-    state.candidates = state.candidates.filter((x) => x.source !== 'custom');
+    const c = customCandidate(text, label, slot);
+    state.candidates = state.candidates.filter((x) => baseId(x) !== slot);
     state.candidates.unshift(c);
-    BYL.videoStore.patch(state.videoId, { custom: { text, label } });
+    BYL.videoStore.patch(state.videoId, { [slot]: { text, label } });
     closeEditor();
-    renderSelect();
     // Timed text already has the offset and sync points folded in.
-    delete state.warps.custom;
-    delete state.warps['custom#sync'];
+    delete state.warps[slot];
+    delete state.warps[slot + '#sync'];
     saveWarps();
     setOffset(0);
     choose(c, true);
-    setSourceStatus('custom', 'ok', 1);
+    renderSelect();
+    setSourceStatus('custom', 'ok', state.candidates.filter((x) => x.source === 'custom').length);
     if (!P.note.textContent) say('💾 Đã lưu lời của bạn. Lần sau mở video này sẽ hiện bản này trước.');
   }
 
@@ -1303,6 +1366,7 @@ BYL.ui = (() => {
   }
 
   function saveWarps() {
+    state.transMap = null;
     for (const k of Object.keys(state.warps)) if (!state.warps[k]?.length) delete state.warps[k];
     BYL.videoStore.patch(state.videoId, { warps: state.warps });
     state.lastActive = -2;
@@ -1334,6 +1398,7 @@ BYL.ui = (() => {
 
   function setOffset(v) {
     state.offset = Math.round(v * 10) / 10;
+    state.transMap = null;
     P.offLabel.textContent = fmtOffset(state.offset);
     P.offLabel.classList.remove('flash');
     void P.offLabel.offsetWidth; // restart the flash animation
@@ -1397,15 +1462,18 @@ BYL.ui = (() => {
       sel.append(o);
     }
     if (state.current) sel.value = state.current.id;
+    renderTransSelect();
   }
 
   function renderLines() {
+    if (TAP) return renderTapLines();
     const box = P.lines;
     box.replaceChildren();
     box.scrollTop = 0;
     const c = state.current;
     box.classList.toggle('synced', !!c?.synced || !!state.anchor);
     P.row2.style.display = P.row3.style.display = P.row4.style.display = c ? '' : 'none';
+    renderTransSelect();
     if (!c) {
       const searching = Object.values(state.sourceStatus).some((s) => s === 'loading') || !Object.keys(state.sourceStatus).length;
       box.append(
@@ -1446,6 +1514,8 @@ BYL.ui = (() => {
           d.append(pin);
         }
       }
+      const tr = transFor(i);
+      if (tr) d.append(el('div', 'tr', tr));
       box.append(d);
     });
   }
@@ -1539,7 +1609,8 @@ BYL.ui = (() => {
     if (pos.i !== state.lastActive) {
       state.lastActive = pos.i;
       P.lines.querySelectorAll('.ln.active').forEach((n) => n.classList.remove('active'));
-      const node = pos.i >= 0 ? P.lines.querySelector(`.ln[data-i="${pos.i}"]`) : null;
+      const li = state.current.lines[pos.i]?.src ?? pos.i; // while tapping: index in the full list
+      const node = pos.i >= 0 ? P.lines.querySelector(`.ln[data-i="${li}"]`) : null;
       if (node) {
         node.classList.add('active');
         if (Date.now() > state.userScrollUntil) {
@@ -1550,6 +1621,254 @@ BYL.ui = (() => {
       for (const R of renderers()) buildLines(R, pos);
     }
     for (const R of renderers()) drawLines(R, pos);
+  }
+
+  // ---------- second language ----------
+
+  // Another candidate (usually a translation) shown under each line. Timed
+  // against timed lyrics it is matched by time, otherwise line by line.
+  function setTrans(c, persist) {
+    state.trans = c && c !== state.current ? c : null;
+    state.transMap = null;
+    if (persist) BYL.videoStore.patch(state.videoId, { trans: state.trans });
+    renderLines();
+    state.lastActive = -2;
+  }
+
+  function renderTransSelect() {
+    const sel = P.transSel;
+    sel.replaceChildren();
+    const add = (c) => {
+      const o = el('option', '', c ? `${S[c.source].icon} ${c.label}${c.detail ? ' · ' + c.detail : ''}` : 'Không');
+      o.value = c ? c.id : '';
+      sel.append(o);
+    };
+    add(null);
+    const list = state.candidates.filter((c) => c !== state.current && c.id !== 'tap');
+    if (state.trans && !list.includes(state.trans)) list.unshift(state.trans);
+    list.forEach(add);
+    sel.value = state.trans?.id || '';
+    P.rowT.style.display = state.current && list.length ? '' : 'none';
+    P.swapBtn.hidden = !state.trans;
+  }
+
+  function transFor(i) {
+    const c = state.current;
+    const tr = state.trans;
+    if (!c || !tr || tr === c || i < 0) return '';
+    if (state.transMap?.c !== c) state.transMap = { c, m: matchTrans(c, tr) };
+    return state.transMap.m[i] || '';
+  }
+
+  function matchTrans(c, tr) {
+    const a = singable(c.lines);
+    const b = singable(tr.lines);
+    const m = {};
+    if (c.synced && tr.synced) {
+      let hit = 0;
+      for (const i of a) {
+        const t = effT(c.lines[i].t);
+        let best = -1;
+        let gap = 2.5;
+        for (const j of b) {
+          const d = Math.abs(tr.lines[j].t - t);
+          if (d < gap) {
+            gap = d;
+            best = j;
+          }
+        }
+        if (best >= 0) {
+          m[i] = tr.lines[best].text;
+          hit++;
+        }
+      }
+      if (hit >= a.length * 0.5) return m;
+    }
+    a.forEach((i, k) => {
+      if (b[k] !== undefined) m[i] = tr.lines[b[k]].text;
+    });
+    return m;
+  }
+
+  // ---------- tap to time ----------
+
+  // Play the song and press Space as each line starts: each press stamps the
+  // next line with the video time. Saved as the user's own timed lyrics.
+  let TAP = null;
+  const TAP_LAG = 0.15; // presses land a little after the line starts
+
+  function startTap() {
+    const c = state.current;
+    if (!c || !singable(c.lines).length) return say('Chưa có lời để gõ nhịp.');
+    closeEditor();
+    const lines = c.lines.map((l) => ({ text: l.text, section: l.section }));
+    const idx = singable(lines);
+    // Timed lyrics start from their current times; presses replace them.
+    const stamps = {};
+    if (c.synced) for (const i of idx) stamps[i] = effT(c.lines[i].t);
+    const now = video()?.currentTime || 0;
+    const ptr = idx.findIndex((i) => !(stamps[i] < now));
+    TAP = { from: c, offset: state.offset, manual: state.manual, lines, idx, stamps, ptr: ptr < 0 ? idx.length : ptr };
+    state.manual = true; // keep auto-pick from swapping the lyrics mid-way
+    state.offset = 0; // stamps are video times
+    for (const type of ['keydown', 'keypress', 'keyup']) window.addEventListener(type, onTapKey, true);
+
+    const bar = P.tapbar;
+    bar.replaceChildren();
+    const tip = el('div', '', 'Phát bài và bấm Space đúng lúc bắt đầu hát dòng có viền. Backspace: lùi một dòng (video tua lại). Bấm vào một dòng để gõ lại từ đó.');
+    const now2 = el('div', 'tapnow');
+    const row = el('div', 'row');
+    const go = el('button', 'on', '⏱ Gõ (Space)');
+    const back = el('button', '', '↶ Lùi');
+    const save = el('button', '', '💾 Lưu');
+    const cancel = el('button', '', 'Huỷ');
+    row.append(go, back, save, cancel);
+    bar.append(tip, now2, row);
+    bar.hidden = false;
+    P.tapNow = now2;
+    P.tapBtn.classList.add('on');
+    go.addEventListener('click', tap);
+    back.addEventListener('click', tapUndo);
+    save.addEventListener('click', () => stopTap(true));
+    cancel.addEventListener('click', () => stopTap(false));
+    say('');
+    tapRefresh();
+  }
+
+  // Space and Backspace belong to tapping while it runs, except in text fields.
+  function onTapKey(e) {
+    if (!TAP || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key !== ' ' && e.key !== 'Backspace') return;
+    const t = e.composedPath()[0];
+    if (t?.closest?.('input, textarea, [contenteditable=""], [contenteditable=true]')) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if (e.type !== 'keydown' || e.repeat) return;
+    e.key === ' ' ? tap() : tapUndo();
+  }
+
+  function tapCandidate() {
+    // Stamped lines in order, then the one waiting for a press.
+    const lines = [];
+    TAP.idx.forEach((i, k) => {
+      const t = TAP.stamps[i];
+      if (t !== undefined || k === TAP.ptr) lines.push({ text: TAP.lines[i].text, t: t ?? Infinity, src: i });
+    });
+    return { id: 'tap', source: 'custom', label: 'Đang gõ nhịp', synced: true, lines, score: 0 };
+  }
+
+  function tapRefresh() {
+    state.current = tapCandidate();
+    state.transMap = null;
+    state.lastActive = -2;
+    renderTapLines();
+  }
+
+  function tap() {
+    const v = video();
+    if (!TAP || !v) return;
+    if (v.paused) return v.play(); // the first press starts the song
+    if (TAP.ptr >= TAP.idx.length) return;
+    const t = Math.max(0, v.currentTime - TAP_LAG);
+    TAP.stamps[TAP.idx[TAP.ptr]] = t;
+    // Keep times in order: drop old stamps that now fall on the wrong side.
+    TAP.idx.forEach((j, k) => {
+      const s = TAP.stamps[j];
+      if ((k > TAP.ptr && s <= t) || (k < TAP.ptr && s >= t)) delete TAP.stamps[j];
+    });
+    TAP.ptr++;
+    tapRefresh();
+  }
+
+  function tapUndo() {
+    if (!TAP || TAP.ptr <= 0) return;
+    TAP.ptr--;
+    const i = TAP.idx[TAP.ptr];
+    const t = TAP.stamps[i];
+    delete TAP.stamps[i];
+    const v = video();
+    if (v && t !== undefined) v.currentTime = Math.max(0, t - 3);
+    tapRefresh();
+  }
+
+  function tapJump(i) {
+    const k = TAP.idx.indexOf(i);
+    if (k < 0) return;
+    TAP.ptr = k;
+    const at = TAP.stamps[i] ?? TAP.stamps[TAP.idx[k - 1]];
+    const v = video();
+    if (v && at !== undefined) v.currentTime = Math.max(0, at - 2);
+    tapRefresh();
+  }
+
+  function renderTapLines() {
+    const box = P.lines;
+    const top = box.scrollTop;
+    box.replaceChildren();
+    box.classList.add('synced');
+    P.row2.style.display = 'none';
+    const next = TAP.idx[TAP.ptr];
+    TAP.lines.forEach((l, i) => {
+      if (!l.text) return box.append(el('div', 'ln blank'));
+      const d = el('div', 'ln' + (l.section ? ' section' : '') + (i === next ? ' tapnext' : ''));
+      d.dataset.i = i;
+      if (!l.section) d.append(el('span', 'ts', TAP.stamps[i] === undefined ? '–' : BYL.fmtTime(TAP.stamps[i])));
+      d.append(l.text);
+      box.append(d);
+    });
+    box.scrollTop = top;
+    const done = TAP.idx.filter((i) => TAP.stamps[i] !== undefined).length;
+    P.tapNow.textContent =
+      next === undefined
+        ? `Đã gõ hết ${done} dòng. Bấm 💾 Lưu.`
+        : `Dòng kế (${TAP.ptr + 1}/${TAP.idx.length}): ${TAP.lines[next].text}`;
+  }
+
+  // Leave tap mode without touching the lyrics (new video, or after save/cancel).
+  function endTap() {
+    if (!TAP) return null;
+    const T = TAP;
+    TAP = null;
+    for (const type of ['keydown', 'keypress', 'keyup']) window.removeEventListener(type, onTapKey, true);
+    P.tapbar.hidden = true;
+    P.tapbar.replaceChildren();
+    P.tapBtn.classList.remove('on');
+    return T;
+  }
+
+  function stopTap(save) {
+    const T = endTap();
+    if (!T) return;
+    state.offset = T.offset;
+    state.manual = T.manual;
+    const times = T.idx.map((i) => T.stamps[i]);
+    const pressed = times.filter((t) => t !== undefined).length;
+    if (!save || pressed < 2) {
+      state.current = null;
+      choose(T.from, false);
+      if (save) say('Cần gõ ít nhất 2 dòng để lưu.');
+      return;
+    }
+    // Lines that never got a press: spread them between their neighbours.
+    for (let k = 0; k < times.length; k++) {
+      if (times[k] !== undefined) continue;
+      let b = k + 1;
+      while (b < times.length && times[b] === undefined) b++;
+      const ta = k > 0 ? times[k - 1] : null;
+      const tb = b < times.length ? times[b] : null;
+      times[k] = ta === null ? Math.max(0, tb - 3 * (b - k)) : tb === null ? ta + 3 : ta + (tb - ta) / (b - k + 1);
+    }
+    const text = T.lines
+      .map((l, i) => {
+        const k = T.idx.indexOf(i);
+        return k >= 0 ? `${BYL.lrcStamp(times[k])} ${l.text}` : l.text;
+      })
+      .join('\n');
+    const from = T.from;
+    state.current = from;
+    saveCustom(text, from.source === 'custom' ? from.label : 'Gõ nhịp từ ' + S[from.source].name, slotFor(from));
+    const guessed = T.idx.length - pressed;
+    say(`⏱ Đã lưu thời gian ${pressed} dòng${guessed ? `, ${guessed} dòng chưa gõ được ước lượng (bấm ⏱ Gõ nhịp để gõ lại)` : ''}.`);
   }
 
   // ---------- lyric renderers (on the video / floating window) ----------
@@ -1667,6 +1986,10 @@ BYL.ui = (() => {
     d.addEventListener('keydown', (e) => {
       const v = video();
       if (!v) return;
+      if (TAP && (e.key === ' ' || e.key === 'Backspace')) {
+        e.preventDefault();
+        return e.key === ' ' ? tap() : tapUndo();
+      }
       if (e.key === ' ' || e.key === 'k') v.paused ? v.play() : v.pause();
       else if (e.key === 'ArrowLeft') v.currentTime -= 5;
       else if (e.key === 'ArrowRight') v.currentTime += 5;
@@ -1881,6 +2204,13 @@ BYL.ui = (() => {
     ov.classList.toggle('flip', k % 2 === 1);
     if (prev) ov.append(wordLine(R, prev.text, 'prev', false));
     ov.append(wordLine(R, curLine.section || !curLine.text ? '♪' : curLine.text, 'cur', true));
+    const tr = transFor(pos.i);
+    if (tr) {
+      const line = wordLine(R, tr, 'tr', false);
+      // Long lines come back with their own shrink factor: keep it relative.
+      line.style.fontSize = `calc(var(--trs, .7em) * ${parseFloat(line.style.fontSize) || 1})`;
+      ov.append(line);
+    }
     if (next) ov.append(wordLine(R, next.text, 'next', false));
   }
 

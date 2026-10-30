@@ -34,6 +34,8 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
   - Khi đang sửa: dòng đang phát được tô hồng và tự cuộn theo nhạc (tắt được bằng "Cuộn theo nhạc"). Nháy đúp một dòng có giờ để tua tới đó.
   - **🔎 Tìm trong lời**: gõ không dấu cũng tìm được, Enter / Shift+Enter để qua lại giữa các kết quả.
   - **📍 Gắn giờ đang phát** (Ctrl/⌘ + Enter): ghi giờ hiện tại vào dòng có con trỏ rồi xuống dòng kế, vừa nghe vừa bấm để canh lời dịch.
+- **🌐 Song ngữ**: chọn một bản lời khác (thường là lời bạn tự dịch) để hiện thành dòng nhỏ dưới mỗi dòng, trên video, trong panel và cửa sổ nổi. Hai bản cùng có thời gian thì ghép theo thời gian, không thì ghép theo thứ tự dòng (giữ số dòng như bản gốc là khớp). Nút ⇅ đổi chỗ lời chính và lời dịch. Lựa chọn được nhớ cho từng video.
+- **⏱ Gõ nhịp**: phát bài, bấm **Space** đúng lúc bắt đầu hát dòng có viền; mỗi lần bấm ghi thời gian cho một dòng. **Backspace** lùi một dòng và tua lại 3 giây; bấm vào một dòng để gõ lại từ đó. Dòng bị bỏ qua được ước lượng theo hai dòng bên cạnh. Kết quả lưu thành "✍ Lời của bạn" có thời gian. Mỗi video giữ được hai bản của bạn, nên gõ nhịp lời gốc không ghi đè lên bản dịch đang hiện.
 - **Kéo thanh dưới khung lời** để thu gọn hoặc mở rộng; độ cao được nhớ lại. Nháy đúp thanh để về mặc định.
 - **Sao chép** lời, **Mở nguồn** để xem trang gốc.
 - **💾 Sao lưu / khôi phục** (trong cửa sổ cài đặt của extension): xuất một file `.json` gồm lời bạn đã sửa, điểm 📍, độ lệch, lời đã chọn cho từng video, preset kiểu chữ và cài đặt. Nhập lại ở máy khác hoặc sau khi cài lại; dữ liệu đang có được giữ, video nào có ở cả hai bên thì lấy bản sửa sau cùng.
