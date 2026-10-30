@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Better YouTube Lyric</title>
+  <style>
+    :root { --fg: #0f0f0f; --fg2: #606060; --bg: #fff; --line: #e5e5e5; --chip: #f2f2f2; --accent: #ff2e63; color-scheme: light dark; }
+    @media (prefers-color-scheme: dark) { :root { --fg: #f1f1f1; --fg2: #aaa; --bg: #181818; --line: #333; --chip: #262626; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 12px 14px; width: 300px; font: 13px/1.4 Roboto, -apple-system, Arial, sans-serif; color: var(--fg); background: var(--bg); }
+    h1 { font-size: 14px; margin: 0 0 10px; display: flex; gap: 8px; align-items: center; }
+    h1 img { width: 20px; height: 20px; }
+    h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--fg2); margin: 12px 0 6px; font-weight: 500; }
+    .src { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    .src label { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 8px; background: var(--chip);
+      cursor: pointer; border: 1px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .src label:has(input:checked) { border-color: var(--accent); }
+    .src label:has(input:not(:checked)) { opacity: .55; }
+    .src input { display: none; }
+    .opt label { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; cursor: pointer; }
+    .opt label + label { border-top: 1px solid var(--line); }
+    input[type=checkbox].sw { appearance: none; width: 30px; height: 18px; border-radius: 999px; background: var(--line); position: relative;
+      cursor: pointer; flex: none; transition: background .15s; margin: 0; }
+    input[type=checkbox].sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%;
+      background: #fff; transition: left .15s; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+    input[type=checkbox].sw:checked { background: var(--accent); }
+    input[type=checkbox].sw:checked::after { left: 14px; }
+    input[type=number] { width: 52px; font: inherit; color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; }
+    .hint { margin-top: 10px; color: var(--fg2); font-size: 12px; }
+    .saved { color: var(--accent); font-size: 12px; min-height: 16px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h1><img src="../../icons/icon48.png" alt="">Better YouTube Lyric</h1>
+
+  <h2>Nguồn lời (bấm để bật/tắt)</h2>
+  <div class="src">
+    <label title="Lời ghi trong mô tả của chính video"><input type="checkbox" data-k="srcDescription">📄 Mô tả video</label>
+    <label title="Lời người xem đăng trong comment"><input type="checkbox" data-k="srcComments">💬 Comment</label>
+    <label title="Video lyric / bản đăng lại cùng bài trên YouTube"><input type="checkbox" data-k="srcDuplicates">🔁 Bản đăng khác</label>
+    <label title="Thư viện lời mở, nhiều bài có thời gian từng dòng"><input type="checkbox" data-k="srcLrclib">🌐 LRCLIB</label>
+    <label title="Lời nhạc Việt từ hopamchuan.com"><input type="checkbox" data-k="srcHopamchuan">🎸 Hợp âm chuẩn</label>
+    <label title="Dùng cuối cùng, khi các nguồn khác không có"><input type="checkbox" data-k="srcTranscript">📝 Phụ đề YouTube</label>
+  </div>
+
+  <h2>Tuỳ chọn</h2>
+  <div class="opt">
+    <label title="Chọn lời chạy theo nhạc trước, bất kể nguồn nào">Ưu tiên lời có thời gian <input type="checkbox" class="sw" data-k="preferSynced"></label>
+    <label>Tự bật lời trên video <input type="checkbox" class="sw" data-k="overlayOnByDefault"></label>
+    <label title="Mỗi trang khoảng 20 comment">Số trang comment quét <input type="number" min="1" max="10" data-k="commentPages"></label>
+  </div>
+
+  <p class="hint">Kiểu chữ, màu sắc, preset: bấm 🎨 trong panel lời bài hát.</p>
+  <div class="saved" id="saved"></div>
+  <script src="options.js"></script>
+</body>
+</html>
