@@ -733,14 +733,18 @@ BYL.ui = (() => {
     const style = BYL.settings.value.overlayStyle;
     del.hidden = !style?.startsWith('u:');
     if (style?.startsWith('u:')) name.value = style.slice(2);
-    save.addEventListener('click', () => {
+    save.addEventListener('click', async () => {
       const n = name.value.trim() || 'Preset ' + ((BYL.settings.value.overlayPresets || []).length + 1);
       const list = (BYL.settings.value.overlayPresets || []).filter((p) => p.name !== n);
       list.push({ name: n, look: currentLook() });
-      BYL.settings.set({ overlayPresets: list, overlayStyle: 'u:' + n, overlayLook: null });
+      const ok = await BYL.settings.set({ overlayPresets: list, overlayStyle: 'u:' + n, overlayLook: null });
       refreshLook();
       buildStudio();
-      say(`💾 Đã lưu preset "${n}". Chọn lại trong "Kiểu chữ" bất cứ lúc nào.`);
+      say(
+        ok
+          ? `💾 Đã lưu preset "${n}". Chọn lại trong "Kiểu chữ" bất cứ lúc nào.`
+          : `⚠ Không lưu được preset "${n}" vào trình duyệt. Preset vẫn dùng được đến khi tải lại trang.`
+      );
     });
     reset.addEventListener('click', () => {
       BYL.settings.set({ overlayLook: null });

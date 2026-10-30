@@ -36,11 +36,14 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
   - **📍 Gắn giờ đang phát** (Ctrl/⌘ + Enter): ghi giờ hiện tại vào dòng có con trỏ rồi xuống dòng kế, vừa nghe vừa bấm để canh lời dịch.
 - **Kéo thanh dưới khung lời** để thu gọn hoặc mở rộng; độ cao được nhớ lại. Nháy đúp thanh để về mặc định.
 - **Sao chép** lời, **Mở nguồn** để xem trang gốc.
+- **💾 Sao lưu / khôi phục** (trong cửa sổ cài đặt của extension): xuất một file `.json` gồm lời bạn đã sửa, điểm 📍, độ lệch, lời đã chọn cho từng video, preset kiểu chữ và cài đặt. Nhập lại ở máy khác hoặc sau khi cài lại; dữ liệu đang có được giữ, video nào có ở cả hai bên thì lấy bản sửa sau cùng.
 
 ## Cài đặt (chế độ nhà phát triển)
 
 1. Mở `chrome://extensions`, bật **Developer mode** (góc trên bên phải).
 2. Bấm **Load unpacked** và chọn thư mục `better-youtube-lyric`.
+
+`manifest.json` có trường `key` để ID của extension luôn là `hpklleajpolgkiipenbegkgjmeogllno`, dù thư mục nằm ở đâu hay đổi tên. Dữ liệu trong `chrome.storage` gắn với ID này nên không bị mất khi chuyển thư mục.
 3. Mở một video nhạc trên YouTube. Panel hiện ở đầu cột bên phải.
 
 Bấm biểu tượng extension để bật/tắt từng nguồn, ưu tiên lời có thời gian, số trang comment cần quét. Kiểu chữ chỉnh trong panel (🎨).
@@ -86,5 +89,6 @@ Better YouTube Lyric lấy ý tưởng overlay và LRCLIB, rồi thêm phần nh
 
 ## Đưa lên Chrome Web Store (sau này)
 
-- Quyền đang xin: `storage`, cùng host `lrclib.net` và `hopamchuan.com`. Không thu thập dữ liệu người dùng; cài đặt lưu trong `chrome.storage`.
+- Bỏ trường `key` trong `manifest.json` trước khi đóng gói (Store tự cấp ID).
+- Quyền đang xin: `storage`, `unlimitedStorage` (không giới hạn 10 MB cho lời đã sửa), cùng host `lrclib.net` và `hopamchuan.com`. Không thu thập dữ liệu người dùng; cài đặt lưu trong `chrome.storage` (preset kiểu chữ và dữ liệu từng video ở `local`, các tuỳ chọn khác ở `sync`).
 - Cần thêm: ảnh chụp màn hình 1280×800, trang chính sách quyền riêng tư, và mô tả lý do đọc hopamchuan.com (hoặc tắt nguồn này mặc định trong bản Store).

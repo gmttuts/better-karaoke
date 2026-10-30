@@ -29,6 +29,19 @@
     input[type=number] { width: 52px; font: inherit; color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; }
     .hint { margin-top: 10px; color: var(--fg2); font-size: 12px; }
     .saved { color: var(--accent); font-size: 12px; min-height: 16px; margin-top: 4px; }
+    button { font: inherit; color: var(--fg); background: var(--chip); border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; cursor: pointer; }
+    button:hover { border-color: var(--accent); }
+    .open-backup { width: 100%; margin-top: 10px; }
+    .backup { display: none; }
+    .backup .btns { display: flex; gap: 6px; margin: 8px 0; }
+    .backup .btns button { flex: 1; }
+    .backup .stats { color: var(--fg2); font-size: 12px; }
+    .backup .msg { font-size: 12px; min-height: 16px; white-space: pre-line; }
+    .backup .msg.err { color: #e5484d; }
+    /* Opened in its own tab (file pickers close the toolbar popup). */
+    body.tab { width: auto; max-width: 420px; margin: 24px auto; }
+    body.tab .backup { display: block; }
+    body.tab .open-backup { display: none; }
   </style>
 </head>
 <body>
@@ -52,6 +65,20 @@
   </div>
 
   <p class="hint">Kiểu chữ, màu sắc, preset: bấm 🎨 trong panel lời bài hát.</p>
+  <button class="open-backup" id="openBackup" title="Mở trong tab mới">💾 Sao lưu / khôi phục…</button>
+
+  <section class="backup" id="backup">
+    <h2>Sao lưu</h2>
+    <div class="stats" id="stats">Đang đếm…</div>
+    <div class="btns">
+      <button id="export" title="Tải về một file .json chứa toàn bộ dữ liệu">⬇ Xuất file</button>
+      <button id="import" title="Gộp dữ liệu từ file đã xuất vào máy này">⬆ Nhập file</button>
+    </div>
+    <input type="file" id="file" accept=".json,application/json" hidden>
+    <div class="msg" id="msg"></div>
+    <p class="hint">File gồm lời bạn đã sửa, điểm căn thời gian 📍, độ lệch, lời đã chọn cho từng video, preset kiểu chữ và cài đặt.
+      Khi nhập, dữ liệu đang có được giữ lại; video nào có ở cả hai bên thì lấy bản sửa sau cùng.</p>
+  </section>
   <div class="saved" id="saved"></div>
   <script src="options.js"></script>
 </body>

@@ -1,7 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Better YouTube Lyric",
-  "version": "0.7.1",
+  "version": "0.8.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq4CGuXgzUI1b41JvGlbNHkFe4ScpNNK23MpFzvRXNdIUSpdqDCPsTVNaL+RbleVwrgIR63Ii4lzaB9ZXVc2jQi65Jlww1Jy5PdqHXacpWwC0girt/mPtdQIsf8TOY6Ye2VY6oABfKJLRW58FZ1llABOH6n9bVDkzEyymbP5NBkdbB0Ju+I/AW3yZuILfuuS16IBTyADhusHZIhpPMV3KZaoX7G5lXnhCCqQ4jAoqqoyN7bjNNWButFs2Z7EJGj/5hGEVl95WKd8HJN6kf+TwOatXDAUBWlk6LPA1uwgkh2ouf6s5VOJ6d1A8cBLtTX30lfifjlFhPaNZ/HjiAWmfLwIDAQAB",
   "description": "Tìm lời bài hát ngay trên YouTube (comment, bản đăng lại, LRCLIB, Hợp âm chuẩn, phụ đề) và hát karaoke trên video.",
   "icons": {
     "16": "icons/icon16.png",
@@ -9,20 +10,32 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["storage"],
-  "host_permissions": ["https://lrclib.net/*", "https://hopamchuan.com/*"],
+  "permissions": [
+    "storage",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "https://lrclib.net/*",
+    "https://hopamchuan.com/*"
+  ],
   "background": {
     "service_worker": "src/background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*"],
-      "js": ["src/bridge.js"],
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "src/bridge.js"
+      ],
       "world": "MAIN",
       "run_at": "document_start"
     },
     {
-      "matches": ["https://www.youtube.com/*"],
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
       "js": [
         "src/content/util.js",
         "src/content/youtube.js",
@@ -35,7 +48,14 @@
     }
   ],
   "web_accessible_resources": [
-    { "resources": ["fonts/*.woff2"], "matches": ["https://www.youtube.com/*"] }
+    {
+      "resources": [
+        "fonts/*.woff2"
+      ],
+      "matches": [
+        "https://www.youtube.com/*"
+      ]
+    }
   ],
   "action": {
     "default_title": "Better YouTube Lyric",

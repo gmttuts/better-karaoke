@@ -28,22 +28,38 @@ BYL.DEFAULTS = {
 BYL.isShorts = () => location.pathname.startsWith('/shorts/');
 BYL.playerEl = () => document.getElementById(BYL.isShorts() ? 'shorts-player' : 'movie_player');
 
+// The look edits and saved presets live in storage.local: storage.sync caps
+// each item at 8 KB (about 20 presets) and limits writes per minute. The
+// service worker moves them over from older versions (background.js).
+BYL.LOCAL_SETTINGS = ['overlayLook', 'overlayPresets'];
+
 BYL.settings = {
   value: { ...BYL.DEFAULTS },
   async load() {
     try {
+      const local = Object.fromEntries(BYL.LOCAL_SETTINGS.map((k) => [k, BYL.DEFAULTS[k]]));
       const got = await chrome.storage.sync.get(BYL.DEFAULTS);
+      Object.assign(got, await chrome.storage.local.get(local));
       this.value = { ...BYL.DEFAULTS, ...got };
     } catch {
       this.value = { ...BYL.DEFAULTS };
     }
     return this.value;
   },
+  // Resolves false if the save failed (the value still applies until reload).
   async set(patch) {
     Object.assign(this.value, patch);
+    const local = {};
+    const sync = {};
+    for (const [k, v] of Object.entries(patch)) (BYL.LOCAL_SETTINGS.includes(k) ? local : sync)[k] = v;
     try {
-      await chrome.storage.sync.set(patch);
-    } catch {}
+      if (Object.keys(local).length) await chrome.storage.local.set(local);
+      if (Object.keys(sync).length) await chrome.storage.sync.set(sync);
+      return true;
+    } catch (err) {
+      console.warn('[Better Lyric] save failed', err);
+      return false;
+    }
   },
 };
 
