@@ -214,6 +214,11 @@ BYL.ui = (() => {
       look: { weight: 600, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'pill', layout: 'single', scale: 62, margin: 9 },
     },
   };
+  // Padding inside the box / pill, in 1/100 em (top, right, bottom, left).
+  // Left unset, each shape keeps its own default.
+  const PAD_KEYS = ['padT', 'padR', 'padB', 'padL'];
+  const SHAPE_PAD = { box: [35, 90, 45, 90], pill: [20, 80, 20, 80], none: [0, 0, 0, 0] };
+  const padOf = (look, k) => look[k] ?? (SHAPE_PAD[look.shape] || SHAPE_PAD.none)[PAD_KEYS.indexOf(k)];
   const FONTS = [
     [KARAOKE_FONT, 'Chữ hẹp karaoke'],
     ['', 'Roboto (như YouTube)'],
@@ -266,7 +271,7 @@ BYL.ui = (() => {
   };
 
   const OVERLAY_CSS = `
-    :host { all: initial; position: absolute; left: 0; right: 0; bottom: var(--my, 13%); z-index: 59; pointer-events: none;
+    :host { all: initial; position: absolute; left: 0; right: 0; bottom: max(var(--my, 13%), var(--lift, 0px)); z-index: 59; pointer-events: none;
       display: flex; justify-content: center; font-family: var(--font, Roboto), Roboto, Arial, sans-serif; }
     :host([data-pos=top]) { bottom: auto; top: var(--my, 13%); }
     :host([data-pip]) { position: absolute; inset: 0; align-items: center; }
@@ -293,8 +298,8 @@ BYL.ui = (() => {
     .tr { font-size: var(--trs, .7em); margin-top: .1em; }
     .hint { font-size: .45em; color: #fff; opacity: .85; -webkit-text-stroke: 0; filter: none; text-shadow: 0 1px 3px #000; font-weight: 500; font-family: Roboto, Arial, sans-serif; }
 
-    :host([data-shape=box]) .ov { background: var(--bg); backdrop-filter: blur(6px); padding: .35em .9em .45em; border-radius: .45em; }
-    :host([data-shape=pill]) .ov { background: var(--bg); padding: .2em .8em; border-radius: 999px; }
+    :host([data-shape=box]) .ov { background: var(--bg); backdrop-filter: blur(6px); padding: var(--pad); border-radius: .45em; }
+    :host([data-shape=pill]) .ov { background: var(--bg); padding: var(--pad); border-radius: 999px; }
 
     /* So le: classic karaoke machine, two lines that take turns */
     :host([data-layout=stagger]) .ov { align-items: stretch; min-width: min(60%, 18em); }
@@ -325,8 +330,8 @@ BYL.ui = (() => {
     s.setProperty('--bg', rgba(look.bg, look.bgAlpha));
     s.setProperty('--next', look.nextScale / 100 + 'em');
     s.setProperty('--trs', (look.nextScale * 0.7) / 100 + 'em');
-    // Shorts keep their channel name and caption at the bottom: stay above.
-    s.setProperty('--my', (BYL.isShorts() && !host.hasAttribute('data-pip') && BYL.settings.value.overlayPosition !== 'top' ? Math.max(look.margin, 24) : look.margin) + '%');
+    s.setProperty('--pad', PAD_KEYS.map((k) => padOf(look, k) / 100 + 'em').join(' '));
+    s.setProperty('--my', look.margin + '%');
     host.dataset.layout = look.layout;
     host.dataset.shape = look.shape;
     host.toggleAttribute('data-tgrad', !!look.textGrad);
@@ -748,7 +753,27 @@ BYL.ui = (() => {
     row('Màu chữ', color('text', 'Màu chữ chưa hát'), el('span', 'muted', 'đã hát'), color('sung', 'Màu chữ đã hát'), grad, sung2);
     row('Viền', color('stroke', 'Màu viền'), color('sstroke', 'Màu viền khi đã hát'), ...range('strokeW', 0, 30, ''));
     row('Bóng', check('shadow', 'đổ bóng'), check('textGrad', 'chữ ánh bạc'));
-    row('Nền', pick('shape', [['none', 'Không'], ['box', 'Khung'], ['pill', 'Viên thuốc']]), color('bg', 'Màu nền'), ...range('bgAlpha', 0, 100));
+    const shape = pick('shape', [['none', 'Không'], ['box', 'Khung'], ['pill', 'Viên thuốc']]);
+    row('Nền', shape, color('bg', 'Màu nền'), ...range('bgAlpha', 0, 100));
+    // Padding sliders follow the shape's default until the user moves them.
+    const pad = (k, text) => {
+      const [r, val] = range(k, 0, 200);
+      r.value = padOf(look, k);
+      val.textContent = r.value + '%';
+      r.title = `Lề ${text} của khung, tính theo cỡ chữ`;
+      return [el('span', 'muted', text), r, val];
+    };
+    const padRows = grid.childElementCount;
+    row('Lề khung', ...pad('padT', 'trên'), ...pad('padB', 'dưới'));
+    row('', ...pad('padL', 'trái'), ...pad('padR', 'phải'));
+    const padEls = [...grid.children].slice(padRows);
+    const showPad = () => padEls.forEach((e) => (e.hidden = shape.value === 'none'));
+    shape.addEventListener('change', () => {
+      // A new shape starts from its own padding.
+      editLook(Object.fromEntries(PAD_KEYS.map((k) => [k, undefined])), true);
+      buildStudio();
+    });
+    showPad();
     row('Bố cục', pick('layout', [['stagger', 'So le 2 dòng'], ['center2', 'Dòng hát + dòng kế'], ['three', '3 dòng'], ['single', 'Một dòng']]));
     row('Dòng phụ', ...range('nextScale', 40, 100));
     row('Hiệu ứng', pick('wipe', [['word', 'Chạy màu từng chữ'], ['line', 'Sáng cả dòng']]));
@@ -1586,7 +1611,10 @@ BYL.ui = (() => {
       }
       try {
         frame();
-        if (++ticks % 30 === 0) placeFloat(); // Shorts: follow the video if the layout shifts
+        if (++ticks % 30 === 0) {
+          placeFloat(); // Shorts: follow the video if the layout shifts
+          shortsLift();
+        }
       } catch {}
       // A background tab gets no animation frames; the floating window does,
       // so let it drive the loop while it's open.
@@ -1897,7 +1925,7 @@ BYL.ui = (() => {
     if (O.host.parentElement !== player) {
       player.append(O.host);
       resizeWatch.observe(player);
-      paintLook(O.host, currentLook()); // margins differ between watch and Shorts
+      paintLook(O.host, currentLook());
     }
     sizeAll();
     return true;
@@ -1910,7 +1938,29 @@ BYL.ui = (() => {
     // the narrow, upright Shorts player gets its own scale.
     const ref = BYL.isShorts() ? 560 : 1280;
     if (O && player) O.host.style.fontSize = base * Math.max(0.5, player.clientWidth / ref) + 'px';
+    shortsLift();
     if (F && pipWin) F.host.style.fontSize = base * Math.max(0.45, pipWin.innerWidth / 600) + 'px';
+  }
+
+  // Shorts lay the title, channel and song over the bottom of the video: keep
+  // the lyrics just above that block, however tall it is for this Short.
+  function shortsLift() {
+    if (!O) return;
+    const player = BYL.playerEl();
+    if (!player || !BYL.isShorts() || BYL.settings.value.overlayPosition === 'top') {
+      O.host.style.removeProperty('--lift');
+      return;
+    }
+    const p = player.getBoundingClientRect();
+    let lift = p.height * 0.15; // fallback if YouTube renames the panel
+    for (const m of document.querySelectorAll('yt-reel-metapanel-view-model, ytd-reel-player-overlay-renderer #metapanel')) {
+      const r = m.getBoundingClientRect();
+      if (r.height && r.left < p.right && r.right > p.left && r.top > p.top + p.height / 2 && r.top < p.bottom) {
+        lift = p.bottom - r.top + 8;
+        break;
+      }
+    }
+    O.host.style.setProperty('--lift', Math.round(lift) + 'px');
   }
 
   function setOverlay(on, byUser) {
