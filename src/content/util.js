@@ -15,7 +15,7 @@ BYL.DEFAULTS = {
   preferSynced: false,
   commentPages: 3,
   overlayFontSize: 34,
-  overlayStyle: 'red',
+  overlayStyle: 'classic',
   overlayPosition: 'bottom',
   overlayOnByDefault: false,
   overlayLook: null, // edits on top of the chosen style (🎨 in the panel)

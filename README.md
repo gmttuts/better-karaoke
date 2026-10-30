@@ -6,7 +6,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 
 - **Panel lời bài hát** ở cột bên phải video: tô sáng dòng đang hát và tự cuộn. Bấm vào một dòng để tua tới đó (với lời có thời gian).
 - **Karaoke trên video** (nút 🎤 Karaoke): chữ đổi màu mượt theo nhịp hát, dùng được khi toàn màn hình, chữ tự to theo kích thước video. Các kiểu chữ có sẵn ở "Kiểu chữ":
-  - **Karaoke đỏ** (mặc định) / **Karaoke xanh dương**: giống đĩa karaoke Việt, chữ hẹp đậm, trắng ánh bạc viền đen; phần đã hát chuyển đỏ (hoặc xanh dương) viền trắng, có bóng đổ, hai dòng so le.
+  - **Karaoke xanh dương** (mặc định) / **Karaoke đỏ**: giống đĩa karaoke Việt, chữ Roboto đậm (đổi sang chữ hẹp karaoke trong 🎨), trắng ánh bạc viền đen; phần đã hát chuyển xanh dương (hoặc đỏ) viền trắng, có bóng đổ, hai dòng so le.
   - **Nổi bật**: một dòng lớn, phần đã hát chuyển màu vàng sang hồng, dòng kế tiếp nhỏ bên dưới.
   - **Khung tối**: khung tối mờ, dễ đọc trên mọi nền video.
   - **Gọn nhẹ**: một dòng nhỏ dạng viên thuốc, ít che video.

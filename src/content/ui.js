@@ -177,7 +177,7 @@ BYL.ui = (() => {
   // strokeW is in 1/100 em, bgAlpha / nextScale / scale / margin in percent.
   const KARAOKE_FONT = '"BYL Condensed", "Arial Narrow"';
   const BASE_LOOK = {
-    font: KARAOKE_FONT,
+    font: '', // Roboto, like YouTube
     weight: 800,
     text: '#ffffff',
     textGrad: true, // white fading to silver, like karaoke discs
@@ -203,15 +203,15 @@ BYL.ui = (() => {
     classic: { name: 'Karaoke xanh dương', look: { sung: '#3346f2' } },
     focus: {
       name: 'Nổi bật',
-      look: { font: '', textGrad: false, sung: '#ffe066', sung2: '#ff7aa2', strokeW: 0, layout: 'center2', nextScale: 50, scale: 100, margin: 13 },
+      look: { textGrad: false, sung: '#ffe066', sung2: '#ff7aa2', strokeW: 0, layout: 'center2', nextScale: 50, scale: 100, margin: 13 },
     },
     box: {
       name: 'Khung tối',
-      look: { font: '', weight: 700, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'box', bg: '#0a0a0e', bgAlpha: 62, layout: 'center2', nextScale: 55, scale: 100, margin: 13 },
+      look: { weight: 700, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'box', bg: '#0a0a0e', bgAlpha: 62, layout: 'center2', nextScale: 55, scale: 100, margin: 13 },
     },
     mini: {
       name: 'Gọn nhẹ',
-      look: { font: '', weight: 600, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'pill', layout: 'single', scale: 62, margin: 9 },
+      look: { weight: 600, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'pill', layout: 'single', scale: 62, margin: 9 },
     },
   };
   const FONTS = [
@@ -252,7 +252,7 @@ BYL.ui = (() => {
       const p = (BYL.settings.value.overlayPresets || []).find((x) => 'u:' + x.name === key);
       if (p) return p.look;
     }
-    return (BYL.LOOKS[key] || BYL.LOOKS.red).look;
+    return (BYL.LOOKS[key] || BYL.LOOKS.classic).look;
   };
   const currentLook = () => ({
     ...BASE_LOOK,
@@ -786,7 +786,7 @@ BYL.ui = (() => {
     });
     del.addEventListener('click', () => {
       const list = (BYL.settings.value.overlayPresets || []).filter((p) => 'u:' + p.name !== style);
-      BYL.settings.set({ overlayPresets: list, overlayStyle: 'red', overlayLook: null });
+      BYL.settings.set({ overlayPresets: list, overlayStyle: 'classic', overlayLook: null });
       refreshLook();
       buildStudio();
     });
