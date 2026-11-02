@@ -70,6 +70,12 @@ BYL.PANEL_CSS = `
   .row.links a:hover { background: var(--chip); color: var(--fg); }
   .row.links button.on { background: var(--chip); color: var(--fg); }
   .row.exports { padding-top: 2px; }
+  .row.findrow { padding-top: 2px; }
+  .row.findrow[hidden] { display: none; }
+  .findrow input { flex: 1 1 120px; min-width: 0; font: inherit; font-size: 13px; color: var(--fg); background: var(--chip);
+    border: 1px solid transparent; border-radius: 999px; padding: 6px 12px; }
+  .findrow input:focus { outline: none; border-color: var(--accent); }
+  .findrow button[hidden] { display: none; }
   .row.exports[hidden] { display: none; }
   .warn { margin: 0 12px 10px; padding: 8px 10px; border-radius: 10px; font-size: 12px; line-height: 1.45; background: rgba(255,184,0,.14); }
   .warn:empty { display: none; }
@@ -101,6 +107,15 @@ BYL.PANEL_CSS = `
   .kitem b { font-size: 13px; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .kitem .muted { margin-top: 2px; }
   .kitem.hit b::before { content: '🎤 '; }
+  .kitem { align-items: center; }
+  .kitem > div { flex: 1; min-width: 0; }
+  .kitem.cur { background: var(--chip); }
+  .kitem button { flex: none; background: transparent; padding: 4px 8px; color: var(--fg2); }
+  .kitem button.x { opacity: 0; }
+  .kitem:hover button.x { opacity: 1; }
+  button.fav { background: transparent; font-size: 18px; line-height: 1; padding: 4px 6px; color: var(--fg2); }
+  button.fav:hover { background: var(--chip); }
+  button.fav.on, .kitem button.fav.on { color: #f5b301; background: transparent; }
 
   .studio { margin: 0 12px 10px; padding: 4px 12px 12px; border-radius: 12px; background: var(--chip); }
   .studio[hidden], .studio [hidden] { display: none !important; }

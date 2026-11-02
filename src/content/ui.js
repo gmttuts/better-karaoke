@@ -183,14 +183,24 @@ BYL.ui = (() => {
     const songTitle = el('b', '', 'Better Lyric');
     const songArtist = el('span', '', 'Đang tìm lời bài hát…');
     song.append(songTitle, songArtist);
-    header.append(el('span', 'logo', '🎤'), song, el('span', 'chev', '▾'));
+    const favBtn = el('button', 'fav', '☆');
+    favBtn.title = 'Thêm vào bài yêu thích (xem ở tab "Đã xem")';
+    favBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!state.videoId) return;
+      const on = !favBtn.classList.contains('on');
+      paintFav(on);
+      BYL.history.setFav(state.videoId, on);
+    });
+    header.append(el('span', 'logo', '🎤'), song, favBtn, el('span', 'chev', '▾'));
     header.title = 'Better YouTube Lyric v' + chrome.runtime.getManifest().version;
 
     const body = el('div', 'body');
     const nav = el('nav');
     const tabLyric = el('button', 'on', 'Lời bài hát');
-    const tabKaraoke = el('button', '', 'Tìm bản Karaoke');
-    nav.append(tabLyric, tabKaraoke);
+    const tabKaraoke = el('button', '', 'Bản Karaoke');
+    const tabHistory = el('button', '', 'Đã xem');
+    nav.append(tabLyric, tabKaraoke, tabHistory);
 
     // Lyric tab
     const lyricTab = el('div');
@@ -252,9 +262,50 @@ BYL.ui = (() => {
     const againBtn = el('button', '', '↻ Tìm lại');
     againBtn.title = 'Kết quả tìm được lưu lại để mở video nhanh hơn. Bấm để tìm lại từ đầu ở mọi nguồn.';
     againBtn.addEventListener('click', () => api.onSearchAgain?.());
+    const findBtn = el('button', '', '🔍 Tìm theo tên');
+    findBtn.title = 'Tên bài hoặc ca sĩ bị đoán sai? Tự gõ lại rồi tìm';
     const exportBtn = el('button', '', '⬇ Xuất');
     exportBtn.title = 'Lưu lời ra file .lrc / .srt (giữ thời gian bạn đã canh), hoặc gửi lên LRCLIB';
-    row4.append(editBtn, tapBtn, copy, exportBtn, againBtn, open);
+    row4.append(editBtn, tapBtn, findBtn, copy, exportBtn, againBtn, open);
+
+    // Manual search: the title/artist typed here replace the guess from the
+    // video title, are remembered for this video, and every source runs again.
+    const findRow = el('form', 'row findrow');
+    findRow.hidden = true;
+    const fTitle = el('input');
+    const fArtist = el('input');
+    fTitle.type = fArtist.type = 'text';
+    fTitle.placeholder = 'Tên bài';
+    fArtist.placeholder = 'Ca sĩ';
+    fTitle.maxLength = fArtist.maxLength = 120;
+    const fGo = el('button', 'primary', 'Tìm');
+    fGo.type = 'submit';
+    const fUndo = el('button', '', 'Dùng tên tự đoán');
+    fUndo.type = 'button';
+    findRow.append(fTitle, fArtist, fGo, fUndo);
+    const openFind = () => {
+      findRow.hidden = !findRow.hidden;
+      findBtn.classList.toggle('on', !findRow.hidden);
+      if (findRow.hidden) return;
+      fTitle.value = state.song?.title || '';
+      fArtist.value = state.song?.artist || '';
+      fUndo.hidden = !state.song?.manual;
+      fTitle.focus();
+    };
+    findBtn.addEventListener('click', openFind);
+    findRow.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = fTitle.value.trim();
+      if (!title) return fTitle.focus();
+      findRow.hidden = true;
+      findBtn.classList.remove('on');
+      api.onSearchSong?.({ title, artist: fArtist.value.trim() });
+    });
+    fUndo.addEventListener('click', () => {
+      findRow.hidden = true;
+      findBtn.classList.remove('on');
+      api.onSearchSong?.(null);
+    });
 
     const exportRow = el('div', 'row exports');
     exportRow.hidden = true;
@@ -284,7 +335,7 @@ BYL.ui = (() => {
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
     grip.title = 'Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)';
-    lyricTab.append(status, row1, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4, exportRow);
+    lyricTab.append(findRow, status, row1, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4, exportRow);
     makeResizable(lines, grip);
 
     // Karaoke tab
@@ -294,12 +345,30 @@ BYL.ui = (() => {
     const klist = el('div', 'klist');
     karaokeTab.append(kchips, klist);
 
-    body.append(nav, lyricTab, karaokeTab);
+    // History tab
+    const historyTab = el('div');
+    historyTab.hidden = true;
+    const hFilter = el('div', 'row');
+    const hAll = el('button', 'on', 'Tất cả');
+    const hFav = el('button', '', '★ Yêu thích');
+    const hClear = el('button', 'danger', 'Xoá lịch sử');
+    hClear.title = 'Xoá các bài đã xem, giữ lại bài yêu thích';
+    hFilter.append(hAll, hFav, hClear);
+    const hlist = el('div', 'klist');
+    historyTab.append(hFilter, hlist);
+    hAll.addEventListener('click', () => ((state.favOnly = false), renderHistory()));
+    hFav.addEventListener('click', () => ((state.favOnly = true), renderHistory()));
+    hClear.addEventListener('click', async () => {
+      await BYL.history.clear();
+      renderHistory();
+    });
+
+    body.append(nav, lyricTab, karaokeTab, historyTab);
     wrap.append(header, body);
     root.append(wrap);
 
     P = { wrap, songTitle, songArtist, status, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
-      row2, row3, row4, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
+      row2, row3, row4, favBtn, hlist, hAll, hFav, tabHistory, historyTab, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
       tapBtn, tapbar };
     editBtn.addEventListener('click', () => openEditor());
     tapBtn.addEventListener('click', () => (TAP ? stopTap(false) : startTap()));
@@ -314,19 +383,20 @@ BYL.ui = (() => {
       wrap.classList.toggle('collapsed');
       BYL.settings.set({ panelCollapsed: wrap.classList.contains('collapsed') });
     });
-    tabLyric.addEventListener('click', () => {
-      tabLyric.classList.add('on');
-      tabKaraoke.classList.remove('on');
-      lyricTab.hidden = false;
-      karaokeTab.hidden = true;
-    });
-    tabKaraoke.addEventListener('click', () => {
-      tabKaraoke.classList.add('on');
-      tabLyric.classList.remove('on');
-      lyricTab.hidden = true;
-      karaokeTab.hidden = false;
-      loadKaraoke();
-    });
+    const tabs = [
+      [tabLyric, lyricTab],
+      [tabKaraoke, karaokeTab, loadKaraoke],
+      [tabHistory, historyTab, renderHistory],
+    ];
+    for (const [btn, pane, onShow] of tabs) {
+      btn.addEventListener('click', () => {
+        for (const [b, p] of tabs) {
+          b.classList.toggle('on', b === btn);
+          p.hidden = p !== pane;
+        }
+        onShow?.();
+      });
+    }
     select.addEventListener('change', () => {
       const c = state.candidates.find((x) => x.id === select.value);
       if (c) choose(c, true);
@@ -690,6 +760,7 @@ BYL.ui = (() => {
     applyTheme();
     renderLookSelect();
     P.wrap.classList.toggle('collapsed', !!BYL.settings.value.panelCollapsed);
+    paintFav(false);
     P.songTitle.textContent = 'Better Lyric';
     P.songArtist.textContent = 'Đang tìm lời bài hát…';
     P.status.replaceChildren();
@@ -731,8 +802,10 @@ BYL.ui = (() => {
     refreshLook();
     state.duration = duration || 0;
     P.songTitle.textContent = song.title || 'Không rõ tên bài';
-    P.songArtist.textContent = song.artist || '';
+    P.songArtist.textContent = (song.manual ? '✎ ' : '') + (song.artist || '');
+    P.songArtist.title = song.manual ? 'Tên bạn đã sửa bằng 🔍 Tìm theo tên' : '';
     pipTitle();
+    remember(song);
   }
 
   function setSourceStatus(key, status, count = 0) {
@@ -2242,6 +2315,70 @@ BYL.ui = (() => {
       state.karaokeLoadedFor = null;
       P.klist.replaceChildren(el('div', 'empty', 'Không tải được kết quả. Thử lại sau.'));
     }
+  }
+
+  // ---------- history / favourites ----------
+
+  function paintFav(on) {
+    P.favBtn.classList.toggle('on', on);
+    P.favBtn.textContent = on ? '★' : '☆';
+    P.favBtn.title = on ? 'Bỏ khỏi bài yêu thích' : 'Thêm vào bài yêu thích (xem ở tab "Đã xem")';
+  }
+
+  const ago = (t) => {
+    const m = Math.round((Date.now() - t) / 60000);
+    if (m < 60) return m <= 1 ? 'vừa xem' : m + ' phút trước';
+    if (m < 1440) return Math.round(m / 60) + ' giờ trước';
+    return Math.round(m / 1440) + ' ngày trước';
+  };
+
+  async function renderHistory() {
+    if (P.historyTab.hidden) return;
+    P.hAll.classList.toggle('on', !state.favOnly);
+    P.hFav.classList.toggle('on', !!state.favOnly);
+    const list = (await BYL.history.list()).filter((x) => !state.favOnly || x.fav);
+    P.hlist.replaceChildren();
+    if (!list.length) {
+      P.hlist.append(el('div', 'empty', state.favOnly ? 'Chưa có bài yêu thích. Bấm ☆ cạnh tên bài để thêm.' : 'Chưa xem bài nào.'));
+      return;
+    }
+    for (const x of list) {
+      const a = el('a', 'kitem');
+      a.href = (x.short ? '/shorts/' : '/watch?v=') + encodeURIComponent(x.id);
+      if (x.id === state.videoId) a.classList.add('cur');
+      const img = el('img');
+      img.src = `https://i.ytimg.com/vi/${encodeURIComponent(x.id)}/mqdefault.jpg`;
+      img.loading = 'lazy';
+      img.alt = '';
+      const meta = el('div');
+      meta.append(el('b', '', x.title || x.id), el('div', 'muted', [x.artist, ago(x.at), x.n > 1 ? x.n + ' lần' : ''].filter(Boolean).join(' · ')));
+      const star = el('button', 'fav' + (x.fav ? ' on' : ''), x.fav ? '★' : '☆');
+      star.title = x.fav ? 'Bỏ khỏi bài yêu thích' : 'Thêm vào bài yêu thích';
+      const del = el('button', 'x', '✕');
+      del.title = 'Xoá khỏi lịch sử';
+      for (const b of [star, del]) b.addEventListener('click', (e) => (e.preventDefault(), e.stopPropagation()));
+      star.addEventListener('click', async () => {
+        await BYL.history.setFav(x.id, !x.fav);
+        if (x.id === state.videoId) paintFav(!x.fav);
+        renderHistory();
+      });
+      del.addEventListener('click', async () => {
+        await BYL.history.remove(x.id);
+        renderHistory();
+      });
+      a.append(img, meta, star, del);
+      P.hlist.append(a);
+    }
+  }
+
+  // Called by main.js once the song is known.
+  async function remember(song) {
+    if (!state.videoId || !song?.title) return;
+    const id = state.videoId;
+    await BYL.history.add({ id, title: song.title, artist: song.artist, short: BYL.isShorts() });
+    if (id !== state.videoId) return;
+    paintFav(!!(await BYL.history.list()).find((x) => x.id === id)?.fav);
+    renderHistory();
   }
 
   // main.js fills in onLoadSource, hasCaptions and captionWordsFor per video.

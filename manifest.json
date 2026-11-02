@@ -38,6 +38,7 @@
       ],
       "js": [
         "src/content/util.js",
+        "src/content/history.js",
         "src/content/youtube.js",
         "src/content/sources.js",
         "src/content/align.js",

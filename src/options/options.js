@@ -155,6 +155,16 @@ async function importBackup(data) {
   out.overlayPresets = [...(cur.overlayPresets || []).filter((p) => !names.has(p.name)), ...valid];
   const look = data.local.overlayLook || old.overlayLook;
   if (look && typeof look === 'object') out.overlayLook = look;
+  // History: one entry per video, the more recent wins; ★ from either side.
+  if (Array.isArray(data.local.history)) {
+    const byId = new Map((cur.history || []).map((x) => [x.id, x]));
+    for (const x of data.local.history) {
+      if (!x || typeof x.id !== 'string') continue;
+      const mine = byId.get(x.id);
+      byId.set(x.id, !mine || (x.at || 0) > (mine.at || 0) ? { ...x, fav: !!(x.fav || mine?.fav) } : { ...mine, fav: !!(x.fav || mine.fav) });
+    }
+    out.history = [...byId.values()].sort((a, b) => (b.at || 0) - (a.at || 0));
+  }
   // Styles pinned to a channel (📌): the file's entry wins per channel.
   const chans = data.local.channelStyles;
   if (chans && typeof chans === 'object') {
