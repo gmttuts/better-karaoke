@@ -140,8 +140,8 @@ Better YouTube Lyric lấy ý tưởng overlay và LRCLIB, rồi thêm phần nh
 - Tiêu đề tiếng Anh dạng "Bài - Ca sĩ" đăng ở kênh không mang tên ca sĩ sẽ bị đọc ngược (bài ↔ ca sĩ). Việc tìm lời gần như không bị ảnh hưởng vì các nguồn tìm theo cả hai.
 - Chạy trên video thường và Shorts của `www.youtube.com` (YouTube Music đã có lời riêng).
 
-## Đưa lên Chrome Web Store (sau này)
+## Đưa lên Chrome Web Store, Edge, Firefox
 
-- Dùng `npm run build:store`: bản zip này đã bỏ trường `key` (Store tự cấp ID).
-- Quyền đang xin: `storage`, `unlimitedStorage` (không giới hạn 10 MB cho lời đã sửa), cùng host `lrclib.net` và `hopamchuan.com`. Không thu thập dữ liệu người dùng; cài đặt lưu trong `chrome.storage` (preset kiểu chữ và dữ liệu từng video ở `local`, các tuỳ chọn khác ở `sync`).
-- Cần thêm: ảnh chụp màn hình 1280×800, trang chính sách quyền riêng tư, và mô tả lý do đọc hopamchuan.com (hoặc tắt nguồn này mặc định trong bản Store).
+- **Chrome Web Store**: `npm run build:store` → `dist/better-youtube-lyric-<version>-store.zip` (đã bỏ trường `key`, Store tự cấp ID). Nội dung giới thiệu tiếng Việt / tiếng Anh, lý do xin từng quyền và câu trả lời mục "Dữ liệu người dùng" nằm trong [`store/listing.md`](store/listing.md). Ảnh chụp 1280×800 và ảnh 440×280 ở `store/`, tạo lại bằng `node scripts/store-assets.mjs`. Chính sách quyền riêng tư: [`PRIVACY.md`](PRIVACY.md) (dùng link GitHub của file này).
+- **Microsoft Edge**: Edge chạy được đúng bản Chrome (Load unpacked ở `edge://extensions`, hoặc nộp cùng file `-store.zip` lên Edge Add-ons).
+- **Firefox** (128 trở lên): `npm run build:firefox` → `dist/better-youtube-lyric-<version>-firefox.zip`. Bản này chạy nền bằng event page thay cho service worker và có ID `better-youtube-lyric@gmttuts`; đã qua `web-ext lint` (0 lỗi, 0 cảnh báo) nhưng **chưa chạy thử trên Firefox thật**. Firefox chưa có cửa sổ nổi (Document Picture-in-Picture), nút ⧉ sẽ báo không hỗ trợ. Thử tạm: `about:debugging` → *This Firefox* → *Load Temporary Add-on* → chọn `manifest.json` trong `dist/better-youtube-lyric-firefox`.

@@ -1,6 +1,7 @@
 // Builds the folder to load in chrome://extensions and the zip to share.
 //   node scripts/build.mjs           → dist/better-youtube-lyric + dist/better-youtube-lyric-<version>.zip
 //   node scripts/build.mjs --store   → also dist/better-youtube-lyric-<version>-store.zip (no "key", for the Web Store)
+//   node scripts/build.mjs --firefox → also dist/better-youtube-lyric-<version>-firefox.zip (Firefox 128+)
 // Fails if a file the manifest points at is missing from the build.
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { execFileSync } from 'child_process';
@@ -61,5 +62,24 @@ if (process.argv.includes('--store')) {
   writeFileSync(join(store, 'manifest.json'), JSON.stringify(m, null, 2) + '\n');
   zip(store, `better-youtube-lyric-${version}-store.zip`);
   rmSync(store, { recursive: true, force: true });
+}
+// Firefox runs the background as an event page (no service workers for
+// extensions), takes its ID from browser_specific_settings and has no "key".
+if (process.argv.includes('--firefox')) {
+  const ff = join(dist, 'better-youtube-lyric-firefox');
+  rmSync(ff, { recursive: true, force: true });
+  cpSync(out, ff, { recursive: true });
+  const m = { ...manifest, background: { scripts: [manifest.background.service_worker] } };
+  delete m.key;
+  m.browser_specific_settings = {
+    gecko: {
+      id: 'better-youtube-lyric@gmttuts',
+      strict_min_version: '128.0', // content scripts in the page's world
+      // Song titles go to lrclib.net / hopamchuan.com to look lyrics up.
+      data_collection_permissions: { required: ['websiteContent'] },
+    },
+  };
+  writeFileSync(join(ff, 'manifest.json'), JSON.stringify(m, null, 2) + '\n');
+  zip(ff, `better-youtube-lyric-${version}-firefox.zip`);
 }
 console.log(`✓ dist/better-youtube-lyric (v${version}, ${wanted.length} file trong manifest đều có)`);

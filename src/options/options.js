@@ -79,7 +79,7 @@ function summarize(local) {
 }
 
 async function showStats() {
-  const [local, bytes] = await Promise.all([chrome.storage.local.get(null), chrome.storage.local.getBytesInUse(null)]);
+  const [local, bytes] = await Promise.all([chrome.storage.local.get(null), (chrome.storage.local.getBytesInUse?.(null) ?? 0)]);
   const s = summarize(local);
   document.getElementById('stats').textContent =
     L('{0} video đã nhớ · {1} lời bạn sửa · {2} bài có điểm 📍 · {3} preset · {4} KB', s.videos, s.custom, s.warps, s.presets, (bytes / 1024).toFixed(0));
