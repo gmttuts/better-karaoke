@@ -36,11 +36,11 @@ BYL.ui = (() => {
     userScrollUntil: 0,
   };
 
-  let panelHost, P; // P: panel element refs
+  let panelHost;
+  const P = {}; // panel element refs, filled in by buildPanel
   let O = null; // renderer on the video
   let F = null; // renderer in the floating window
   let pipWin = null;
-  let ED = null; // lyric editor while open
 
   const PANEL_CSS = BYL.PANEL_CSS;
   const { BASE_LOOK, PAD_KEYS, padOf, FONTS, loadFont, compose, OVERLAY_CSS, paintLook } = BYL.look;
@@ -367,11 +367,11 @@ BYL.ui = (() => {
     wrap.append(header, body);
     root.append(wrap);
 
-    P = { wrap, songTitle, songArtist, status, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
+    Object.assign(P, { wrap, songTitle, songArtist, status, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
       row2, row3, row4, favBtn, hlist, hAll, hFav, tabHistory, historyTab, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
-      tapBtn, tapbar };
+      tapBtn, tapbar });
     editBtn.addEventListener('click', () => openEditor());
-    tapBtn.addEventListener('click', () => (TAP ? stopTap(false) : startTap()));
+    tapBtn.addEventListener('click', () => (tapping() ? stopTap(false) : startTap()));
     transSel.addEventListener('change', () => {
       const id = transSel.value;
       setTrans(state.candidates.find((x) => x.id === id) || (state.trans?.id === id ? state.trans : null), true);
@@ -454,7 +454,7 @@ BYL.ui = (() => {
     lines.addEventListener('click', (e) => {
       const ln = e.target.closest('.ln');
       if (!ln || !ln.dataset.i) return;
-      if (TAP) tapJump(Number(ln.dataset.i));
+      if (tapping()) tapJump(Number(ln.dataset.i));
       else if (e.target.closest('.pin')) pinLine(Number(ln.dataset.i));
       else onLineClick(Number(ln.dataset.i));
     });
@@ -882,7 +882,7 @@ BYL.ui = (() => {
   }
 
   function choose(c, byUser) {
-    if (TAP) stopTap(false);
+    if (tapping()) stopTap(false);
     const prev = state.current;
     // Picking the translation as the main lyrics swaps the two.
     if (state.trans && baseId(state.trans) === baseId(c)) state.trans = prev && prev !== c ? prev : null;
@@ -977,8 +977,6 @@ BYL.ui = (() => {
     say(`🎯 Đã canh lời theo phụ đề YouTube (${matched}). Còn lệch thì bấm 📍 cạnh dòng đang hát, hoặc chỉnh "Lệch".`);
   }
 
-  // ---------- editing lyrics ----------
-
   // Two slots for the user's own lyrics, so a translation and a re-timed
   // original can both be kept for one video.
   const CUSTOM_SLOTS = ['custom', 'custom2'];
@@ -986,300 +984,6 @@ BYL.ui = (() => {
   // Where an edit of c is saved: its own slot if it is one, otherwise the
   // slot not holding the translation shown under it.
   const slotFor = (c) => (c?.source === 'custom' && CUSTOM_SLOTS.includes(baseId(c)) ? baseId(c) : baseId(state.trans) === 'custom' ? 'custom2' : 'custom');
-
-  // Text with [mm:ss] stamps on most lines is timed; anything else is plain.
-  function customCandidate(text, label, id = 'custom') {
-    const rows = text.split('\n').filter((l) => l.trim());
-    const stamped = rows.filter((l) => /^\s*\[\d{1,2}:\d{2}/.test(l)).length;
-    const synced = rows.length > 0 && stamped >= rows.length * 0.5;
-    return {
-      id,
-      source: 'custom',
-      label: label || 'Bản đã sửa',
-      synced,
-      lines: synced ? BYL.parseLrc(text) : BYL.plainLines(text),
-      score: 1000,
-    };
-  }
-
-  function openEditor() {
-    const box = P.editor;
-    if (!box.hidden) return closeEditor();
-    if (TAP) stopTap(false);
-    const c = state.current;
-    box.replaceChildren();
-    const tip = el(
-      'div',
-      'tip',
-      'Sửa trực tiếp, mỗi câu một dòng, để trống một dòng giữa các đoạn. Giữ [phút:giây] ở đầu dòng để giữ thời gian (lời dịch vẫn chạy đúng nhịp). ' +
-        'Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.'
-    );
-    const ta = el('textarea');
-    ta.spellcheck = false;
-    ta.placeholder = 'Dán hoặc gõ lời bài hát vào đây…';
-    // Timed lyrics are written with the current offset folded in.
-    ta.value = c ? (c.synced ? BYL.toLrc(c.lines.map((l) => (l.t === undefined ? l : { ...l, t: effT(l.t) }))) : BYL.lyricsText(c.lines)) : '';
-    const mirror = el('div', 'mirror');
-    const taWrap = el('div', 'tawrap');
-    taWrap.append(mirror, ta);
-
-    const search = el('div', 'row esearch');
-    const q = el('input');
-    q.type = 'text';
-    q.placeholder = '🔎 Tìm trong lời (gõ không dấu cũng được)…';
-    const count = el('span', 'muted', '');
-    const up = el('button', '', '↑');
-    const down = el('button', '', '↓');
-    up.title = 'Kết quả trước (Shift+Enter)';
-    down.title = 'Kết quả sau (Enter)';
-    search.append(q, count, up, down);
-
-    const tools = el('div', 'row');
-    const stamp = el('button', '', '📍 Gắn giờ đang phát');
-    stamp.title = 'Ghi thời gian video hiện tại vào đầu dòng có con trỏ rồi xuống dòng kế. Vừa nghe vừa bấm để canh lời (phím tắt: Ctrl/⌘ + Enter)';
-    const followBox = el('label');
-    const follow = el('input');
-    follow.type = 'checkbox';
-    follow.checked = true;
-    followBox.append(follow, 'Cuộn theo nhạc');
-    followBox.title = 'Tô và cuộn tới dòng đang phát';
-    tools.append(stamp, followBox, el('span', 'muted', 'Nháy đúp một dòng có giờ để tua tới đó'));
-
-    const row = el('div', 'row');
-    const save = el('button', 'on', '💾 Lưu lời');
-    const cancel = el('button', '', 'Huỷ');
-    const fromCaps = el('button', '', '📝 Lấy khung từ phụ đề');
-    fromCaps.title = 'Điền lời từ phụ đề YouTube kèm thời gian, bạn chỉ cần sửa chữ (hoặc thay bằng lời dịch)';
-    fromCaps.hidden = !api.hasCaptions?.();
-    const del = el('button', '', '🗑 Xoá bản của bạn');
-    del.hidden = c?.source !== 'custom';
-    row.append(save, cancel, fromCaps, del);
-    box.append(tip, search, taWrap, tools, row);
-    box.hidden = false;
-    P.lines.hidden = true;
-    P.grip.hidden = true;
-
-    ED = { ta, mirror, q, count, follow, stamps: [], cur: -1, hits: [], hit: -1, quietUntil: 0 };
-    paintEditor();
-    ta.focus();
-
-    ta.addEventListener('input', () => {
-      ED.quietUntil = Date.now() + 3000;
-      paintEditor();
-    });
-    ta.addEventListener('scroll', () => (mirror.scrollTop = ta.scrollTop));
-    ta.addEventListener('wheel', () => (ED.quietUntil = Date.now() + 5000), { passive: true });
-    new ResizeObserver(() => ED?.ta === ta && fitMirror()).observe(ta);
-    ta.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        stampLine();
-      }
-    });
-    ta.addEventListener('dblclick', () => {
-      const i = ta.value.slice(0, ta.selectionStart).split('\n').length - 1;
-      const t = ED.stamps[i];
-      const v = video();
-      if (t != null && v) v.currentTime = t;
-    });
-    stamp.addEventListener('click', stampLine);
-    q.addEventListener('input', () => {
-      paintEditor();
-      jumpHit(0);
-    });
-    q.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter') return;
-      e.preventDefault();
-      jumpHit(ED.hit + (e.shiftKey ? -1 : 1));
-    });
-    up.addEventListener('click', () => jumpHit(ED.hit - 1));
-    down.addEventListener('click', () => jumpHit(ED.hit + 1));
-
-    save.addEventListener('click', () =>
-      saveCustom(ta.value, c?.source === 'custom' ? c.label : c ? 'Sửa từ ' + S[c.source].name : 'Tự nhập', slotFor(c))
-    );
-    cancel.addEventListener('click', closeEditor);
-    del.addEventListener('click', () => {
-      const slot = slotFor(c);
-      state.candidates = state.candidates.filter((x) => baseId(x) !== slot);
-      if (baseId(state.trans) === slot) state.trans = null;
-      BYL.videoStore.patch(state.videoId, { [slot]: null, pick: null, trans: state.trans });
-      const left = state.candidates.filter((x) => x.source === 'custom').length;
-      if (left) setSourceStatus('custom', 'ok', left);
-      else {
-        delete state.sourceStatus.custom;
-        P.status.querySelector('[data-k="custom"]')?.remove();
-      }
-      state.manual = false;
-      state.current = null;
-      closeEditor();
-      renderSelect();
-      maybeAutoPick();
-      if (!state.current) renderLines();
-      say('Đã xoá bản lời của bạn cho video này.');
-    });
-    fromCaps.addEventListener('click', () => {
-      const t = state.candidates.find((x) => x.source === 'transcript');
-      if (t) {
-        ta.value = BYL.toLrc(t.lines);
-        paintEditor();
-        return;
-      }
-      fromCaps.disabled = true;
-      fromCaps.textContent = 'Đang tải phụ đề…';
-      api.onLoadSource?.('transcript');
-      // The transcript source reports back through addCandidates; poll briefly.
-      let tries = 0;
-      const wait = setInterval(() => {
-        const got = state.candidates.find((x) => x.source === 'transcript');
-        if (got || ++tries > 40 || state.sourceStatus.transcript === 'none' || state.sourceStatus.transcript === 'error') {
-          clearInterval(wait);
-          fromCaps.disabled = false;
-          fromCaps.textContent = '📝 Lấy khung từ phụ đề';
-          if (got && ED?.ta === ta) {
-            ta.value = BYL.toLrc(got.lines);
-            paintEditor();
-          } else if (!got) say('Không lấy được phụ đề của video này.');
-        }
-      }, 250);
-    });
-  }
-
-  function closeEditor() {
-    ED = null;
-    P.editor.hidden = true;
-    P.editor.replaceChildren();
-    P.lines.hidden = false;
-    P.grip.hidden = false;
-  }
-
-  const STAMP_RE = /^\s*\[(\d{1,2}):(\d{2})(?:[.:](\d{1,3}))?\]\s*/;
-
-  // Text folded for search (no accents, lower case) with a map back to the
-  // original positions, so hits can be painted on the original text.
-  const foldMap = (str) => {
-    let f = '';
-    const at = [];
-    for (let i = 0; i < str.length; i++) {
-      for (const ch of BYL.fold(str[i])) {
-        f += ch;
-        at.push(i);
-      }
-    }
-    return { f, at };
-  };
-
-  // Lay the text out again behind the textarea with highlights.
-  function paintEditor() {
-    const { ta, mirror, q, count } = ED;
-    const rows = ta.value.split('\n');
-    const needle = BYL.fold(q.value.trim());
-    ED.stamps = rows.map((l) => {
-      const m = l.match(STAMP_RE);
-      return m ? Number(m[1]) * 60 + Number(m[2]) + (m[3] ? Number('0.' + m[3]) : 0) : null;
-    });
-    ED.hits = [];
-    const frag = document.createDocumentFragment();
-    rows.forEach((line, i) => {
-      const d = el('div');
-      if (i === ED.cur) d.className = 'now';
-      let from = 0;
-      if (needle) {
-        const { f, at } = foldMap(line);
-        for (let k = f.indexOf(needle); k >= 0; k = f.indexOf(needle, k + needle.length)) {
-          const s = at[k];
-          const e = at[k + needle.length - 1] + 1;
-          if (s < from) continue;
-          d.append(line.slice(from, s));
-          const m = el('mark', '', line.slice(s, e));
-          d.append(m);
-          ED.hits.push({ row: i, mark: m });
-          from = e;
-        }
-      }
-      d.append(line.slice(from) || (from ? '' : ' '));
-      frag.append(d);
-    });
-    mirror.replaceChildren(frag);
-    ED.hit = Math.min(ED.hit, ED.hits.length - 1);
-    count.textContent = needle ? (ED.hits.length ? `${Math.max(1, ED.hit + 1)}/${ED.hits.length}` : '0 kết quả') : '';
-    fitMirror();
-  }
-
-  // The textarea's scrollbar narrows its text box; the mirror must match.
-  function fitMirror() {
-    const { ta, mirror } = ED;
-    mirror.style.paddingRight = 8 + Math.max(0, ta.offsetWidth - ta.clientWidth - 2) + 'px';
-    mirror.scrollTop = ta.scrollTop;
-  }
-
-  function scrollEditorTo(row) {
-    const d = ED.mirror.children[row];
-    if (!d) return;
-    ED.ta.scrollTop = Math.max(0, d.offsetTop - ED.ta.clientHeight / 3);
-    ED.mirror.scrollTop = ED.ta.scrollTop;
-  }
-
-  function jumpHit(k) {
-    if (!ED.hits.length) return;
-    ED.hit = (k + ED.hits.length) % ED.hits.length;
-    ED.hits.forEach((h, i) => h.mark.classList.toggle('cur', i === ED.hit));
-    ED.count.textContent = `${ED.hit + 1}/${ED.hits.length}`;
-    ED.quietUntil = Date.now() + 8000; // don't let "follow the music" scroll away
-    scrollEditorTo(ED.hits[ED.hit].row);
-  }
-
-  // 📍 Put the current video time at the start of the caret's line, then move
-  // to the next line: listen and tap along to time a translation.
-  function stampLine() {
-    const ta = ED.ta;
-    const v = video();
-    if (!v) return;
-    const text = ta.value;
-    const start = text.lastIndexOf('\n', ta.selectionStart - 1) + 1;
-    let end = text.indexOf('\n', start);
-    if (end < 0) end = text.length;
-    const line = BYL.lrcStamp(v.currentTime) + ' ' + text.slice(start, end).replace(STAMP_RE, '');
-    ta.setRangeText(line, start, end, 'end');
-    const next = Math.min(ta.value.length, start + line.length + 1);
-    ta.focus();
-    ta.setSelectionRange(next, next);
-    ED.quietUntil = 0;
-    paintEditor();
-  }
-
-  // Called every frame while the editor is open: mark the line playing now.
-  function editorTick(now) {
-    let best = -1;
-    ED.stamps.forEach((t, i) => {
-      if (t != null && t <= now + 0.05 && (best < 0 || t >= ED.stamps[best])) best = i;
-    });
-    if (best === ED.cur) return;
-    ED.mirror.children[ED.cur]?.classList.remove('now');
-    ED.cur = best;
-    if (best < 0) return;
-    ED.mirror.children[best]?.classList.add('now');
-    if (ED.follow.checked && Date.now() > ED.quietUntil) scrollEditorTo(best);
-  }
-
-  function saveCustom(text, label, slot = 'custom') {
-    text = String(text || '').replace(/\r/g, '').trim();
-    if (!text) return say('Chưa có lời để lưu.');
-    const c = customCandidate(text, label, slot);
-    state.candidates = state.candidates.filter((x) => baseId(x) !== slot);
-    state.candidates.unshift(c);
-    BYL.videoStore.patch(state.videoId, { [slot]: { text, label } });
-    closeEditor();
-    // Timed text already has the offset and sync points folded in.
-    delete state.warps[slot];
-    delete state.warps[slot + '#sync'];
-    saveWarps();
-    setOffset(0);
-    choose(c, true);
-    renderSelect();
-    setSourceStatus('custom', 'ok', state.candidates.filter((x) => x.source === 'custom').length);
-    if (!P.note.textContent) say('💾 Đã lưu lời của bạn. Lần sau mở video này sẽ hiện bản này trước.');
-  }
 
   // ---------- timing corrections ----------
 
@@ -1453,7 +1157,7 @@ BYL.ui = (() => {
   }
 
   function renderLines() {
-    if (TAP) return renderTapLines();
+    if (tapping()) return renderTapLines();
     const box = P.lines;
     box.replaceChildren();
     box.scrollTop = 0;
@@ -1598,7 +1302,7 @@ BYL.ui = (() => {
 
   function frame() {
     const v = video();
-    if (ED && v) editorTick(v.currentTime);
+    if (v) editorTick(v.currentTime);
     if (F_TICK) F_TICK();
     if (!v || !state.current) {
       for (const R of renderers()) drawLines(R, null);
@@ -1687,187 +1391,6 @@ BYL.ui = (() => {
       if (b[k] !== undefined) m[i] = tr.lines[b[k]].text;
     });
     return m;
-  }
-
-  // ---------- tap to time ----------
-
-  // Play the song and press Space as each line starts: each press stamps the
-  // next line with the video time. Saved as the user's own timed lyrics.
-  let TAP = null;
-  const TAP_LAG = 0.15; // presses land a little after the line starts
-
-  function startTap() {
-    const c = state.current;
-    if (!c || !singable(c.lines).length) return say('Chưa có lời để gõ nhịp.');
-    closeEditor();
-    const lines = c.lines.map((l) => ({ text: l.text, section: l.section }));
-    const idx = singable(lines);
-    // Timed lyrics start from their current times; presses replace them.
-    const stamps = {};
-    if (c.synced) for (const i of idx) stamps[i] = effT(c.lines[i].t);
-    const now = video()?.currentTime || 0;
-    const ptr = idx.findIndex((i) => !(stamps[i] < now));
-    TAP = { from: c, offset: state.offset, manual: state.manual, lines, idx, stamps, ptr: ptr < 0 ? idx.length : ptr };
-    state.manual = true; // keep auto-pick from swapping the lyrics mid-way
-    state.offset = 0; // stamps are video times
-    for (const type of ['keydown', 'keypress', 'keyup']) window.addEventListener(type, onTapKey, true);
-
-    const bar = P.tapbar;
-    bar.replaceChildren();
-    const tip = el('div', '', 'Phát bài và bấm Space đúng lúc bắt đầu hát dòng có viền. Backspace: lùi một dòng (video tua lại). Bấm vào một dòng để gõ lại từ đó.');
-    const now2 = el('div', 'tapnow');
-    const row = el('div', 'row');
-    const go = el('button', 'on', '⏱ Gõ (Space)');
-    const back = el('button', '', '↶ Lùi');
-    const save = el('button', '', '💾 Lưu');
-    const cancel = el('button', '', 'Huỷ');
-    row.append(go, back, save, cancel);
-    bar.append(tip, now2, row);
-    bar.hidden = false;
-    P.tapNow = now2;
-    P.tapBtn.classList.add('on');
-    go.addEventListener('click', tap);
-    back.addEventListener('click', tapUndo);
-    save.addEventListener('click', () => stopTap(true));
-    cancel.addEventListener('click', () => stopTap(false));
-    say('');
-    tapRefresh();
-  }
-
-  // Space and Backspace belong to tapping while it runs, except in text fields.
-  function onTapKey(e) {
-    if (!TAP || e.ctrlKey || e.metaKey || e.altKey) return;
-    if (e.key !== ' ' && e.key !== 'Backspace') return;
-    const t = e.composedPath()[0];
-    if (t?.closest?.('input, textarea, [contenteditable=""], [contenteditable=true]')) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    if (e.type !== 'keydown' || e.repeat) return;
-    e.key === ' ' ? tap() : tapUndo();
-  }
-
-  function tapCandidate() {
-    // Stamped lines in order, then the one waiting for a press.
-    const lines = [];
-    TAP.idx.forEach((i, k) => {
-      const t = TAP.stamps[i];
-      if (t !== undefined || k === TAP.ptr) lines.push({ text: TAP.lines[i].text, t: t ?? Infinity, src: i });
-    });
-    return { id: 'tap', source: 'custom', label: 'Đang gõ nhịp', synced: true, lines, score: 0 };
-  }
-
-  function tapRefresh() {
-    state.current = tapCandidate();
-    state.transMap = null;
-    state.lastActive = -2;
-    renderTapLines();
-  }
-
-  function tap() {
-    const v = video();
-    if (!TAP || !v) return;
-    if (v.paused) return v.play(); // the first press starts the song
-    if (TAP.ptr >= TAP.idx.length) return;
-    const t = Math.max(0, v.currentTime - TAP_LAG);
-    TAP.stamps[TAP.idx[TAP.ptr]] = t;
-    // Keep times in order: drop old stamps that now fall on the wrong side.
-    TAP.idx.forEach((j, k) => {
-      const s = TAP.stamps[j];
-      if ((k > TAP.ptr && s <= t) || (k < TAP.ptr && s >= t)) delete TAP.stamps[j];
-    });
-    TAP.ptr++;
-    tapRefresh();
-  }
-
-  function tapUndo() {
-    if (!TAP || TAP.ptr <= 0) return;
-    TAP.ptr--;
-    const i = TAP.idx[TAP.ptr];
-    const t = TAP.stamps[i];
-    delete TAP.stamps[i];
-    const v = video();
-    if (v && t !== undefined) v.currentTime = Math.max(0, t - 3);
-    tapRefresh();
-  }
-
-  function tapJump(i) {
-    const k = TAP.idx.indexOf(i);
-    if (k < 0) return;
-    TAP.ptr = k;
-    const at = TAP.stamps[i] ?? TAP.stamps[TAP.idx[k - 1]];
-    const v = video();
-    if (v && at !== undefined) v.currentTime = Math.max(0, at - 2);
-    tapRefresh();
-  }
-
-  function renderTapLines() {
-    const box = P.lines;
-    const top = box.scrollTop;
-    box.replaceChildren();
-    box.classList.add('synced');
-    P.row2.style.display = 'none';
-    const next = TAP.idx[TAP.ptr];
-    TAP.lines.forEach((l, i) => {
-      if (!l.text) return box.append(el('div', 'ln blank'));
-      const d = el('div', 'ln' + (l.section ? ' section' : '') + (i === next ? ' tapnext' : ''));
-      d.dataset.i = i;
-      if (!l.section) d.append(el('span', 'ts', TAP.stamps[i] === undefined ? '–' : BYL.fmtTime(TAP.stamps[i])));
-      d.append(l.text);
-      box.append(d);
-    });
-    box.scrollTop = top;
-    const done = TAP.idx.filter((i) => TAP.stamps[i] !== undefined).length;
-    P.tapNow.textContent =
-      next === undefined
-        ? `Đã gõ hết ${done} dòng. Bấm 💾 Lưu.`
-        : `Dòng kế (${TAP.ptr + 1}/${TAP.idx.length}): ${TAP.lines[next].text}`;
-  }
-
-  // Leave tap mode without touching the lyrics (new video, or after save/cancel).
-  function endTap() {
-    if (!TAP) return null;
-    const T = TAP;
-    TAP = null;
-    for (const type of ['keydown', 'keypress', 'keyup']) window.removeEventListener(type, onTapKey, true);
-    P.tapbar.hidden = true;
-    P.tapbar.replaceChildren();
-    P.tapBtn.classList.remove('on');
-    return T;
-  }
-
-  function stopTap(save) {
-    const T = endTap();
-    if (!T) return;
-    state.offset = T.offset;
-    state.manual = T.manual;
-    const times = T.idx.map((i) => T.stamps[i]);
-    const pressed = times.filter((t) => t !== undefined).length;
-    if (!save || pressed < 2) {
-      state.current = null;
-      choose(T.from, false);
-      if (save) say('Cần gõ ít nhất 2 dòng để lưu.');
-      return;
-    }
-    // Lines that never got a press: spread them between their neighbours.
-    for (let k = 0; k < times.length; k++) {
-      if (times[k] !== undefined) continue;
-      let b = k + 1;
-      while (b < times.length && times[b] === undefined) b++;
-      const ta = k > 0 ? times[k - 1] : null;
-      const tb = b < times.length ? times[b] : null;
-      times[k] = ta === null ? Math.max(0, tb - 3 * (b - k)) : tb === null ? ta + 3 : ta + (tb - ta) / (b - k + 1);
-    }
-    const text = T.lines
-      .map((l, i) => {
-        const k = T.idx.indexOf(i);
-        return k >= 0 ? `${BYL.lrcStamp(times[k])} ${l.text}` : l.text;
-      })
-      .join('\n');
-    const from = T.from;
-    state.current = from;
-    saveCustom(text, from.source === 'custom' ? from.label : 'Gõ nhịp từ ' + S[from.source].name, slotFor(from));
-    const guessed = T.idx.length - pressed;
-    say(`⏱ Đã lưu thời gian ${pressed} dòng${guessed ? `, ${guessed} dòng chưa gõ được ước lượng (bấm ⏱ Gõ nhịp để gõ lại)` : ''}.`);
   }
 
   // ---------- lyric renderers (on the video / floating window) ----------
@@ -2007,7 +1530,7 @@ BYL.ui = (() => {
     d.addEventListener('keydown', (e) => {
       const v = video();
       if (!v) return;
-      if (TAP && (e.key === ' ' || e.key === 'Backspace')) {
+      if (tapping() && (e.key === ' ' || e.key === 'Backspace')) {
         e.preventDefault();
         return e.key === ' ' ? tap() : tapUndo();
       }
@@ -2268,117 +1791,62 @@ BYL.ui = (() => {
     }
   }
 
-  // ---------- karaoke search ----------
+  // ---------- parts in their own files ----------
 
-  async function loadKaraoke(extra) {
-    if (!state.song) return;
-    const key = state.videoId + '|' + (extra || '');
-    if (state.karaokeLoadedFor === key) return;
-    state.karaokeLoadedFor = key;
-
-    if (!P.kchips.childElementCount) {
-      const vn = BYL.isVietnamese(state.song.title + ' ' + state.song.artist);
-      const variants = vn
-        ? ['', 'tone nam', 'tone nữ', 'song ca', 'beat']
-        : ['', 'lower key', 'higher key', 'duet', 'instrumental'];
-      variants.forEach((v, i) => {
-        const b = el('button', i === 0 ? 'on' : '', v ? (vn ? v[0].toUpperCase() + v.slice(1) : v) : 'Karaoke');
-        b.addEventListener('click', () => {
-          P.kchips.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
-          loadKaraoke(v);
-        });
-        P.kchips.append(b);
-      });
-    }
-
-    const q = [state.song.title, state.song.artist, 'karaoke', extra].filter(Boolean).join(' ');
-    P.klist.replaceChildren(el('div', 'empty', 'Đang tìm bản karaoke…'));
-    try {
-      const results = (await BYL.yt.search(q, 12)).filter((v) => v.videoId !== state.videoId);
-      if (state.karaokeLoadedFor !== key) return;
-      P.klist.replaceChildren();
-      if (!results.length) P.klist.append(el('div', 'empty', 'Không tìm thấy bản karaoke nào.'));
-      for (const v of results) {
-        const a = el('a', 'kitem');
-        a.href = '/watch?v=' + encodeURIComponent(v.videoId);
-        if (/karaoke|beat|instrumental|off vocal|minus one/i.test(v.title)) a.classList.add('hit');
-        const img = el('img');
-        img.src = v.thumb;
-        img.loading = 'lazy';
-        img.alt = '';
-        const meta = el('div');
-        meta.append(el('b', '', v.title), el('div', 'muted', [v.channel, v.length, v.views].filter(Boolean).join(' · ')));
-        a.append(img, meta);
-        P.klist.append(a);
-      }
-    } catch {
-      state.karaokeLoadedFor = null;
-      P.klist.replaceChildren(el('div', 'empty', 'Không tải được kết quả. Thử lại sau.'));
-    }
+  // ui-editor.js, ui-tap.js, ui-tabs.js get the state and helpers they use
+  // from here. These stand-ins are hoisted, so the parts can call each other
+  // and the code above can call them before they're set up.
+  const parts = {};
+  function customCandidate(...a) {
+    return parts.editor.customCandidate(...a);
   }
-
-  // ---------- history / favourites ----------
-
-  function paintFav(on) {
-    P.favBtn.classList.toggle('on', on);
-    P.favBtn.textContent = on ? '★' : '☆';
-    P.favBtn.title = on ? 'Bỏ khỏi bài yêu thích' : 'Thêm vào bài yêu thích (xem ở tab "Đã xem")';
+  function closeEditor(...a) {
+    return parts.editor.closeEditor(...a);
   }
-
-  const ago = (t) => {
-    const m = Math.round((Date.now() - t) / 60000);
-    if (m < 60) return m <= 1 ? 'vừa xem' : m + ' phút trước';
-    if (m < 1440) return Math.round(m / 60) + ' giờ trước';
-    return Math.round(m / 1440) + ' ngày trước';
-  };
-
-  async function renderHistory() {
-    if (P.historyTab.hidden) return;
-    P.hAll.classList.toggle('on', !state.favOnly);
-    P.hFav.classList.toggle('on', !!state.favOnly);
-    const list = (await BYL.history.list()).filter((x) => !state.favOnly || x.fav);
-    P.hlist.replaceChildren();
-    if (!list.length) {
-      P.hlist.append(el('div', 'empty', state.favOnly ? 'Chưa có bài yêu thích. Bấm ☆ cạnh tên bài để thêm.' : 'Chưa xem bài nào.'));
-      return;
-    }
-    for (const x of list) {
-      const a = el('a', 'kitem');
-      a.href = (x.short ? '/shorts/' : '/watch?v=') + encodeURIComponent(x.id);
-      if (x.id === state.videoId) a.classList.add('cur');
-      const img = el('img');
-      img.src = `https://i.ytimg.com/vi/${encodeURIComponent(x.id)}/mqdefault.jpg`;
-      img.loading = 'lazy';
-      img.alt = '';
-      const meta = el('div');
-      meta.append(el('b', '', x.title || x.id), el('div', 'muted', [x.artist, ago(x.at), x.n > 1 ? x.n + ' lần' : ''].filter(Boolean).join(' · ')));
-      const star = el('button', 'fav' + (x.fav ? ' on' : ''), x.fav ? '★' : '☆');
-      star.title = x.fav ? 'Bỏ khỏi bài yêu thích' : 'Thêm vào bài yêu thích';
-      const del = el('button', 'x', '✕');
-      del.title = 'Xoá khỏi lịch sử';
-      for (const b of [star, del]) b.addEventListener('click', (e) => (e.preventDefault(), e.stopPropagation()));
-      star.addEventListener('click', async () => {
-        await BYL.history.setFav(x.id, !x.fav);
-        if (x.id === state.videoId) paintFav(!x.fav);
-        renderHistory();
-      });
-      del.addEventListener('click', async () => {
-        await BYL.history.remove(x.id);
-        renderHistory();
-      });
-      a.append(img, meta, star, del);
-      P.hlist.append(a);
-    }
+  function editorTick(...a) {
+    return parts.editor.editorTick(...a);
   }
-
-  // Called by main.js once the song is known.
-  async function remember(song) {
-    if (!state.videoId || !song?.title) return;
-    const id = state.videoId;
-    await BYL.history.add({ id, title: song.title, artist: song.artist, short: BYL.isShorts() });
-    if (id !== state.videoId) return;
-    paintFav(!!(await BYL.history.list()).find((x) => x.id === id)?.fav);
-    renderHistory();
+  function openEditor(...a) {
+    return parts.editor.openEditor(...a);
+  }
+  function saveCustom(...a) {
+    return parts.editor.saveCustom(...a);
+  }
+  function tap(...a) {
+    return parts.tap.tap(...a);
+  }
+  function tapJump(...a) {
+    return parts.tap.tapJump(...a);
+  }
+  function endTap(...a) {
+    return parts.tap.endTap(...a);
+  }
+  function tapUndo(...a) {
+    return parts.tap.tapUndo(...a);
+  }
+  function stopTap(...a) {
+    return parts.tap.stopTap(...a);
+  }
+  function renderTapLines(...a) {
+    return parts.tap.renderTapLines(...a);
+  }
+  function startTap(...a) {
+    return parts.tap.startTap(...a);
+  }
+  function tapping(...a) {
+    return parts.tap.tapping(...a);
+  }
+  function paintFav(...a) {
+    return parts.tabs.paintFav(...a);
+  }
+  function renderHistory(...a) {
+    return parts.tabs.renderHistory(...a);
+  }
+  function loadKaraoke(...a) {
+    return parts.tabs.loadKaraoke(...a);
+  }
+  function remember(...a) {
+    return parts.tabs.remember(...a);
   }
 
   // main.js fills in onLoadSource, hasCaptions and captionWordsFor per video.
@@ -2397,5 +1865,7 @@ BYL.ui = (() => {
     font: (d) => (setFont(d), 'Cỡ chữ ' + BYL.settings.value.overlayFontSize),
   };
   const api = { mount, remount, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
+  const ctx = { P, S, addCandidates, api, baseId, choose, closeEditor, effT, el, frame, maybeAutoPick, renderLines, renderSelect, saveCustom, saveWarps, say, setOffset, setSourceStatus, singable, slot, slotFor, state, stopTap, tap, tapping, video };
+  for (const k of ['editor', 'tap', 'tabs']) parts[k] = BYL.uiParts[k](ctx);
   return api;
 })();
