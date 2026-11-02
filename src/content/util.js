@@ -21,6 +21,7 @@ BYL.DEFAULTS = {
   overlayOnByDefault: false,
   overlayLook: null, // edits on top of the chosen style (🎨 in the panel)
   overlayPresets: [], // [{ name, look }] saved by the user
+  channelStyles: {}, // channel name -> { style, look } pinned with 📌
   panelCollapsed: false,
   linesHeight: 0, // lyric list height set by dragging its bottom edge (0 = auto)
 };
@@ -32,7 +33,7 @@ BYL.playerEl = () => document.getElementById(BYL.isShorts() ? 'shorts-player' : 
 // The look edits and saved presets live in storage.local: storage.sync caps
 // each item at 8 KB (about 20 presets) and limits writes per minute. The
 // service worker moves them over from older versions (background.js).
-BYL.LOCAL_SETTINGS = ['overlayLook', 'overlayPresets'];
+BYL.LOCAL_SETTINGS = ['overlayLook', 'overlayPresets', 'channelStyles'];
 
 BYL.settings = {
   value: { ...BYL.DEFAULTS },
@@ -323,11 +324,43 @@ BYL.parseLrc = (lrc) => {
   for (const raw of String(lrc || '').split('\n')) {
     const stamps = [...raw.matchAll(/\[(\d{1,2}):(\d{2})(?:[.:](\d{1,3}))?\]/g)];
     if (!stamps.length) continue;
-    const text = raw.replace(/\[[^\]]*\]/g, '').trim();
-    for (const s of stamps) out.push(BYL.makeLine(text, toSec(s[1], s[2], s[3])));
+    const { text: rawText, tags } = wordTags(raw.replace(/\[[^\]]*\]/g, ''));
+    for (const s of stamps) {
+      const line = BYL.makeLine(rawText.trim(), toSec(s[1], s[2], s[3]));
+      const wd = tags.length && stamps.length === 1 ? wordOffsets(rawText, tags, line.t) : undefined;
+      if (wd && wd.length === line.text.split(/\s+/).filter(Boolean).length) line.wd = wd;
+      out.push(line);
+    }
   }
   return out.sort((a, b) => a.t - b.t);
 };
+
+// Enhanced LRC times words too: "[00:12.00] <00:12.00> Em <00:12.40> ơi".
+function wordTags(str) {
+  const tags = [];
+  let text = '';
+  let last = 0;
+  for (const m of str.matchAll(/<(\d{1,2}):(\d{2})(?:[.:](\d{1,3}))?>/g)) {
+    text += str.slice(last, m.index);
+    tags.push({ at: text.length, t: toSec(m[1], m[2], m[3]) });
+    last = m.index + m[0].length;
+  }
+  text += str.slice(last);
+  return { text, tags };
+}
+
+// Seconds after the line start at which each space-separated word starts
+// (ui.js lights words by these), or undefined when the tags don't cover it.
+function wordOffsets(text, tags, lineT) {
+  const wd = [];
+  for (const m of text.matchAll(/\S+/g)) {
+    let t = null;
+    for (const g of tags) if (g.at <= m.index) t = g.t;
+    wd.push(t === null ? 0 : Math.max(0, Math.round((t - lineT) * 100) / 100));
+  }
+  for (let k = 1; k < wd.length; k++) if (wd[k] < wd[k - 1]) return undefined;
+  return wd.length > 1 && wd[wd.length - 1] > 0 ? wd : undefined;
+}
 
 BYL.plainLines = (text) => {
   const lines = String(text || '')

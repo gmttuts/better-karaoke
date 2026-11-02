@@ -16,6 +16,10 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
   - **🎨 Tuỳ chỉnh** (chia nhóm Chữ / Màu / Nền / Bố cục): phông chữ, độ đậm, cỡ chữ, màu chữ / màu đã hát (có chuyển màu), viền, bóng đổ, nền (khung, viên thuốc, dải ngang, từng dòng) cùng lề trong khung trên / dưới / trái / phải, bố cục (so le, 1 dòng, 2 dòng, 3 dòng), hiệu ứng (chạy từng chữ hoặc sáng cả dòng), khoảng cách mép. Lưu lại thành **preset** riêng, chọn lại trong "Kiểu chữ". **Nháy đúp một thanh trượt** để đưa thông số đó về mặc định của kiểu đang chọn.
 
   Nút **⬇ Dưới / ⬆ Trên** đổi vị trí lời để không che chữ có sẵn trong MV. Chỉnh cỡ chữ bằng A− / A+.
+
+  **📌 Kiểu chữ theo kênh**: bấm 📌 để kênh đang xem nhớ kiểu chữ riêng (ví dụ kênh nhạc Việt dùng Karaoke xanh dương, kênh K-pop dùng Phụ đề YouTube). Khi 📌 đang bật, đổi kiểu hay chỉnh 🎨 chỉ áp dụng cho kênh đó; bấm lại để dùng kiểu chung.
+
+  **Tô theo từng chữ**: khi lời có thời gian từng chữ (LRC mở rộng dạng `<01:02.30>` trước mỗi chữ, hoặc canh theo phụ đề tự động của YouTube vốn ghi giờ từng chữ), mỗi chữ sáng đúng lúc được hát thay vì chạy đều cả dòng. Thông báo sau khi 🎯 canh cho biết bao nhiêu dòng được tô theo từng chữ.
 - **⧉ Cửa sổ nổi**: mở lời trong một cửa sổ nhỏ luôn nằm trên cùng (Document Picture-in-Picture), vẫn chạy khi chuyển tab hoặc làm việc khác. Dùng chung kiểu chữ với overlay. Có thanh điều khiển như mini player của YouTube (hiện khi rê chuột, luôn hiện khi đang dừng): bài trước, câu trước, phát/dừng, câu sau, bài sau, thanh tua; phím Space và ←/→ cũng dùng được.
 - **YouTube Shorts**: panel nổi cạnh video Shorts (thu gọn được bằng cách bấm tiêu đề), lời karaoke hiện trên video đứng (tự nằm ngay trên tên kênh và tiêu đề, không che), tự tìm lời mới khi lướt sang Short khác. Short thường chỉ là một đoạn giữa bài: phụ đề sẽ tự canh, nếu không có thì bấm 📍 / bấm vào dòng đang hát.
 - **Tìm lời theo thứ tự ưu tiên** (chạy song song, kết quả hiện dần):
@@ -40,6 +44,9 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **⏱ Gõ nhịp**: phát bài, bấm **Space** đúng lúc bắt đầu hát dòng có viền; mỗi lần bấm ghi thời gian cho một dòng. **Backspace** lùi một dòng và tua lại 3 giây; bấm vào một dòng để gõ lại từ đó. Dòng bị bỏ qua được ước lượng theo hai dòng bên cạnh. Kết quả lưu thành "✍ Lời của bạn" có thời gian. Mỗi video giữ được hai bản của bạn, nên gõ nhịp lời gốc không ghi đè lên bản dịch đang hiện.
 - **Kéo thanh dưới khung lời** để thu gọn hoặc mở rộng; độ cao được nhớ lại. Nháy đúp thanh để về mặc định.
 - **Sao chép** lời, **Mở nguồn** để xem trang gốc.
+- **⬇ Xuất**: lưu lời có thời gian ra file **`.lrc`** (cho trình phát nhạc) hoặc **`.srt`** (phụ đề cho VLC, CapCut, Premiere, YouTube Studio). File dùng đúng thời gian bạn đã canh: độ lệch, các mốc 📍, ⏱ gõ nhịp, 🎯 canh theo phụ đề. Lời chưa có thời gian thì canh trước rồi xuất.
+- **☁ Gửi lên LRCLIB**: chia sẻ lời đã canh lên thư viện mở LRCLIB để người khác (và các ứng dụng nghe nhạc khác) dùng. Mở một trang riêng để kiểm tra tên bài, ca sĩ, album, thời lượng và lời; báo nếu LRCLIB đã có bản cùng thời lượng. Chỉ gửi khi bạn tích ô xác nhận và bấm gửi (LRCLIB yêu cầu máy giải một bài toán nhỏ thay cho tài khoản, mất khoảng 10–30 giây).
+- **Phím tắt** (Alt, trên Mac là Option): **Alt L** bật/tắt lời trên video, **Alt P** cửa sổ nổi, **Alt K** ghim 📍 dòng đang hát, **Alt [ / Alt ]** lời sớm/muộn 0,5s (thêm Shift: 0,1s), **Alt − / Alt =** chữ nhỏ/to. Không dùng khi đang gõ trong ô nhập.
 - **Mở lại video là có lời ngay**: kết quả tìm được lưu 7 ngày (1 ngày nếu không tìm thấy gì, vì comment và trang lời còn được bổ sung). Bấm **↻ Tìm lại** để tìm lại từ đầu ở mọi nguồn. Kết quả lưu không nằm trong file sao lưu.
 - **💾 Sao lưu / khôi phục** (trong cửa sổ cài đặt của extension): xuất một file `.json` gồm lời bạn đã sửa, điểm 📍, độ lệch, lời đã chọn cho từng video, preset kiểu chữ và cài đặt. Nhập lại ở máy khác hoặc sau khi cài lại; dữ liệu đang có được giữ, video nào có ở cả hai bên thì lấy bản sửa sau cùng.
 
@@ -63,7 +70,7 @@ npm test             # build rồi chạy thử headless (tắt tiếng) trên m
 npm run build:store  # thêm bản zip bỏ trường "key" để nộp Chrome Web Store
 ```
 
-`build` dừng lại nếu thiếu file mà `manifest.json` cần (icon, script, trang cài đặt, font). `test` chạy bộ test tách tên bài, rồi mở video `6HQWus2DOsI` (đổi bằng `VIDEO=<id>`) và kiểm tra: panel, bảng 🎨, nút 🎤 Karaoke, tên bài và lỗi JavaScript.
+`build` dừng lại nếu thiếu file mà `manifest.json` cần (icon, script, trang cài đặt, font). `test` chạy các bộ test (tách tên bài, thời gian từng chữ, xuất LRC/SRT, bài toán của LRCLIB), rồi mở video `6HQWus2DOsI` (đổi bằng `VIDEO=<id>`) và kiểm tra: panel, bảng 🎨, nút 🎤 Karaoke, tên bài, phím tắt, 📌, xuất SRT, trang gửi LRCLIB (không gửi thật) và lỗi JavaScript. Video có lời LRCLIB như `VIDEO=JGwWNGJdvx8` kiểm tra được cả file SRT.
 
 Bấm biểu tượng extension để **tắt hẳn extension** (công tắc "Bật trên YouTube", áp dụng ngay cho mọi tab), bật/tắt **tự hiện lời trên video** (mặc định tắt; chọn kiểu chữ hay mở 🎨 chỉ bật lời cho video đang xem), bật/tắt từng nguồn, ưu tiên lời có thời gian, số trang comment cần quét. Kiểu chữ chỉnh trong panel (🎨).
 
@@ -78,10 +85,16 @@ src/
     youtube.js         Gọi API nội bộ của YouTube (InnerTube): next, search, comment, phụ đề
     sources.js         6 nguồn lời, mỗi nguồn trả về danh sách ứng viên có điểm
     align.js           Canh lời theo phụ đề: khớp chữ theo thứ tự (LCS), lọc mốc đi lùi, nội suy dòng thiếu
+    panel-css.js       Giao diện panel (CSS)
+    looks.js           Các kiểu chữ trên video, thông số 🎨, cách vẽ một kiểu lên overlay
     ui.js              Panel + overlay (shadow DOM), đồng bộ theo thời gian video, tab karaoke
+    export.js          Xuất .lrc / .srt, chuyển lời sang trang gửi LRCLIB
+    keys.js            Phím tắt Alt + phím
     main.js            Theo dõi chuyển trang trong YouTube, chạy các nguồn, chọn kết quả tốt nhất
   options/             Trang cài đặt (cũng là popup)
+  publish/             Trang gửi lời lên LRCLIB, pow.js giải bài toán chống spam (SHA-256) trong worker
 scripts/               build.mjs (đóng gói + kiểm tra file), smoke.mjs (test headless)
+tests/                 Test tách tên bài, thời gian từng chữ, xuất file, bài toán LRCLIB
 fonts/                 Roboto Condensed (Apache 2.0, có bộ chữ tiếng Việt) cho kiểu Karaoke
 ```
 
@@ -110,6 +123,7 @@ Better YouTube Lyric lấy ý tưởng overlay và LRCLIB, rồi thêm phần nh
 - Hợp âm chuẩn là đọc HTML trang web. Nếu trang đổi giao diện thì nguồn này có thể hỏng (các nguồn khác vẫn chạy). Tắt được trong cài đặt.
 - Lời trong comment phụ thuộc thứ tự "comment hàng đầu" của YouTube, mỗi lần tải có thể khác nhau. Tăng "Số trang comment quét" nếu hay bị sót.
 - Lời từ LRCLIB được canh theo bản audio. Với MV có đoạn mở đầu dài, cần chỉnh "Lệch".
+- Tô theo từng chữ chỉ có khi phụ đề là phụ đề tự động (ghi giờ từng chữ) hoặc lời là LRC mở rộng; phụ đề do kênh tải lên chỉ ghi giờ từng dòng.
 - Tiêu đề tiếng Anh dạng "Bài - Ca sĩ" đăng ở kênh không mang tên ca sĩ sẽ bị đọc ngược (bài ↔ ca sĩ). Việc tìm lời gần như không bị ảnh hưởng vì các nguồn tìm theo cả hai.
 - Chạy trên video thường và Shorts của `www.youtube.com` (YouTube Music đã có lời riêng).
 

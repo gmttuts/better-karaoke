@@ -16,6 +16,7 @@ BYL.ui = (() => {
   const state = {
     videoId: null,
     song: null,
+    channel: '', // channel name, for styles pinned to a channel (📌)
     duration: 0,
     candidates: [],
     current: null,
@@ -41,358 +42,28 @@ BYL.ui = (() => {
   let pipWin = null;
   let ED = null; // lyric editor while open
 
-  // ---------- styles ----------
+  const PANEL_CSS = BYL.PANEL_CSS;
+  const { BASE_LOOK, PAD_KEYS, padOf, FONTS, loadFont, compose, OVERLAY_CSS, paintLook } = BYL.look;
 
-  const PANEL_CSS = `
-    :host { all: initial; display: block; margin-bottom: 12px; font-family: Roboto, Arial, sans-serif; }
-    /* Shorts: no side column, so the panel floats beside the video. */
-    :host([data-float]) { position: fixed; z-index: 2100; top: 72px; width: 360px; max-height: calc(100vh - 88px); overflow-y: auto;
-      margin: 0; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
-    :host([data-float]) .lines { max-height: min(45vh, 420px); }
-    :host([data-float]) .row > select { flex-basis: 100%; }
-    * { box-sizing: border-box; }
-    /* YouTube's own colour variables were renamed and are gone, so keep a
-       light and a dark palette here and follow <html dark>. */
-    .byl { --base: #fff; --fg: #0f0f0f; --fg2: #606060; --chip: rgba(0,0,0,.05); --line: rgba(0,0,0,.1); --raised: #fff;
-      --accent: #ff2e63; --accent2: #ffb800;
-      color: var(--fg); background: var(--base); border: 1px solid var(--line); border-radius: 12px;
-      overflow: hidden; font-size: 14px; }
-    header { display: flex; align-items: center; gap: 10px; padding: 12px; cursor: pointer; user-select: none; }
-    .logo { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px;
-      background: linear-gradient(135deg, #ff2e63, #ff8a3d); }
-    .song { flex: 1; min-width: 0; }
-    .song b { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .song span { display: block; font-size: 12px; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .chev { color: var(--fg2); transition: transform .2s; }
-    .byl.collapsed .chev { transform: rotate(-90deg); }
-    .byl.collapsed .body { display: none; }
-    nav { display: flex; gap: 2px; margin: 0 12px 10px; padding: 3px; border-radius: 10px; background: var(--chip); }
-    nav button { flex: 1; background: transparent; color: var(--fg2); border-radius: 8px; }
-    nav button:hover { background: transparent; color: var(--fg); }
-    nav button.on { background: var(--raised); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
-    button { font: inherit; font-size: 13px; font-weight: 500; color: var(--fg); background: var(--chip); border: 0;
-      border-radius: 999px; padding: 7px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
-    button:hover { background: var(--line); }
-    button.on { background: var(--fg); color: var(--base); }
-    :host-context(html[dark]) .byl { --base: #0f0f0f; --fg: #f1f1f1; --fg2: #aaa; --chip: rgba(255,255,255,.1); --line: rgba(255,255,255,.2);
-      --raised: #3f3f3f; color-scheme: dark; }
-    :host-context(html[dark]) select option, :host-context(html[dark]) select optgroup { color: #f1f1f1; background: #272727; }
-    .status { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 12px 8px; }
-    .chip { font: inherit; font-size: 12px; font-weight: 400; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--fg2);
-      border: 1px solid transparent; cursor: pointer; }
-    .chip:hover { border-color: var(--line); background: var(--line); }
-    .chip.ok { color: var(--fg); }
-    .chip.cur { border-color: var(--accent); color: var(--fg); font-weight: 600; }
-    .chip.none { opacity: .6; }
-    .chip.idle { border: 1px dashed var(--fg2); }
-    .chip.loading { cursor: progress; }
-    .chip.loading::after { content: ' …'; }
-    .row { display: flex; align-items: center; gap: 6px; padding: 0 12px 10px; flex-wrap: wrap; }
-    select { flex: 1; min-width: 0; font: inherit; font-size: 13px; color: var(--fg); background: var(--chip);
-      border: 0; border-radius: 10px; padding: 7px 8px; cursor: pointer; outline: none; }
-    select:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-    select option, select optgroup { color: #0f0f0f; }
-    .off { min-width: 44px; text-align: center; font-variant-numeric: tabular-nums; font-size: 13px; border-radius: 6px; }
-    .off.flash { animation: flash .6s; }
-    @keyframes flash { from { background: rgba(255,46,99,.35); } to { background: transparent; } }
-    .muted { color: var(--fg2); font-size: 12px; }
-    .stale { display: flex; align-items: center; gap: 8px; margin: 0 12px 10px; padding: 8px 10px; border-radius: 10px; font-size: 12px;
-      line-height: 1.4; background: rgba(255,46,99,.12); }
-    .stale span { flex: 1; }
-    .note { margin: 0 12px 10px; padding: 8px 10px; border-radius: 10px; font-size: 12px; line-height: 1.45; background: rgba(62,166,255,.12); }
-    .note:empty { display: none; }
-    .offwrap { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
-    button.sync { font-weight: 600; }
-    button.sync:disabled { opacity: .5; cursor: default; }
-    .row.links { padding-top: 8px; border-top: 1px solid var(--line); margin: 0; }
-    .row.links button { background: transparent; padding: 5px 10px; color: var(--fg2); }
-    .row.links button:hover { background: var(--chip); color: var(--fg); }
-    .row.links a { font-size: 13px; text-decoration: none; padding: 5px 10px; border-radius: 999px; }
-    .row.links a:hover { background: var(--chip); color: var(--fg); }
-    .warn { margin: 0 12px 10px; padding: 8px 10px; border-radius: 10px; font-size: 12px; line-height: 1.45; background: rgba(255,184,0,.14); }
-    .warn:empty { display: none; }
-    .lines { position: relative; max-height: min(60vh, 560px); overflow-y: auto; padding: 4px 12px 40px; border-top: 1px solid var(--line); }
-    .ln { position: relative; padding: 4px 30px 4px 6px; border-radius: 6px; line-height: 1.45; cursor: pointer; font-size: 15px; transition: color .15s, background .15s; }
-    .ln:hover { background: var(--line); }
-    .ln.blank { height: 10px; padding: 0; cursor: default; }
-    .ln.blank:hover { background: none; }
-    .ln.section { color: var(--fg2); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
-    .synced .ln { color: var(--fg2); }
-    .ln.active { color: var(--fg); font-weight: 700; background: linear-gradient(90deg, rgba(255,46,99,.18), transparent); }
-    .pin { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 13px; padding: 0 4px;
-      border-radius: 4px; opacity: 0; }
-    .ln:hover .pin { opacity: .8; }
-    .pin:hover { opacity: 1; background: var(--line); }
-    .ln .tr { font-size: 13px; font-weight: 400; color: var(--fg2); }
-    .ln.active .tr { color: var(--fg); opacity: .75; }
-    .ln .ts { display: inline-block; min-width: 3.4em; font-size: 11px; font-weight: 400; color: var(--fg2); font-variant-numeric: tabular-nums; }
-    .ln.tapnext { outline: 2px dashed rgba(255,46,99,.75); outline-offset: -2px; }
-    .tapbar { margin: 0 12px 8px; padding: 8px; border-radius: 8px; background: rgba(255,46,99,.12); font-size: 12px; line-height: 1.45; }
-    .tapbar .tapnow { font-size: 14px; font-weight: 600; margin: 6px 0; }
-    .tapbar .row { padding: 0; }
-    .empty { padding: 16px 12px; color: var(--fg2); font-size: 13px; line-height: 1.5; }
-    a { color: inherit; }
-    .klist { padding: 0 8px 8px; max-height: min(60vh, 560px); overflow-y: auto; }
-    .kitem { display: flex; gap: 8px; padding: 6px 4px; border-radius: 8px; text-decoration: none; color: inherit; }
-    .kitem:hover { background: var(--line); }
-    .kitem img { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex: none; background: var(--line); }
-    .kitem b { font-size: 13px; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .kitem .muted { margin-top: 2px; }
-    .kitem.hit b::before { content: '🎤 '; }
-
-    .studio { margin: 0 12px 10px; padding: 4px 12px 12px; border-radius: 12px; background: var(--chip); }
-    .studio[hidden], .studio [hidden] { display: none !important; }
-    .studio section + section { border-top: 1px solid var(--line); }
-    .studio h4 { margin: 0; padding: 12px 0 8px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--fg2); }
-    .studio .grid { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px 12px; align-items: center; padding-bottom: 12px; }
-    .studio .lbl { font-size: 13px; color: var(--fg2); }
-    .studio .ctl { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
-    .studio select { flex: 1; background: var(--raised); }
-    .studio .range { flex: 1; min-width: 110px; display: flex; align-items: center; gap: 8px; }
-    .studio input[type=range] { -webkit-appearance: none; appearance: none; flex: 1; min-width: 0; height: 4px; margin: 0; border-radius: 2px; cursor: pointer;
-      background: linear-gradient(var(--accent), var(--accent)) 0 / var(--fill, 0%) 100% no-repeat, var(--line); }
-    .studio input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff;
-      border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.06); transition: transform .12s; }
-    .studio input[type=range]:active::-webkit-slider-thumb { transform: scale(1.15); }
-    .studio .val { min-width: 38px; padding: 2px 6px; border-radius: 6px; background: var(--raised); font-size: 11px; text-align: center;
-      color: var(--fg); font-variant-numeric: tabular-nums; }
-    .studio .swatch { -webkit-appearance: none; appearance: none; flex: none; width: 26px; height: 26px; padding: 0; border: 2px solid var(--raised);
-      border-radius: 50%; box-shadow: 0 0 0 1px var(--line); background: none; cursor: pointer; }
-    .studio .swatch::-webkit-color-swatch-wrapper { padding: 0; }
-    .studio .swatch::-webkit-color-swatch { border: 0; border-radius: 50%; }
-    .studio .tg { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--fg); cursor: pointer; user-select: none; }
-    .studio .tg input { -webkit-appearance: none; appearance: none; position: relative; flex: none; width: 30px; height: 18px; margin: 0;
-      border-radius: 999px; background: var(--line); cursor: pointer; transition: background .15s; }
-    .studio .tg input::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff;
-      box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: left .15s; }
-    .studio .tg input:checked { background: var(--accent); }
-    .studio .tg input:checked::after { left: 14px; }
-    .studio .seg { flex: 1; display: flex; padding: 3px; gap: 2px; border-radius: 10px; background: var(--line); }
-    .studio .seg button { flex: 1; padding: 5px 4px; border-radius: 8px; background: transparent; font-size: 12px; color: var(--fg2); white-space: nowrap; }
-    .studio .seg button:hover { color: var(--fg); background: transparent; }
-    .studio .seg button.on { background: var(--raised); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
-    .studio .pads { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
-    .studio .pad { display: flex; align-items: center; gap: 6px; min-width: 0; }
-    .studio .pad .muted { width: 28px; flex: none; }
-    .studio .pad .range { min-width: 0; }
-    .studio .presets { display: flex; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); flex-wrap: wrap; }
-    .studio .presets input[type=text] { flex: 1; min-width: 120px; font: inherit; font-size: 13px; color: var(--fg); background: var(--raised);
-      border: 1px solid transparent; border-radius: 999px; padding: 7px 12px; outline: none; }
-    .studio .presets input[type=text]:focus { border-color: var(--accent); }
-    button.primary { background: var(--accent); color: #fff; }
-    button.primary:hover { background: #e8114f; }
-    button.danger { color: #e5484d; background: transparent; }
-    .editor { margin: 0 12px 8px; }
-    .editor[hidden] { display: none; }
-    .tawrap { position: relative; }
-    .editor textarea, .mirror { font: 14px/1.5 Roboto, Arial, sans-serif; padding: 8px; border: 1px solid var(--line); border-radius: 8px;
-      white-space: pre-wrap; overflow-wrap: break-word; letter-spacing: normal; }
-    .editor textarea { position: relative; z-index: 1; display: block; width: 100%; height: 360px; min-height: 120px; resize: vertical;
-      color: var(--fg); background: transparent; }
-    /* Same text laid out behind the (transparent) textarea, to paint the line
-       playing now and the search hits. */
-    .mirror { position: absolute; inset: 0; overflow: hidden; pointer-events: none; color: transparent; border-color: transparent;
-      background: var(--base); }
-    .mirror .now { background: rgba(255,46,99,.22); border-radius: 3px; box-shadow: -4px 0 0 rgba(255,46,99,.22), 4px 0 0 rgba(255,46,99,.22); }
-    .mirror mark { color: transparent; background: rgba(255,184,0,.45); border-radius: 2px; }
-    .mirror mark.cur { background: rgba(255,120,0,.9); }
-    .editor .esearch { padding: 0 0 6px; flex-wrap: nowrap; }
-    .editor .esearch input { flex: 1; min-width: 0; font: inherit; font-size: 13px; color: var(--fg); background: transparent;
-      border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px; }
-    .editor .esearch button { padding: 4px 8px; }
-    .editor label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--fg2); cursor: pointer; }
-    .editor label input { accent-color: var(--accent); margin: 0; }
-    .grip { height: 10px; cursor: ns-resize; display: flex; align-items: center; justify-content: center; touch-action: none; }
-    .grip::before { content: ''; width: 36px; height: 4px; border-radius: 2px; background: var(--line); }
-    .grip:hover::before { background: var(--fg2); }
-    .grip[hidden] { display: none; }
-    .editor .row { padding: 6px 0 0; }
-    .editor .tip { font-size: 12px; color: var(--fg2); line-height: 1.45; margin-bottom: 6px; }
-    .empty button { margin-top: 8px; }
-  `;
-
-  // ---------- overlay looks ----------
-
-  // A look is a plain object of CSS knobs. The built-in styles are just looks;
-  // the 🎨 editor changes the knobs and can save the result as a preset.
-  // strokeW is in 1/100 em, bgAlpha / nextScale / scale / margin in percent.
-  const KARAOKE_FONT = '"BYL Condensed", "Arial Narrow"';
-  const BASE_LOOK = {
-    font: '', // Roboto, like YouTube
-    weight: 800,
-    text: '#ffffff',
-    textGrad: true, // white fading to silver, like karaoke discs
-    sung: '#e8212b',
-    sung2: '',
-    stroke: '#101010',
-    sstroke: '#ffffff',
-    strokeW: 20,
-    shadow: true,
-    shape: 'none',
-    bg: '#000000',
-    bgAlpha: 60,
-    layout: 'stagger',
-    nextScale: 100,
-    scale: 115,
-    margin: 10,
-    wipe: 'word',
-  };
-  // Chữ thường trắng viền đen; chữ đã hát đổi màu và đổi viền sang trắng, bóng
-  // đổ tối phía dưới giữ chữ đọc được trên mọi nền.
-  BYL.LOOKS = {
-    red: { name: 'Karaoke đỏ', look: {} },
-    classic: { name: 'Karaoke xanh dương', look: { sung: '#3346f2' } },
-    focus: {
-      name: 'Nổi bật',
-      look: { textGrad: false, sung: '#ffe066', sung2: '#ff7aa2', strokeW: 0, layout: 'center2', nextScale: 50, scale: 100, margin: 13 },
-    },
-    box: {
-      name: 'Khung tối',
-      look: { weight: 700, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'box', bg: '#0a0a0e', bgAlpha: 62, layout: 'center2', nextScale: 55, scale: 100, margin: 13 },
-    },
-    captions: {
-      name: 'Phụ đề YouTube',
-      look: { weight: 500, textGrad: false, sung: '#ffe14d', strokeW: 0, shadow: false, shape: 'lines', bg: '#080808', bgAlpha: 75, layout: 'center2', nextScale: 85, scale: 80, margin: 7 },
-    },
-    cinema: {
-      name: 'Dải điện ảnh',
-      look: { weight: 600, textGrad: false, sung: '#7fd4ff', strokeW: 0, shape: 'band', bg: '#000000', bgAlpha: 50, layout: 'center2', nextScale: 60, scale: 90, margin: 6 },
-    },
-    mini: {
-      name: 'Gọn nhẹ',
-      look: { weight: 600, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'pill', layout: 'single', scale: 62, margin: 9 },
-    },
-  };
-  // Padding inside the box / pill, in 1/100 em (top, right, bottom, left).
-  // Left unset, each shape keeps its own default.
-  const PAD_KEYS = ['padT', 'padR', 'padB', 'padL'];
-  const SHAPE_PAD = { box: [35, 90, 45, 90], pill: [20, 80, 20, 80], band: [30, 0, 35, 0], lines: [6, 30, 10, 30], none: [0, 0, 0, 0] };
-  const padOf = (look, k) => look[k] ?? (SHAPE_PAD[look.shape] || SHAPE_PAD.none)[PAD_KEYS.indexOf(k)];
-  const FONTS = [
-    [KARAOKE_FONT, 'Chữ hẹp karaoke'],
-    ['', 'Roboto (như YouTube)'],
-    ['Arial, sans-serif', 'Arial'],
-    ['Tahoma, sans-serif', 'Tahoma'],
-    ['Verdana, sans-serif', 'Verdana'],
-    ['"Trebuchet MS", sans-serif', 'Trebuchet'],
-    ['Georgia, serif', 'Georgia (có chân)'],
-    ['"Times New Roman", serif', 'Times New Roman'],
-    ['"Comic Sans MS", cursive', 'Comic Sans'],
-  ];
-
-  // Roboto Condensed (bundled, Vietnamese subset included) for the karaoke
-  // looks. Loaded through FontFace from bytes so YouTube's CSP doesn't apply.
-  const FONT_FILES = [
-    ['rc-latin', 'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD'],
-    ['rc-latin-ext', 'U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF'],
-    ['rc-vietnamese', 'U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB'],
-  ];
-  let fontBytes = null;
-  async function loadFont(win) {
-    try {
-      fontBytes ||= Promise.all(FONT_FILES.map(([f]) => fetch(chrome.runtime.getURL(`fonts/${f}.woff2`)).then((r) => r.arrayBuffer())));
-      const bufs = await fontBytes;
-      for (let i = 0; i < bufs.length; i++) {
-        const face = new win.FontFace('BYL Condensed', bufs[i].slice(0), { weight: '700 900', unicodeRange: FONT_FILES[i][1] });
-        win.document.fonts.add(await face.load());
-      }
-    } catch (err) {
-      console.debug('[Better Lyric] font', err);
+  // The look in use comes from a slot: the channel's own one when the user
+  // pinned a style to this channel (📌), else the global one.
+  // slot = { style, look } where look holds the 🎨 edits (or null).
+  const chanSlot = () => (state.channel && BYL.settings.value.channelStyles?.[state.channel]) || null;
+  const slot = () => chanSlot() || { style: BYL.settings.value.overlayStyle, look: BYL.settings.value.overlayLook };
+  const currentLook = () => compose(slot().style, slot().look);
+  // Change the slot in use. persist: false only updates memory (sliders).
+  function setSlot(patch, persist = true) {
+    const ch = chanSlot();
+    if (ch) {
+      const all = { ...BYL.settings.value.channelStyles, [state.channel]: { ...ch, ...patch } };
+      if (!persist) return void (BYL.settings.value.channelStyles = all);
+      return BYL.settings.set({ channelStyles: all });
     }
-  }
-
-  const presetLook = (key) => {
-    if (key?.startsWith('u:')) {
-      const p = (BYL.settings.value.overlayPresets || []).find((x) => 'u:' + x.name === key);
-      if (p) return p.look;
-    }
-    return (BYL.LOOKS[key] || BYL.LOOKS.classic).look;
-  };
-  const currentLook = () => ({
-    ...BASE_LOOK,
-    ...presetLook(BYL.settings.value.overlayStyle),
-    ...(BYL.settings.value.overlayLook || {}),
-  });
-
-  const rgba = (hex, alpha) => {
-    const n = parseInt(String(hex).replace('#', ''), 16) || 0;
-    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha / 100})`;
-  };
-
-  const OVERLAY_CSS = `
-    :host { all: initial; position: absolute; left: 0; right: 0; bottom: max(var(--my, 13%), var(--lift, 0px)); z-index: 59; pointer-events: none;
-      display: flex; justify-content: center; font-family: var(--font, Roboto), Roboto, Arial, sans-serif; }
-    :host([data-pos=top]) { bottom: auto; top: var(--my, 13%); }
-    :host([data-pip]) { position: absolute; inset: 0; align-items: center; }
-    .ov { display: flex; flex-direction: column; align-items: center; max-width: 90%; text-align: center; }
-    :host([data-pip]) .ov { max-width: 94%; }
-    .ov:empty { display: none; }
-    .l { line-height: 1.22; letter-spacing: .01em; font-weight: var(--wt, 800); color: var(--text, #fff);
-      paint-order: stroke fill; -webkit-text-stroke: var(--sw, 0) var(--stroke, #000); filter: var(--shadow, none); }
-    .w { position: relative; display: inline-block; white-space: pre; }
-    /* Silver sheen sits on its own layer over the outlined text: on the text
-       itself the transparent fill would let the stroke show through. */
-    :host([data-tgrad]) .w::before { content: attr(data-t); position: absolute; left: 0; top: 0; -webkit-text-stroke: 0;
-      background: linear-gradient(180deg, var(--text) 40%, #bfc3cc); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .w .f { position: absolute; left: 0; top: 0; color: var(--sung); -webkit-text-stroke-color: var(--sstroke); text-shadow: none;
-      clip-path: inset(-20% calc(100% - var(--p, 0%)) -20% -20%); }
-    /* The sung layer's outline pokes out past the word box, so an unsung word
-       would show a sliver of it at its left edge: hide it until it starts. */
-    .w:not(.s) .f { visibility: hidden; }
-    :host([data-grad]) .w .f { background: linear-gradient(90deg, var(--sung), var(--sung2)); -webkit-background-clip: text;
-      background-clip: text; color: transparent; }
-    .prev, .next { font-size: var(--next, .8em); }
-    .prev { opacity: .6; margin-bottom: .15em; }
-    .next { opacity: .8; margin-top: .2em; }
-    .tr { font-size: var(--trs, .7em); margin-top: .1em; }
-    .hint { font-size: .45em; color: #fff; opacity: .85; -webkit-text-stroke: 0; filter: none; text-shadow: 0 1px 3px #000; font-weight: 500; font-family: Roboto, Arial, sans-serif; }
-
-    :host([data-shape=box]) .ov { background: var(--bg); backdrop-filter: blur(6px); padding: var(--pad); border-radius: .45em; }
-    :host([data-shape=pill]) .ov { background: var(--bg); padding: var(--pad); border-radius: 999px; }
-    /* Dải ngang: a band across the whole video, like film subtitles. The
-       shadow spreads sideways and the player clips it at its edges. */
-    :host([data-shape=band]) .ov { background: var(--bg); padding: var(--pad); box-shadow: 0 0 0 100vmax var(--bg); clip-path: inset(0 -100vmax); }
-    /* Từng dòng: each line on its own box, like YouTube captions. */
-    :host([data-shape=lines]) .l { width: fit-content; max-width: 100%; background: var(--bg); padding: var(--pad); border-radius: .2em; }
-    :host([data-shape=lines][data-layout=stagger]) .next, :host([data-shape=lines][data-layout=stagger]) .ov.flip .cur,
-    :host([data-shape=lines][data-layout=stagger]) .ov.flip .tr { margin-left: auto; }
-
-    /* So le: classic karaoke machine, two lines that take turns */
-    :host([data-layout=stagger]) .ov { align-items: stretch; min-width: min(60%, 18em); }
-    :host([data-layout=stagger]) .prev { display: none; }
-    :host([data-layout=stagger]) .cur { text-align: left; }
-    :host([data-layout=stagger]) .next { text-align: right; opacity: 1; margin-top: .15em; }
-    :host([data-layout=stagger]) .ov.flip .cur { text-align: right; order: 2; margin-top: .15em; }
-    :host([data-layout=stagger]) .ov.flip .next { text-align: left; order: 1; margin-top: 0; }
-    :host([data-layout=stagger]) .tr { text-align: left; }
-    :host([data-layout=stagger]) .ov.flip .tr { text-align: right; order: 3; }
-    :host([data-layout=center2]) .prev { display: none; }
-    :host([data-layout=single]) .prev, :host([data-layout=single]) .next { display: none; }
-  `;
-
-  // Push a look onto a renderer host as CSS variables / attributes.
-  function paintLook(host, look) {
-    const s = host.style;
-    s.setProperty('--font', look.font || 'Roboto');
-    s.setProperty('--wt', look.weight);
-    s.setProperty('--text', look.text);
-    s.setProperty('--sung', look.sung);
-    s.setProperty('--sung2', look.sung2 || look.sung);
-    s.setProperty('--stroke', look.stroke);
-    s.setProperty('--sstroke', look.strokeW ? look.sstroke : 'transparent');
-    s.setProperty('--sw', look.strokeW / 100 + 'em');
-    // drop-shadow (not text-shadow) so it stays behind gradient-filled text.
-    s.setProperty('--shadow', look.shadow ? 'drop-shadow(.03em .06em .02em rgba(0,0,0,.6)) drop-shadow(0 0 .12em rgba(0,0,0,.35))' : 'none');
-    s.setProperty('--bg', rgba(look.bg, look.bgAlpha));
-    s.setProperty('--next', look.nextScale / 100 + 'em');
-    s.setProperty('--trs', (look.nextScale * 0.7) / 100 + 'em');
-    s.setProperty('--pad', PAD_KEYS.map((k) => padOf(look, k) / 100 + 'em').join(' '));
-    s.setProperty('--my', look.margin + '%');
-    host.dataset.layout = look.layout;
-    host.dataset.shape = look.shape;
-    host.toggleAttribute('data-tgrad', !!look.textGrad);
-    host.toggleAttribute('data-grad', !!look.sung2 && look.sung2 !== look.sung);
-    host.dataset.pos = BYL.settings.value.overlayPosition === 'top' ? 'top' : 'bottom';
+    const g = {};
+    if ('style' in patch) g.overlayStyle = patch.style;
+    if ('look' in patch) g.overlayLook = patch.look;
+    if (!persist) return void Object.assign(BYL.settings.value, g);
+    return BYL.settings.set(g);
   }
 
   // ---------- mounting ----------
@@ -554,7 +225,7 @@ BYL.ui = (() => {
     row2.append(syncBtn, offWrap);
 
     const row3 = el('div', 'row');
-    const lookSel = el('select');
+    const lookSel = el('select', 'look');
     lookSel.title = 'Kiểu chữ trên video và cửa sổ nổi';
     const fontDown = el('button', '', 'A−');
     const fontUp = el('button', '', 'A+');
@@ -563,7 +234,8 @@ BYL.ui = (() => {
     posBtn.title = 'Đặt lời ở trên hoặc dưới video (tránh che chữ có sẵn trong video)';
     const studioBtn = el('button', '', '🎨');
     studioBtn.title = 'Tuỳ chỉnh màu, phông, viền, nền… và lưu thành preset';
-    row3.append(el('span', 'muted', 'Kiểu chữ'), lookSel, fontDown, fontUp, posBtn, studioBtn);
+    const chanBtn = el('button', 'chan', '📌');
+    row3.append(el('span', 'muted', 'Kiểu chữ'), lookSel, fontDown, fontUp, posBtn, studioBtn, chanBtn);
 
     const studio = el('div', 'studio');
     studio.hidden = true;
@@ -580,7 +252,26 @@ BYL.ui = (() => {
     const againBtn = el('button', '', '↻ Tìm lại');
     againBtn.title = 'Kết quả tìm được lưu lại để mở video nhanh hơn. Bấm để tìm lại từ đầu ở mọi nguồn.';
     againBtn.addEventListener('click', () => api.onSearchAgain?.());
-    row4.append(editBtn, tapBtn, copy, againBtn, open);
+    const exportBtn = el('button', '', '⬇ Xuất');
+    exportBtn.title = 'Lưu lời ra file .lrc / .srt (giữ thời gian bạn đã canh), hoặc gửi lên LRCLIB';
+    row4.append(editBtn, tapBtn, copy, exportBtn, againBtn, open);
+
+    const exportRow = el('div', 'row exports');
+    exportRow.hidden = true;
+    const lrcBtn = el('button', '', '⬇ File LRC');
+    lrcBtn.title = 'Lời có thời gian cho trình phát nhạc (foobar, VLC, Poweramp…)';
+    const srtBtn = el('button', '', '⬇ File SRT');
+    srtBtn.title = 'Phụ đề cho video (VLC, CapCut, Premiere, tải lên YouTube Studio…)';
+    const pubBtn = el('button', '', '☁ Gửi lên LRCLIB');
+    pubBtn.title = 'Chia sẻ lời có thời gian lên thư viện mở LRCLIB để người khác dùng. Sẽ hỏi lại trước khi gửi.';
+    exportRow.append(el('span', 'muted', 'Xuất lời'), lrcBtn, srtBtn, pubBtn);
+    exportBtn.addEventListener('click', () => {
+      exportRow.hidden = !exportRow.hidden;
+      exportBtn.classList.toggle('on', !exportRow.hidden);
+    });
+    lrcBtn.addEventListener('click', () => exportFile('lrc'));
+    srtBtn.addEventListener('click', () => exportFile('srt'));
+    pubBtn.addEventListener('click', publishLrclib);
 
     const tapbar = el('div', 'tapbar');
     tapbar.hidden = true;
@@ -593,7 +284,7 @@ BYL.ui = (() => {
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
     grip.title = 'Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)';
-    lyricTab.append(status, row1, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4);
+    lyricTab.append(status, row1, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4, exportRow);
     makeResizable(lines, grip);
 
     // Karaoke tab
@@ -608,7 +299,7 @@ BYL.ui = (() => {
     root.append(wrap);
 
     P = { wrap, songTitle, songArtist, status, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
-      row2, row3, row4, lookSel, posBtn, studioBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
+      row2, row3, row4, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
       tapBtn, tapbar };
     editBtn.addEventListener('click', () => openEditor());
     tapBtn.addEventListener('click', () => (TAP ? stopTap(false) : startTap()));
@@ -649,11 +340,22 @@ BYL.ui = (() => {
     fontUp.addEventListener('click', () => setFont(4));
     lookSel.addEventListener('change', () => {
       if (!lookSel.value) return;
-      BYL.settings.set({ overlayStyle: lookSel.value, overlayLook: null });
+      setSlot({ style: lookSel.value, look: null });
       refreshLook();
       if (!studio.hidden) buildStudio();
       // Show the change on this video; "Tự bật lời trên video" stays as set.
       if (!state.overlayOn && !F) setOverlay(true, false);
+    });
+    chanBtn.addEventListener('click', () => {
+      const ch = state.channel;
+      if (!ch) return;
+      const all = { ...BYL.settings.value.channelStyles };
+      if (all[ch]) delete all[ch];
+      else all[ch] = { ...slot() };
+      BYL.settings.set({ channelStyles: all });
+      refreshLook();
+      if (!studio.hidden) buildStudio();
+      say(all[ch] ? `📌 Kênh "${ch}" giờ có kiểu chữ riêng. Đổi kiểu hay chỉnh 🎨 lúc này chỉ áp dụng cho kênh này.` : `Kênh "${ch}" dùng lại kiểu chữ chung.`);
     });
     posBtn.addEventListener('click', () => {
       BYL.settings.set({ overlayPosition: BYL.settings.value.overlayPosition === 'top' ? 'bottom' : 'top' });
@@ -735,7 +437,7 @@ BYL.ui = (() => {
       o.value = value;
       parent.append(o);
     };
-    if (v.overlayLook) add(sel, '', '✎ Đang tuỳ chỉnh');
+    if (slot().look) add(sel, '', '✎ Đang tuỳ chỉnh');
     const builtIn = el('optgroup');
     builtIn.label = 'Có sẵn';
     for (const [k, p] of Object.entries(BYL.LOOKS)) add(builtIn, k, p.name);
@@ -747,9 +449,15 @@ BYL.ui = (() => {
       for (const p of mine) add(g, 'u:' + p.name, '★ ' + p.name);
       sel.append(g);
     }
-    sel.value = v.overlayLook ? '' : v.overlayStyle;
+    sel.value = slot().look ? '' : slot().style;
     if (sel.selectedIndex < 0) sel.value = 'red';
     P.posBtn.textContent = v.overlayPosition === 'top' ? '⬆ Trên' : '⬇ Dưới';
+    const pinned = !!chanSlot();
+    P.chanBtn.hidden = !state.channel;
+    P.chanBtn.classList.toggle('on', pinned);
+    P.chanBtn.title = pinned
+      ? `Kênh "${state.channel}" đang dùng kiểu chữ riêng. Bấm để dùng lại kiểu chung.`
+      : `Ghi nhớ kiểu chữ này riêng cho kênh "${state.channel}"`;
   }
 
   // Re-apply the look everywhere after a settings change.
@@ -763,11 +471,11 @@ BYL.ui = (() => {
   let saveTimer;
   function editLook(patch, persist) {
     const look = { ...currentLook(), ...patch };
-    BYL.settings.value.overlayLook = look;
+    setSlot({ look }, false);
     if (persist) {
       // chrome.storage.sync has a write quota; sliders only save on release.
       clearTimeout(saveTimer);
-      saveTimer = setTimeout(() => BYL.settings.set({ overlayLook: BYL.settings.value.overlayLook }), 300);
+      saveTimer = setTimeout(() => setSlot({ look: slot().look }), 300);
     }
     refreshLook();
   }
@@ -846,7 +554,7 @@ BYL.ui = (() => {
       // Double-click: back to the chosen style's value (padding: the shape's).
       r.title = 'Nháy đúp để về mặc định';
       r.addEventListener('dblclick', () => {
-        const def = { ...BASE_LOOK, ...presetLook(BYL.settings.value.overlayStyle) }[key];
+        const def = compose(slot().style)[key];
         editLook({ [key]: def }, true);
         r.value = PAD_KEYS.includes(key) ? padOf(currentLook(), key) : def;
         show();
@@ -922,14 +630,14 @@ BYL.ui = (() => {
     const reset = el('button', '', 'Bỏ chỉnh');
     reset.title = 'Quay về kiểu đang chọn, bỏ các chỉnh sửa';
     const del = el('button', 'danger', 'Xoá preset');
-    const style = BYL.settings.value.overlayStyle;
+    const style = slot().style;
     del.hidden = !style?.startsWith('u:');
     if (style?.startsWith('u:')) name.value = style.slice(2);
     save.addEventListener('click', async () => {
       const n = name.value.trim() || 'Preset ' + ((BYL.settings.value.overlayPresets || []).length + 1);
       const list = (BYL.settings.value.overlayPresets || []).filter((p) => p.name !== n);
       list.push({ name: n, look: currentLook() });
-      const ok = await BYL.settings.set({ overlayPresets: list, overlayStyle: 'u:' + n, overlayLook: null });
+      const ok = (await BYL.settings.set({ overlayPresets: list })) && (await setSlot({ style: 'u:' + n, look: null }));
       refreshLook();
       buildStudio();
       say(
@@ -939,13 +647,14 @@ BYL.ui = (() => {
       );
     });
     reset.addEventListener('click', () => {
-      BYL.settings.set({ overlayLook: null });
+      setSlot({ look: null });
       refreshLook();
       buildStudio();
     });
     del.addEventListener('click', () => {
       const list = (BYL.settings.value.overlayPresets || []).filter((p) => 'u:' + p.name !== style);
-      BYL.settings.set({ overlayPresets: list, overlayStyle: 'classic', overlayLook: null });
+      BYL.settings.set({ overlayPresets: list });
+      setSlot({ style: 'classic', look: null });
       refreshLook();
       buildStudio();
     });
@@ -964,6 +673,7 @@ BYL.ui = (() => {
     Object.assign(state, {
       videoId,
       song: null,
+      channel: '',
       duration: 0,
       candidates: [],
       current: null,
@@ -1015,8 +725,10 @@ BYL.ui = (() => {
     pipTitle();
   }
 
-  function setSong(song, duration) {
+  function setSong(song, duration, channel) {
     state.song = song;
+    state.channel = channel || '';
+    refreshLook();
     state.duration = duration || 0;
     P.songTitle.textContent = song.title || 'Không rõ tên bài';
     P.songArtist.textContent = song.artist || '';
@@ -1160,8 +872,10 @@ BYL.ui = (() => {
           : 'Phụ đề không khớp với lời này. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.'
       );
     }
-    const matched = `khớp ${r.matchedLines}/${r.totalLines} dòng`;
+    const matched = `khớp ${r.matchedLines}/${r.totalLines} dòng` + (r.wordLines ? `, ${r.wordLines} dòng tô theo từng chữ` : '');
     if (c.synced) {
+      // Word timing from the captions, unless the lyrics brought their own.
+      if (r.wordLines && !c.lines.some((l) => l.wd)) c.lines = c.lines.map((l, i) => (r.lines[i].wd ? { ...l, wd: r.lines[i].wd } : l));
       // One shift for the whole song when the captions agree on it; sync
       // points along the song when the gap changes (intro, interlude, tempo).
       const pts = warpFromAnchors(c.lines, r.anchors || []);
@@ -1609,6 +1323,47 @@ BYL.ui = (() => {
     sizeAll();
   }
 
+  // ---------- export ----------
+
+  // The current lyrics in video time, with the offset and 📍 points applied,
+  // so the file plays in step with the video. Null for lyrics without timing.
+  function timedLines() {
+    const c = state.current;
+    if (!c?.synced) return null;
+    return c.lines.map((l) => ({ ...l, t: typeof l.t === 'number' ? Math.round(effT(l.t) * 100) / 100 : undefined }));
+  }
+  const NO_TIMING = 'Lời này chưa có thời gian từng dòng. Bấm "🎯 Tự canh theo phụ đề" hoặc "⏱ Gõ nhịp" trước rồi xuất.';
+
+  function exportFile(kind) {
+    const lines = timedLines();
+    if (!lines) return say(NO_TIMING);
+    const meta = { title: state.song?.title, artist: state.song?.artist, duration: state.duration };
+    const text = kind === 'srt' ? BYL.exporter.toSrt(lines, state.duration) : BYL.exporter.toLrc(lines, meta);
+    BYL.exporter.download(text, BYL.exporter.fileName(meta, kind), kind === 'srt');
+    const fixed = state.offset || state.warps[state.current.id]?.length;
+    say(`⬇ Đã lưu file .${kind}` + (fixed ? ', đã tính cả độ lệch và các mốc 📍.' : '.'));
+  }
+
+  async function publishLrclib() {
+    const lines = timedLines();
+    if (!lines) return say(NO_TIMING);
+    const body = lines.filter((l) => typeof l.t === 'number' && !l.section);
+    try {
+      await BYL.exporter.openPublish({
+        videoId: state.videoId,
+        trackName: state.song?.title || '',
+        artistName: state.song?.artist || '',
+        albumName: state.song?.album || '',
+        duration: Math.round(state.duration || video()?.duration || 0),
+        plainLyrics: body.map((l) => l.text).join('\n').replace(/\n{3,}/g, '\n\n').trim(),
+        syncedLyrics: BYL.toLrc(body),
+      });
+      say('☁ Đã mở trang gửi lên LRCLIB trong tab mới. Kiểm tra lại tên bài, ca sĩ rồi mới bấm gửi.');
+    } catch (err) {
+      say('Không mở được trang gửi: ' + (err?.message || err));
+    }
+  }
+
   // ---------- rendering ----------
 
   function renderSelect() {
@@ -1700,7 +1455,7 @@ BYL.ui = (() => {
       const start = effT(lines[i].t);
       const end = lines[i + 1] ? effT(lines[i + 1].t) : start + 5;
       const dur = Math.min(Math.max(end - start, 0.5), 7);
-      return { i, p: Math.min(1, (now - start) / dur) };
+      return { i, p: Math.min(1, (now - start) / dur), dt: now - start, dur };
     }
     if (!state.anchor) return { i: -1, p: 0 };
     // Plain lyrics: spread the remaining lines evenly over the rest of the song.
@@ -2407,6 +2162,19 @@ BYL.ui = (() => {
     if (next) ov.append(wordLine(R, next.text, 'next', false));
   }
 
+  // With per-word times (enhanced LRC, auto captions) each word lights up
+  // when it is sung instead of the wipe running evenly over the line.
+  function wordLit(R, pos) {
+    const wd = state.current?.lines[pos.i]?.wd;
+    if (!wd || pos.dt === undefined || wd.length !== R.words.length) return null;
+    let k = -1;
+    while (k + 1 < wd.length && wd[k + 1] <= pos.dt) k++;
+    if (k < 0) return 0;
+    const w = R.words[k];
+    const len = Math.min(Math.max((wd[k + 1] ?? pos.dur) - wd[k], 0.15), 1.5);
+    return w.start + Math.min(1, (pos.dt - wd[k]) / len) * (w.end - w.start);
+  }
+
   function drawLines(R, pos) {
     if (!pos) {
       R.ov.replaceChildren();
@@ -2415,7 +2183,7 @@ BYL.ui = (() => {
     // Wipe through the words in proportion to how far through the line we
     // are, or light the whole line at once.
     const whole = currentLook().wipe === 'line';
-    const lit = pos.i < 0 ? 0 : whole ? Infinity : pos.p * (R.total || 1);
+    const lit = pos.i < 0 ? 0 : whole ? Infinity : wordLit(R, pos) ?? pos.p * (R.total || 1);
     for (const w of R.words) {
       const p = Math.round(Math.max(0, Math.min(1, (lit - w.start) / (w.end - w.start))) * 50) * 2;
       if (p !== w.p) {
@@ -2477,6 +2245,20 @@ BYL.ui = (() => {
   }
 
   // main.js fills in onLoadSource, hasCaptions and captionWordsFor per video.
-  const api = { mount, remount, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, onLoadSource: null };
+  // Keyboard shortcuts (keys.js). Each returns a short note for the toast.
+  const actions = {
+    overlay: () => (setOverlay(!state.overlayOn, true), state.overlayOn ? 'Lời trên video: bật' : 'Lời trên video: tắt'),
+    pip: () => (togglePip(), 'Cửa sổ lời nổi'),
+    nudge: (d) => (nudge(d), 'Lệch ' + fmtOffset(state.offset)),
+    pin: () => {
+      const v = video();
+      const i = state.current && v ? position(v.currentTime).i : -1;
+      if (i < 0) return 'Chưa có dòng nào đang hát';
+      pinLine(i);
+      return '📍 Đã ghim dòng đang hát';
+    },
+    font: (d) => (setFont(d), 'Cỡ chữ ' + BYL.settings.value.overlayFontSize),
+  };
+  const api = { mount, remount, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
   return api;
 })();

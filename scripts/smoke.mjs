@@ -78,6 +78,72 @@ try {
   check('Mở 🎨 hiện lời trên video', r?.overlay);
   check('Nút 🎤 Karaoke bật/tắt được', r?.toggled);
   check('Đọc được tên bài', !!r?.title && r.title !== 'Better Lyric', r?.title);
+
+  // Alt+L (shortcut) toggles the lyrics on the video.
+  const ovOn = () => ev(`return !!document.getElementById('byl-overlay-host')?.isConnected`);
+  const before = await ovOn();
+  for (const type of ['rawKeyDown', 'keyUp'])
+    await send('Input.dispatchKeyEvent', { type, modifiers: 1, code: 'KeyL', key: 'l', windowsVirtualKeyCode: 76 }, sessionId);
+  await sleep(300);
+  check('Phím tắt Alt L bật/tắt lời trên video', (await ovOn()) !== before);
+
+  // 📌 pins the style to the channel and back.
+  const pin = await ev(`
+    const sr = document.getElementById('byl-panel-host').shadowRoot;
+    const b = sr.querySelector('button.chan');
+    if (!b || b.hidden) return { shown: false };
+    b.click();
+    await new Promise((r) => setTimeout(r, 300));
+    const on = b.classList.contains('on');
+    const saved = Object.keys((await chrome.storage?.local?.get?.('channelStyles'))?.channelStyles || {}).length;
+    b.click();
+    await new Promise((r) => setTimeout(r, 300));
+    return { shown: true, on, off: !b.classList.contains('on') };`);
+  check('Nút 📌 kiểu chữ theo kênh', pin?.shown && pin.on && pin.off, JSON.stringify(pin));
+
+  // Pick timed lyrics when the video has some (⏱ / 🎯 in the list).
+  for (let t = 0; t < 15; t++) {
+    const picked = await ev(`
+      const sel = document.getElementById('byl-panel-host').shadowRoot.querySelector('select');
+      const o = [...sel.options].find((o) => /⏱|🎯/.test(o.textContent));
+      if (!o) return false;
+      if (sel.value !== o.value) { sel.value = o.value; sel.dispatchEvent(new Event('change')); }
+      return true;`);
+    if (picked) break;
+    await sleep(1000);
+  }
+
+  // ⬇ Xuất → SRT downloads a file (or explains that the lyrics have no timing).
+  const dl = mkdtempSync(join(tmpdir(), 'byl-dl-'));
+  await send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: dl });
+  const ex = await ev(`
+    const sr = document.getElementById('byl-panel-host').shadowRoot;
+    const btn = (t) => [...sr.querySelectorAll('button')].find((b) => b.textContent.trim() === t);
+    btn('⬇ Xuất').click();
+    const shown = !sr.querySelector('.exports').hidden;
+    btn('⬇ File SRT').click();
+    await new Promise((r) => setTimeout(r, 1500));
+    return { shown, note: sr.querySelector('.note').textContent };`);
+  const files = (await import('fs')).readdirSync(dl);
+  const srt = files.find((f) => f.endsWith('.srt'));
+  const srtText = srt ? (await import('fs')).readFileSync(join(dl, srt), 'utf8') : '';
+  check('Xuất SRT', ex?.shown && (srt ? /^\ufeff1\n\d\d:\d\d:\d\d,\d{3} --> /.test(srtText) : /chưa có thời gian/.test(ex?.note)), srt || ex?.note);
+  rmSync(dl, { recursive: true, force: true });
+
+  // ☁ opens the publish page with the lyrics filled in (nothing is sent).
+  if (srt) {
+    await ev(`[...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('button')].find((b) => b.textContent.trim() === '☁ Gửi lên LRCLIB').click()`);
+    await sleep(2000);
+    const { result: { targetInfos } } = await send('Target.getTargets');
+    const pub = targetInfos.find((t) => t.url.includes('/src/publish/publish.html'));
+    let filled = null;
+    if (pub) {
+      const { result: { sessionId: ps } } = await send('Target.attachToTarget', { targetId: pub.targetId, flatten: true });
+      filled = (await send('Runtime.evaluate', { expression: `({ track: document.getElementById('track').value, lines: document.getElementById('synced').value.split('\\n').length, send: document.getElementById('send').disabled })`, returnByValue: true }, ps)).result?.result?.value;
+    }
+    const note = await ev(`return document.getElementById('byl-panel-host').shadowRoot.querySelector('.note').textContent`);
+    check('Trang gửi LRCLIB mở và điền sẵn lời', !!filled?.track && filled.lines > 3 && filled.send === true, JSON.stringify(filled) + ' ' + (filled ? '' : note + ' ' + targetInfos.map((t) => t.url).join(' ')));
+  }
   check('Không có lỗi JavaScript', !errors.some((e) => /BYL|byl|content\//.test(e)), errors.filter((e) => /BYL|byl|content\//.test(e))[0] || '');
 } catch (err) {
   check('Chạy test', false, String(err));

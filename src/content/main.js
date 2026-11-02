@@ -56,7 +56,7 @@
       attrs: BYL.yt.musicAttrs(next),
     });
     const duration = player?.lengthSeconds || BYL.playerEl()?.querySelector('video')?.duration || 0;
-    BYL.ui.setSong(song, duration);
+    BYL.ui.setSong(song, duration, player?.author || info.author);
 
     const ctx = { videoId, song, duration, next, player, settings };
     const runSource = (key, fresh) => {

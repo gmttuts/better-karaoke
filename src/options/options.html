@@ -30,6 +30,10 @@
     input[type=number] { width: 52px; font: inherit; color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; }
     .master { margin: -4px 0 4px; padding-bottom: 4px; border-bottom: 1px solid var(--line); font-weight: 500; }
     body.off h2, body.off .src, body.off .opt:not(.master) { opacity: .4; pointer-events: none; }
+    .keys { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; margin: 0; font-size: 12px; }
+    .keys dt { font: 500 11px ui-monospace, Menlo, monospace; background: var(--chip); border: 1px solid var(--line); border-radius: 5px;
+      padding: 1px 6px; white-space: nowrap; justify-self: start; }
+    .keys dd { margin: 0; color: var(--fg2); }
     .hint { margin-top: 10px; color: var(--fg2); font-size: 12px; }
     .saved { color: var(--accent); font-size: 12px; min-height: 16px; margin-top: 4px; }
     button { font: inherit; color: var(--fg); background: var(--chip); border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; cursor: pointer; }
@@ -70,6 +74,15 @@
     <label title="Mỗi trang khoảng 20 comment">Số trang comment quét <input type="number" min="1" max="10" data-k="commentPages"></label>
   </div>
 
+  <h2>Phím tắt trên YouTube</h2>
+  <dl class="keys">
+    <dt>Alt L</dt><dd>Bật / tắt lời trên video</dd>
+    <dt>Alt P</dt><dd>Cửa sổ lời nổi</dd>
+    <dt>Alt K</dt><dd>Ghim 📍 dòng đang hát</dd>
+    <dt>Alt [ ]</dt><dd>Lời sớm / muộn 0,5s (thêm Shift: 0,1s)</dd>
+    <dt>Alt − =</dt><dd>Chữ trên video nhỏ / to hơn</dd>
+  </dl>
+
   <p class="hint">Kiểu chữ, màu sắc, preset: bấm 🎨 trong panel lời bài hát.</p>
   <button class="open-backup" id="openBackup" title="Mở trong tab mới">💾 Sao lưu / khôi phục…</button>
 
@@ -82,7 +95,7 @@
     </div>
     <input type="file" id="file" accept=".json,application/json" hidden>
     <div class="msg" id="msg"></div>
-    <p class="hint">File gồm lời bạn đã sửa, điểm căn thời gian 📍, độ lệch, lời đã chọn cho từng video, preset kiểu chữ và cài đặt.
+    <p class="hint">File gồm lời bạn đã sửa, điểm căn thời gian 📍, độ lệch, lời đã chọn cho từng video, preset kiểu chữ, kiểu chữ theo kênh 📌 và cài đặt.
       Khi nhập, dữ liệu đang có được giữ lại; video nào có ở cả hai bên thì lấy bản sửa sau cùng.</p>
   </section>
   <div class="saved" id="saved"></div>

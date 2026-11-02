@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gửi lời lên LRCLIB · Better YouTube Lyric</title>
+  <style>
+    :root { --fg: #0f0f0f; --fg2: #606060; --bg: #fff; --line: #e5e5e5; --chip: #f2f2f2; --accent: #ff2e63; color-scheme: light dark; }
+    @media (prefers-color-scheme: dark) { :root { --fg: #f1f1f1; --fg2: #aaa; --bg: #181818; --line: #333; --chip: #262626; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 14px/1.5 Roboto, -apple-system, Arial, sans-serif; color: var(--fg); background: var(--bg); }
+    main { max-width: 640px; margin: 32px auto; padding: 0 16px; }
+    h1 { font-size: 20px; margin: 0 0 4px; display: flex; gap: 10px; align-items: center; }
+    h1 img { width: 28px; height: 28px; }
+    .sub { color: var(--fg2); margin: 0 0 20px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--fg2); font-weight: 500; }
+    label.wide { grid-column: 1 / -1; }
+    input, textarea { font: inherit; font-size: 14px; color: var(--fg); background: var(--chip); border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; }
+    input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+    textarea { min-height: 260px; resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+    .box { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: var(--chip); font-size: 13px; }
+    .box.warn { background: rgba(255,184,0,.15); }
+    .box.err { background: rgba(229,72,77,.15); }
+    .box.ok { background: rgba(48,164,108,.16); }
+    .box[hidden] { display: none; }
+    .agree { flex-direction: row; align-items: flex-start; gap: 8px; margin-top: 16px; font-size: 13px; color: var(--fg); font-weight: 400; }
+    .agree input { margin-top: 3px; }
+    .btns { display: flex; gap: 8px; margin-top: 16px; align-items: center; }
+    button { font: inherit; font-weight: 500; border: 0; border-radius: 999px; padding: 9px 18px; cursor: pointer; background: var(--chip); color: var(--fg); }
+    button.primary { background: var(--accent); color: #fff; }
+    button:disabled { opacity: .5; cursor: default; }
+    progress { flex: 1; height: 6px; accent-color: var(--accent); }
+    progress[hidden] { display: none; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1><img src="../../icons/icon48.png" alt="">Gửi lời lên LRCLIB</h1>
+    <p class="sub">LRCLIB là thư viện lời bài hát mở, miễn phí, nhiều ứng dụng nghe nhạc dùng chung.
+      Lời bạn gửi sẽ <b>công khai</b> cho mọi người. Kiểm tra kỹ tên bài, ca sĩ và lời trước khi gửi.</p>
+    <div id="empty" class="box warn" hidden>Không có lời nào đang chờ gửi. Mở lại từ nút "⬇ Xuất" → "☁ Gửi lên LRCLIB" trong panel trên YouTube.</div>
+    <form id="form" hidden>
+      <div class="grid">
+        <label>Tên bài <input id="track" required maxlength="200"></label>
+        <label>Ca sĩ <input id="artist" required maxlength="200"></label>
+        <label>Album <input id="album" maxlength="200" placeholder="Để trống nếu là đĩa đơn"></label>
+        <label>Thời lượng (giây) <input id="duration" type="number" min="1" max="7200" required></label>
+        <label class="wide">Lời có thời gian (LRC) <textarea id="synced" spellcheck="false"></textarea></label>
+      </div>
+      <div id="exists" class="box warn" hidden></div>
+      <label class="agree"><input type="checkbox" id="agree"> Tôi xác nhận lời này đúng với bài hát, thời gian đã khớp, và đồng ý chia sẻ công khai lên LRCLIB.</label>
+      <div class="btns">
+        <button type="submit" class="primary" id="send" disabled>☁ Gửi lên LRCLIB</button>
+        <button type="button" id="cancel">Huỷ</button>
+        <progress id="prog" hidden></progress>
+      </div>
+      <div id="msg" class="box" hidden></div>
+    </form>
+  </main>
+  <script src="publish.js"></script>
+</body>
+</html>

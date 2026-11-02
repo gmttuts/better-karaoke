@@ -9,10 +9,12 @@
 BYL.captionWords = (text) => {
   text = String(text || '').trim();
   const out = [];
-  const spread = (str, start, dur) => {
+  // exact: the captions timed this word itself (auto captions), rather than
+  // the line it sits in; only those are good enough to light single words.
+  const spread = (str, start, dur, exact = false) => {
     // Drop "[âm nhạc]", "[Music]", ">>" and the like.
     const toks = BYL.tokens(String(str).replace(/\[[^\]]*\]|>>/g, ' '));
-    toks.forEach((tok, i) => out.push({ tok, t: start + (dur * i) / Math.max(1, toks.length) }));
+    toks.forEach((tok, i) => out.push({ tok, t: start + (dur * i) / Math.max(1, toks.length), exact: exact && i === 0 }));
   };
   if (text.startsWith('{')) {
     for (const e of JSON.parse(text).events || []) {
@@ -21,7 +23,7 @@ BYL.captionWords = (text) => {
       const dur = (e.dDurationMs || 2000) / 1000;
       // Auto captions time every word (tOffsetMs); uploaded ones only the line.
       const timed = e.segs.length > 1 && e.segs.some((s) => s.tOffsetMs);
-      if (timed) for (const s of e.segs) spread(s.utf8, start + (s.tOffsetMs || 0) / 1000, 0.3);
+      if (timed) for (const s of e.segs) spread(s.utf8, start + (s.tOffsetMs || 0) / 1000, 0.3, true);
       else spread(e.segs.map((s) => s.utf8).join(''), start, dur * 0.8);
     }
   } else if (text.startsWith('<')) {
@@ -29,7 +31,7 @@ BYL.captionWords = (text) => {
     for (const p of doc.querySelectorAll('p')) {
       const start = Number(p.getAttribute('t')) / 1000;
       const ss = [...p.querySelectorAll('s')];
-      if (ss.length > 1) for (const s of ss) spread(s.textContent, start + Number(s.getAttribute('t') || 0) / 1000, 0.3);
+      if (ss.length > 1) for (const s of ss) spread(s.textContent, start + Number(s.getAttribute('t') || 0) / 1000, 0.3, true);
       else spread(p.textContent, start, (Number(p.getAttribute('d')) || 2000) / 1000 * 0.8);
     }
     for (const n of doc.querySelectorAll('text')) {
@@ -70,14 +72,16 @@ function lcsPairs(A, B) {
 
 const WORD_SEC = 0.28; // rough time per sung word, to step back to a line's start
 
-// Returns { lines, matchedLines, coverage, offset, anchors: [{ li, t }] } or null when the captions
+// Returns { lines, matchedLines, coverage, offset, anchors: [{ li, t }], wordLines } or null when the captions
 // don't resemble the lyrics. `lines` gets a time on every line; `offset` is the
 // median shift between the lyrics' own times and the captions (synced input).
 BYL.alignLyrics = (lines, words) => {
   const L = [];
   lines.forEach((l, li) => {
     if (!l.text || l.section) return;
-    BYL.tokens(l.text).forEach((tok, wi) => L.push({ tok, li, wi }));
+    let wi = 0;
+    // dw: the word as split on screen (ui.js wordLine), for per-word timing.
+    l.text.split(/\s+/).filter(Boolean).forEach((word, dw) => BYL.tokens(word).forEach((tok) => L.push({ tok, li, wi: wi++, dw })));
   });
   if (L.length < 8 || words.length < 8) return null;
   // Keep the table a sane size on very long captions (live sets, medleys).
@@ -165,5 +169,46 @@ BYL.alignLyrics = (lines, words) => {
     diffs.sort((x, y) => x - y);
     offset = Math.round(diffs[Math.floor(diffs.length / 2)] * 10) / 10;
   }
-  return { lines: out, matchedLines: anchors.length, totalLines: singable.length, coverage, offset, anchors };
+  const wordLines = wordTimes(L, pairs, words, out);
+  return { lines: out, matchedLines: anchors.length, totalLines: singable.length, coverage, offset, anchors, wordLines };
 };
+
+// Per-word timing for karaoke wipes, from captions that time each word (auto
+// captions). Sets line.wd = seconds after line.t at which each on-screen word
+// starts, on lines where most words matched an exactly timed caption word.
+// Returns how many lines got one.
+function wordTimes(L, pairs, words, out) {
+  const at = new Map(); // li -> Map(dw -> t)
+  for (const [i, j] of pairs) {
+    if (!words[j].exact) continue;
+    const { li, dw } = L[i];
+    const m = at.get(li) || new Map();
+    if (!m.has(dw)) m.set(dw, words[j].t);
+    at.set(li, m);
+  }
+  let n = 0;
+  for (const [li, m] of at) {
+    const count = out[li].text.split(/\s+/).filter(Boolean).length;
+    if (count < 2 || m.size < Math.max(2, count * 0.6)) continue;
+    const abs = new Array(count).fill(null);
+    for (const [dw, t] of m) abs[dw] = t;
+    // Matches out of order (a repeated word picked up too early) break the wipe.
+    let last = -Infinity;
+    for (let k = 0; k < count; k++) {
+      if (abs[k] === null) continue;
+      if (abs[k] < last) abs[k] = null;
+      else last = abs[k];
+    }
+    const known = abs.map((t, k) => (t === null ? -1 : k)).filter((k) => k >= 0);
+    if (known.length < Math.max(2, count * 0.6)) continue;
+    for (let a = 0; a < known.length - 1; a++) {
+      const [k0, k1] = [known[a], known[a + 1]];
+      for (let k = k0 + 1; k < k1; k++) abs[k] = abs[k0] + ((abs[k1] - abs[k0]) * (k - k0)) / (k1 - k0);
+    }
+    for (let k = known[0] - 1; k >= 0; k--) abs[k] = abs[k + 1] - WORD_SEC;
+    for (let k = known[known.length - 1] + 1; k < count; k++) abs[k] = abs[k - 1] + WORD_SEC;
+    out[li].wd = abs.map((t) => Math.max(0, Math.round((t - out[li].t) * 100) / 100));
+    n++;
+  }
+  return n;
+}

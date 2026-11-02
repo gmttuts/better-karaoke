@@ -47,7 +47,7 @@ chrome.storage.sync.get(DEFAULTS).then((values) => {
 
 // Everything else the extension stores: storage.sync holds the settings,
 // storage.local holds per-video data ('v:<id>') and the look presets.
-const LOCAL_SETTINGS = ['overlayLook', 'overlayPresets'];
+const LOCAL_SETTINGS = ['overlayLook', 'overlayPresets', 'channelStyles'];
 const isTab = new URLSearchParams(location.search).has('tab');
 document.body.classList.toggle('tab', isTab);
 
@@ -90,7 +90,7 @@ document.getElementById('export').addEventListener('click', async () => {
     exportedAt: new Date().toISOString(),
     settings: sync,
     // Cached search results ('c:') are rebuilt on demand; leave them out.
-    local: Object.fromEntries(Object.entries(local).filter(([k]) => !k.startsWith('c:'))),
+    local: Object.fromEntries(Object.entries(local).filter(([k]) => !k.startsWith('c:') && k !== 'publishDraft')),
   };
   const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
   const a = document.createElement('a');
@@ -155,6 +155,12 @@ async function importBackup(data) {
   out.overlayPresets = [...(cur.overlayPresets || []).filter((p) => !names.has(p.name)), ...valid];
   const look = data.local.overlayLook || old.overlayLook;
   if (look && typeof look === 'object') out.overlayLook = look;
+  // Styles pinned to a channel (📌): the file's entry wins per channel.
+  const chans = data.local.channelStyles;
+  if (chans && typeof chans === 'object') {
+    const ok = Object.entries(chans).filter(([, v]) => v && typeof v.style === 'string');
+    out.channelStyles = { ...(cur.channelStyles || {}), ...Object.fromEntries(ok) };
+  }
   await chrome.storage.local.set(out);
 
   // Settings: plain values only.
