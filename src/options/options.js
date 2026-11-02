@@ -89,7 +89,8 @@ document.getElementById('export').addEventListener('click', async () => {
     version: chrome.runtime.getManifest().version,
     exportedAt: new Date().toISOString(),
     settings: sync,
-    local,
+    // Cached search results ('c:') are rebuilt on demand; leave them out.
+    local: Object.fromEntries(Object.entries(local).filter(([k]) => !k.startsWith('c:'))),
   };
   const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
   const a = document.createElement('a');

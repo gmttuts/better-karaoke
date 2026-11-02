@@ -168,7 +168,7 @@ BYL.ui = (() => {
     .studio .tg input:checked { background: var(--accent); }
     .studio .tg input:checked::after { left: 14px; }
     .studio .seg { flex: 1; display: flex; padding: 3px; gap: 2px; border-radius: 10px; background: var(--line); }
-    .studio .seg button { flex: 1; padding: 5px 6px; border-radius: 8px; background: transparent; font-size: 12px; color: var(--fg2); white-space: nowrap; }
+    .studio .seg button { flex: 1; padding: 5px 4px; border-radius: 8px; background: transparent; font-size: 12px; color: var(--fg2); white-space: nowrap; }
     .studio .seg button:hover { color: var(--fg); background: transparent; }
     .studio .seg button.on { background: var(--raised); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
     .studio .pads { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
@@ -250,6 +250,14 @@ BYL.ui = (() => {
       name: 'Khung tối',
       look: { weight: 700, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'box', bg: '#0a0a0e', bgAlpha: 62, layout: 'center2', nextScale: 55, scale: 100, margin: 13 },
     },
+    captions: {
+      name: 'Phụ đề YouTube',
+      look: { weight: 500, textGrad: false, sung: '#ffe14d', strokeW: 0, shadow: false, shape: 'lines', bg: '#080808', bgAlpha: 75, layout: 'center2', nextScale: 85, scale: 80, margin: 7 },
+    },
+    cinema: {
+      name: 'Dải điện ảnh',
+      look: { weight: 600, textGrad: false, sung: '#7fd4ff', strokeW: 0, shape: 'band', bg: '#000000', bgAlpha: 50, layout: 'center2', nextScale: 60, scale: 90, margin: 6 },
+    },
     mini: {
       name: 'Gọn nhẹ',
       look: { weight: 600, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'pill', layout: 'single', scale: 62, margin: 9 },
@@ -258,7 +266,7 @@ BYL.ui = (() => {
   // Padding inside the box / pill, in 1/100 em (top, right, bottom, left).
   // Left unset, each shape keeps its own default.
   const PAD_KEYS = ['padT', 'padR', 'padB', 'padL'];
-  const SHAPE_PAD = { box: [35, 90, 45, 90], pill: [20, 80, 20, 80], none: [0, 0, 0, 0] };
+  const SHAPE_PAD = { box: [35, 90, 45, 90], pill: [20, 80, 20, 80], band: [30, 0, 35, 0], lines: [6, 30, 10, 30], none: [0, 0, 0, 0] };
   const padOf = (look, k) => look[k] ?? (SHAPE_PAD[look.shape] || SHAPE_PAD.none)[PAD_KEYS.indexOf(k)];
   const FONTS = [
     [KARAOKE_FONT, 'Chữ hẹp karaoke'],
@@ -341,6 +349,13 @@ BYL.ui = (() => {
 
     :host([data-shape=box]) .ov { background: var(--bg); backdrop-filter: blur(6px); padding: var(--pad); border-radius: .45em; }
     :host([data-shape=pill]) .ov { background: var(--bg); padding: var(--pad); border-radius: 999px; }
+    /* Dải ngang: a band across the whole video, like film subtitles. The
+       shadow spreads sideways and the player clips it at its edges. */
+    :host([data-shape=band]) .ov { background: var(--bg); padding: var(--pad); box-shadow: 0 0 0 100vmax var(--bg); clip-path: inset(0 -100vmax); }
+    /* Từng dòng: each line on its own box, like YouTube captions. */
+    :host([data-shape=lines]) .l { width: fit-content; max-width: 100%; background: var(--bg); padding: var(--pad); border-radius: .2em; }
+    :host([data-shape=lines][data-layout=stagger]) .next, :host([data-shape=lines][data-layout=stagger]) .ov.flip .cur,
+    :host([data-shape=lines][data-layout=stagger]) .ov.flip .tr { margin-left: auto; }
 
     /* So le: classic karaoke machine, two lines that take turns */
     :host([data-layout=stagger]) .ov { align-items: stretch; min-width: min(60%, 18em); }
@@ -562,7 +577,10 @@ BYL.ui = (() => {
     editBtn.title = 'Sửa lời đang hiện, hoặc tự nhập / dịch lời. Bản sửa được nhớ cho video này.';
     const tapBtn = el('button', '', '⏱ Gõ nhịp');
     tapBtn.title = 'Phát bài và bấm Space mỗi khi bắt đầu hát một dòng: ghi thời gian chính xác cho từng dòng';
-    row4.append(editBtn, tapBtn, copy, open);
+    const againBtn = el('button', '', '↻ Tìm lại');
+    againBtn.title = 'Kết quả tìm được lưu lại để mở video nhanh hơn. Bấm để tìm lại từ đầu ở mọi nguồn.';
+    againBtn.addEventListener('click', () => api.onSearchAgain?.());
+    row4.append(editBtn, tapBtn, copy, againBtn, open);
 
     const tapbar = el('div', 'tapbar');
     tapbar.hidden = true;
@@ -825,6 +843,14 @@ BYL.ui = (() => {
         editLook({ [key]: Number(r.value) }, false);
       });
       r.addEventListener('change', () => editLook({ [key]: Number(r.value) }, true));
+      // Double-click: back to the chosen style's value (padding: the shape's).
+      r.title = 'Nháy đúp để về mặc định';
+      r.addEventListener('dblclick', () => {
+        const def = { ...BASE_LOOK, ...presetLook(BYL.settings.value.overlayStyle) }[key];
+        editLook({ [key]: def }, true);
+        r.value = PAD_KEYS.includes(key) ? padOf(currentLook(), key) : def;
+        show();
+      });
       w.append(r, val);
       return w;
     };
@@ -868,7 +894,7 @@ BYL.ui = (() => {
       editLook(Object.fromEntries(PAD_KEYS.map((k) => [k, undefined])), true);
       buildStudio();
     };
-    row('Kiểu', seg('shape', [['none', 'Không'], ['box', 'Khung'], ['pill', 'Viên thuốc']], reshape));
+    row('Kiểu', seg('shape', [['none', 'Không'], ['box', 'Khung'], ['pill', 'Viên'], ['band', 'Dải ngang'], ['lines', 'Từng dòng']], reshape));
     if (look.shape !== 'none') {
       row('Màu nền', color('bg', 'Màu nền'), range('bgAlpha', 0, 100));
       // Padding sliders follow the shape's default until the user moves them.

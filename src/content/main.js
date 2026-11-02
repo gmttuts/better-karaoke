@@ -6,7 +6,8 @@
 (() => {
   let run = 0;
 
-  async function onPage() {
+  // again: true re-runs the search for the video already shown (↻ Tìm lại).
+  async function onPage(again) {
     const url = new URL(location.href);
     const videoId = BYL.isShorts() ? url.pathname.split('/')[2] : url.pathname === '/watch' ? url.searchParams.get('v') : null;
     if (!videoId) {
@@ -14,7 +15,7 @@
       return;
     }
     const host = document.getElementById('byl-panel-host');
-    if (BYL.ui.state.videoId === videoId && host?.isConnected && !host.hidden) return;
+    if (again !== true && BYL.ui.state.videoId === videoId && host?.isConnected && !host.hidden) return;
     const my = ++run;
     const alive = () => my === run;
 
@@ -25,6 +26,19 @@
     }
     if (!(await BYL.ui.mount()) || !alive()) return;
     BYL.ui.reset({ videoId, saved: await BYL.videoStore.get(videoId) });
+
+    // Results from an earlier visit show up at once, before YouTube answers.
+    const enabled = (key) => settings[BYL.SOURCES[key].setting];
+    const cache = again === true ? (await BYL.searchCache.drop(videoId), { at: {}, list: {} }) : await BYL.searchCache.get(videoId);
+    if (!alive()) return;
+    const cached = new Set();
+    for (const key of Object.keys(BYL.SOURCES)) {
+      const hit = BYL.sources[key] && enabled(key) && BYL.searchCache.hit(cache, key);
+      if (!hit) continue;
+      cached.add(key);
+      BYL.ui.addCandidates(hit);
+      BYL.ui.setSourceStatus(key, hit.length ? 'ok' : 'none', hit.length);
+    }
 
     let next;
     try {
@@ -45,11 +59,13 @@
     BYL.ui.setSong(song, duration);
 
     const ctx = { videoId, song, duration, next, player, settings };
-    const runSource = (key) => {
+    const runSource = (key, fresh) => {
+      if (!fresh && cached.has(key)) return Promise.resolve();
       BYL.ui.setSourceStatus(key, 'loading');
       return BYL.sources[key](ctx)
         .then((list) => {
           if (!alive()) return;
+          BYL.searchCache.put(videoId, key, list);
           BYL.ui.addCandidates(list);
           BYL.ui.setSourceStatus(key, list.length ? 'ok' : 'none', list.length);
         })
@@ -59,7 +75,8 @@
           BYL.ui.setSourceStatus(key, 'error');
         });
     };
-    BYL.ui.onLoadSource = (key) => alive() && runSource(key);
+    BYL.ui.onLoadSource = (key) => alive() && runSource(key, true);
+    BYL.ui.onSearchAgain = () => onPage(true);
 
     // Captions as word timings, for lining up lyrics (see align.js). Picks the
     // track in the lyrics' language, uploaded before auto-generated.
@@ -85,12 +102,12 @@
       return captionCache.get(key);
     };
 
-    const enabled = (key) => settings[BYL.SOURCES[key].setting];
     const main = Object.keys(BYL.SOURCES).filter((k) => k !== 'transcript' && enabled(k));
     await Promise.all(main.map(runSource));
     if (!alive() || !enabled('transcript')) return;
     // Captions are the last resort: load them by themselves only when nothing
     // else turned up, otherwise leave a chip to load them on demand.
+    if (cached.has('transcript')) return;
     if (BYL.ui.state.candidates.length) BYL.ui.setSourceStatus('transcript', 'idle');
     else runSource('transcript');
   }

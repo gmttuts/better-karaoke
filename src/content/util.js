@@ -89,6 +89,55 @@ BYL.videoStore = {
   },
 };
 
+// Search results per video ('c:<id>'), so reopening a video shows its
+// lyrics at once instead of asking YouTube and the lyric sites again.
+// Results go stale after a week (a day when nothing was found: comments and
+// lyric sites keep growing). "↻ Tìm lại" in the panel drops them.
+BYL.searchCache = {
+  TTL: 7 * 864e5,
+  EMPTY_TTL: 864e5,
+  MAX: 300,
+  async get(videoId) {
+    try {
+      const k = 'c:' + videoId;
+      return (await chrome.storage.local.get(k))[k] || { at: {}, list: {} };
+    } catch {
+      return { at: {}, list: {} };
+    }
+  },
+  // The cached list for one source, or null if missing or stale.
+  hit(entry, key) {
+    const list = entry.list[key];
+    const age = Date.now() - (entry.at[key] || 0);
+    return list && age < (list.length ? this.TTL : this.EMPTY_TTL) ? list : null;
+  },
+  queue: Promise.resolve(),
+  put(videoId, key, list) {
+    this.queue = this.queue.then(async () => {
+      try {
+        const k = 'c:' + videoId;
+        const cur = (await chrome.storage.local.get(k))[k] || { at: {}, list: {} };
+        cur.at[key] = Date.now();
+        cur.list[key] = list;
+        await chrome.storage.local.set({ [k]: cur });
+        if (Math.random() < 0.05) await this.prune();
+      } catch {}
+    });
+    return this.queue;
+  },
+  drop(videoId) {
+    return chrome.storage.local.remove('c:' + videoId).catch(() => {});
+  },
+  // Keep the most recently used MAX videos.
+  async prune() {
+    const all = Object.entries(await chrome.storage.local.get(null)).filter(([k]) => k.startsWith('c:'));
+    if (all.length <= this.MAX) return;
+    const newest = (e) => Math.max(0, ...Object.values(e.at || {}));
+    all.sort((a, b) => newest(b[1]) - newest(a[1]));
+    await chrome.storage.local.remove(all.slice(this.MAX).map(([k]) => k));
+  },
+};
+
 // ---------- object walking ----------
 
 // Depth-first search for every value stored under `key` anywhere in obj.
@@ -169,31 +218,54 @@ const NOISE_WORDS =
   'karaoke|beat|instrumental|tone nam|tone nữ|tone nu|song ca|lời bài hát|loi bai hat|có lời|co loi|' +
   'live|performance|teaser|trailer|color coded|han\\/rom\\/eng|sub|phụ đề|ost|nhạc phim|soundtrack';
 const NOISE_RE = new RegExp('(' + NOISE_WORDS + ')', 'i');
+// Only dropped inside brackets: (prod. by X), (Remix), (Album 22 - Track 10)…
+const BRACKET_NOISE_RE = /prod\b|remix|cover|acoustic|lo-?fi|sped up|speed up|tiktok|version|\bver\b|album|track|piano|guitar|\bbeat\b|from |trích|phim/i;
 
 BYL.cleanTitle = (title) => {
   let t = String(title || '');
   // Drop bracketed chunks that are just tags like (Official MV) or [Karaoke Tone Nam].
-  t = t.replace(/[\(\[【「『][^\)\]】」』]*[\)\]】」』]/g, (m) => (NOISE_RE.test(m) ? ' ' : m));
+  t = t.replace(/[\(\[【「『][^\)\]】」』]*[\)\]】」』]/g, (m) => (NOISE_RE.test(m) || BRACKET_NOISE_RE.test(m) ? ' ' : m));
   t = t.replace(/#\S+/g, ' ');
-  // "Song - Artist | Official MV" -> keep the part before | when the rest is noise.
-  const bar = t.split(/\s[|｜]\s?|\s?[|｜]\s/);
-  if (bar.length > 1) t = bar.filter((p, i) => i === 0 || !NOISE_RE.test(p)).join(' - ');
+  // "Lời bài hát: Song - Artist"
+  t = t.replace(/^\s*(lời bài hát|loi bai hat|lyrics?|karaoke)\s*[:：|-]\s*/i, '');
+  // "Song - Artist | Official MV" -> keep the part before | when the rest is
+  // noise. When that part already reads "Song - Artist", whatever follows is
+  // a show, a release date or a tag ("| KC: Mùng 1 Tết"), so drop it all.
+  const bar = t.split(/\s[|｜]\s?|\s?[|｜]\s/).filter((p) => p.trim());
+  if (bar.length > 1) t = /\s[-–—]\s/.test(bar[0]) ? bar[0] : bar.filter((p, i) => i === 0 || !NOISE_RE.test(p)).join(' - ');
   t = t.replace(new RegExp('\\b(' + NOISE_WORDS + ')\\b', 'gi'), ' ');
   t = t.replace(/\s*[-–—:]\s*$/g, '').replace(/^\s*[-–—:]\s*/g, '');
   return t.replace(/\s{2,}/g, ' ').trim();
 };
 
+// "BÁU VẬT TRỜI CHO" -> "Báu Vật Trời Cho". Single words (HIEUTHUHAI, APJ)
+// and tokens like M-TP or 2PM are names: left alone.
+const unshout = (s) => {
+  const words = s.split(/\s+/);
+  if (s !== s.toUpperCase() || s === s.toLowerCase() || words.filter((w) => /\p{L}{2}/u.test(w)).length < 2) return s;
+  return words.map((w) => (/[-\d.]/.test(w) ? w : w.charAt(0) + w.slice(1).toLowerCase())).join(' ');
+};
+
+// Common Vietnamese family names: "Bùi Công Nam", "Phan Mạnh Quỳnh"…
+const SURNAME_RE = /^(nguyễn|trần|lê|phạm|hoàng|huỳnh|phan|vũ|võ|đặng|bùi|đỗ|hồ|ngô|dương|lý|đinh|trịnh|lâm|tăng|đàm|châu|quách|lương|cao|tạ|hà|triệu|văn|kiều|thái|mai|đào|chu|khắc|đức|minh|thùy|thu|bảo|tuấn|quang)\s/i;
+const looksLikeName = (s) => SURNAME_RE.test(s.trim()) && s.trim().split(/\s+/).length <= 4;
+
 const stripFeat = (s) => s.replace(/\s*[\(\[]?\s*\b(ft\.?|feat\.?|featuring)\s.*$|\s+x\s+.*$/i, '').trim();
 const cleanChannel = (s) =>
   String(s || '')
     .replace(/\s*-\s*Topic$/i, '')
-    .replace(/\b(official|vevo|music|channel|entertainment|records?|tv)\b/gi, ' ')
+    .replace(/\b(official|vevo|music|channel|entertainment|records?|tv|lyrics?|karaoke|vietsub|nhạc|hay|việt|mỗi ngày)(?=\s|$)/gi, ' ')
     .replace(/\s{2,}/g, ' ')
     .trim();
 
 // Work out { title, artist } for the song playing in a video.
 // attrs: YouTube's own "Music" card ({title, subtitle}) when the video has one.
-BYL.parseSong = ({ title, author, attrs }) => {
+BYL.parseSong = (args) => {
+  const song = parseSong(args);
+  return { ...song, title: unshout(song.title), artist: unshout(song.artist) };
+};
+
+function parseSong({ title, author, attrs }) {
   // The card sometimes names a show or a different track, so only trust it
   // when it matches the video title.
   const music = (attrs || []).find((a) => a.title && a.subtitle && BYL.similarity(a.title, title) >= 0.6);
@@ -202,20 +274,28 @@ BYL.parseSong = ({ title, author, attrs }) => {
   if (/\s-\s*Topic$/i.test(author || '')) return { title: BYL.cleanTitle(title), artist: cleanChannel(author) };
 
   const cleaned = BYL.cleanTitle(title);
-  const parts = cleaned.split(/\s+[-–—]\s+|\s+[|｜]\s+/).filter(Boolean);
   const channel = cleanChannel(author);
+  // ARTIST 'Song' / ARTIST “Song”: the quoted part is the song.
+  const quoted = cleaned.match(/(?:^|\s)['‘“"]([^'‘’“”"]{2,80})['’”"](?=\s|$)/);
+  if (quoted) {
+    const rest = cleaned.replace(quoted[0], ' ').replace(/[-–—]/g, ' ').replace(/\s+/g, ' ').trim();
+    return { title: stripFeat(quoted[1].trim()), artist: rest || channel };
+  }
+  const parts = cleaned.split(/\s+[-–—]\s+|\s+[|｜]\s+/).filter(Boolean);
   if (parts.length >= 2) {
     const [a, b] = parts;
     const simA = BYL.similarity(a, channel);
     const simB = BYL.similarity(b, channel);
-    if (simB > simA) return { title: stripFeat(a), artist: b };
-    if (simA > simB) return { title: stripFeat(b), artist: a };
-    // No hint from the channel: Vietnamese uploads usually go "Song - Artist",
-    // international ones "Artist - Song".
+    // The channel is a hint only when it really names one side.
+    if (Math.max(simA, simB) >= 0.5 && simA !== simB) return simB > simA ? { title: stripFeat(a), artist: b } : { title: stripFeat(b), artist: a };
+    // A side that looks like a Vietnamese person's name is the singer.
+    if (looksLikeName(a) !== looksLikeName(b)) return looksLikeName(b) ? { title: stripFeat(a), artist: b } : { title: stripFeat(b), artist: a };
+    // No hint: Vietnamese uploads usually go "Song - Artist", international
+    // ones "Artist - Song".
     return BYL.isVietnamese(cleaned) ? { title: stripFeat(a), artist: b } : { title: stripFeat(b), artist: a };
   }
   return { title: stripFeat(cleaned), artist: channel };
-};
+}
 
 // ---------- lyric parsing ----------
 

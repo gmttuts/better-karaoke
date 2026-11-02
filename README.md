@@ -9,9 +9,11 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
   - **Karaoke xanh dương** (mặc định) / **Karaoke đỏ**: giống đĩa karaoke Việt, chữ Roboto đậm (đổi sang chữ hẹp karaoke trong 🎨), trắng ánh bạc viền đen; phần đã hát chuyển xanh dương (hoặc đỏ) viền trắng, có bóng đổ, hai dòng so le.
   - **Nổi bật**: một dòng lớn, phần đã hát chuyển màu vàng sang hồng, dòng kế tiếp nhỏ bên dưới.
   - **Khung tối**: khung tối mờ, dễ đọc trên mọi nền video.
+  - **Phụ đề YouTube**: mỗi dòng một khung đen mờ như phụ đề của YouTube.
+  - **Dải điện ảnh**: một dải tối mờ chạy ngang hết video, chữ xanh nhạt.
   - **Gọn nhẹ**: một dòng nhỏ dạng viên thuốc, ít che video.
 
-  - **🎨 Tuỳ chỉnh** (chia nhóm Chữ / Màu / Nền / Bố cục): phông chữ, độ đậm, cỡ chữ, màu chữ / màu đã hát (có chuyển màu), viền, bóng đổ, nền (khung, viên thuốc) cùng lề trong khung trên / dưới / trái / phải, bố cục (so le, 1 dòng, 2 dòng, 3 dòng), hiệu ứng (chạy từng chữ hoặc sáng cả dòng), khoảng cách mép. Lưu lại thành **preset** riêng, chọn lại trong "Kiểu chữ".
+  - **🎨 Tuỳ chỉnh** (chia nhóm Chữ / Màu / Nền / Bố cục): phông chữ, độ đậm, cỡ chữ, màu chữ / màu đã hát (có chuyển màu), viền, bóng đổ, nền (khung, viên thuốc, dải ngang, từng dòng) cùng lề trong khung trên / dưới / trái / phải, bố cục (so le, 1 dòng, 2 dòng, 3 dòng), hiệu ứng (chạy từng chữ hoặc sáng cả dòng), khoảng cách mép. Lưu lại thành **preset** riêng, chọn lại trong "Kiểu chữ". **Nháy đúp một thanh trượt** để đưa thông số đó về mặc định của kiểu đang chọn.
 
   Nút **⬇ Dưới / ⬆ Trên** đổi vị trí lời để không che chữ có sẵn trong MV. Chỉnh cỡ chữ bằng A− / A+.
 - **⧉ Cửa sổ nổi**: mở lời trong một cửa sổ nhỏ luôn nằm trên cùng (Document Picture-in-Picture), vẫn chạy khi chuyển tab hoặc làm việc khác. Dùng chung kiểu chữ với overlay. Có thanh điều khiển như mini player của YouTube (hiện khi rê chuột, luôn hiện khi đang dừng): bài trước, câu trước, phát/dừng, câu sau, bài sau, thanh tua; phím Space và ←/→ cũng dùng được.
@@ -38,6 +40,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **⏱ Gõ nhịp**: phát bài, bấm **Space** đúng lúc bắt đầu hát dòng có viền; mỗi lần bấm ghi thời gian cho một dòng. **Backspace** lùi một dòng và tua lại 3 giây; bấm vào một dòng để gõ lại từ đó. Dòng bị bỏ qua được ước lượng theo hai dòng bên cạnh. Kết quả lưu thành "✍ Lời của bạn" có thời gian. Mỗi video giữ được hai bản của bạn, nên gõ nhịp lời gốc không ghi đè lên bản dịch đang hiện.
 - **Kéo thanh dưới khung lời** để thu gọn hoặc mở rộng; độ cao được nhớ lại. Nháy đúp thanh để về mặc định.
 - **Sao chép** lời, **Mở nguồn** để xem trang gốc.
+- **Mở lại video là có lời ngay**: kết quả tìm được lưu 7 ngày (1 ngày nếu không tìm thấy gì, vì comment và trang lời còn được bổ sung). Bấm **↻ Tìm lại** để tìm lại từ đầu ở mọi nguồn. Kết quả lưu không nằm trong file sao lưu.
 - **💾 Sao lưu / khôi phục** (trong cửa sổ cài đặt của extension): xuất một file `.json` gồm lời bạn đã sửa, điểm 📍, độ lệch, lời đã chọn cho từng video, preset kiểu chữ và cài đặt. Nhập lại ở máy khác hoặc sau khi cài lại; dữ liệu đang có được giữ, video nào có ở cả hai bên thì lấy bản sửa sau cùng.
 
 ## Cài đặt (chế độ nhà phát triển)
@@ -60,7 +63,7 @@ npm test             # build rồi chạy thử headless (tắt tiếng) trên m
 npm run build:store  # thêm bản zip bỏ trường "key" để nộp Chrome Web Store
 ```
 
-`build` dừng lại nếu thiếu file mà `manifest.json` cần (icon, script, trang cài đặt, font). `test` mở video `6HQWus2DOsI` (đổi bằng `VIDEO=<id>`) và kiểm tra: panel, bảng 🎨, nút 🎤 Karaoke, tên bài và lỗi JavaScript.
+`build` dừng lại nếu thiếu file mà `manifest.json` cần (icon, script, trang cài đặt, font). `test` chạy bộ test tách tên bài, rồi mở video `6HQWus2DOsI` (đổi bằng `VIDEO=<id>`) và kiểm tra: panel, bảng 🎨, nút 🎤 Karaoke, tên bài và lỗi JavaScript.
 
 Bấm biểu tượng extension để **tắt hẳn extension** (công tắc "Bật trên YouTube", áp dụng ngay cho mọi tab), bật/tắt **tự hiện lời trên video** (mặc định tắt; chọn kiểu chữ hay mở 🎨 chỉ bật lời cho video đang xem), bật/tắt từng nguồn, ưu tiên lời có thời gian, số trang comment cần quét. Kiểu chữ chỉnh trong panel (🎨).
 
@@ -82,7 +85,12 @@ scripts/               build.mjs (đóng gói + kiểm tra file), smoke.mjs (tes
 fonts/                 Roboto Condensed (Apache 2.0, có bộ chữ tiếng Việt) cho kiểu Karaoke
 ```
 
-- **Tên bài và ca sĩ**: ưu tiên thẻ "Nhạc" của YouTube dưới mô tả. Nếu không có thì tách từ tiêu đề (bỏ `[Official MV]`, `Karaoke`, `Tone Nam`…), dùng tên kênh để biết bên nào là ca sĩ.
+- **Tên bài và ca sĩ**: ưu tiên thẻ "Nhạc" của YouTube dưới mô tả. Nếu không có thì tách từ tiêu đề:
+  - Bỏ `[Official MV]`, `Karaoke`, `Tone Nam`, `MV OST`, `Lời bài hát:`, `(prod. by …)`, `(Remix)`, `(Album … - Track …)`… Khi phần trước dấu `|` đã có dạng "Bài - Ca sĩ" thì bỏ hết phần sau (`| KC: Mùng 1 Tết`).
+  - Tên trong dấu nháy là tên bài (`MONO - 'Waiting For You'`).
+  - Bên nào là ca sĩ: dựa vào tên kênh nếu tên kênh chỉ rõ, rồi tới họ người Việt (Bùi Công Nam, Phan Mạnh Quỳnh…), cuối cùng theo thói quen (tiêu đề tiếng Việt "Bài - Ca sĩ", tiếng Anh "Ca sĩ - Bài").
+  - Tiêu đề viết hoa toàn bộ được đổi về dạng thường (BÁU VẬT TRỜI CHO → Báu Vật Trời Cho). Tên một chữ như HIEUTHUHAI, M-TP thì giữ nguyên.
+  - Các trường hợp mẫu nằm trong `tests/parse-song.test.mjs`.
 - **Nhận diện lời trong comment/mô tả**: tìm đoạn liền mạch dài nhất gồm các dòng ngắn, bỏ dòng có link, hashtag, @, "subscribe", lượt xem, năm, dòng credit (Tác giả:, Hòa âm:, Mixing Engineer…)… Cần ít nhất 8 dòng. Có tiêu đề "Lời bài hát:" / "Lyrics:" hoặc chứa tên bài thì được cộng điểm.
 - **Gọi YouTube ẩn danh** (`credentials: 'omit'`), nên không đụng tới tài khoản người dùng.
 - **Phụ đề**: YouTube chỉ trả file phụ đề cho chính trình phát (kèm token `pot`). Vì vậy `bridge.js` giữ bản sao của file trình phát đã tải. Nếu chưa có, extension bật CC thoáng qua để trình phát tải, rồi trả CC về trạng thái cũ.
@@ -102,6 +110,7 @@ Better YouTube Lyric lấy ý tưởng overlay và LRCLIB, rồi thêm phần nh
 - Hợp âm chuẩn là đọc HTML trang web. Nếu trang đổi giao diện thì nguồn này có thể hỏng (các nguồn khác vẫn chạy). Tắt được trong cài đặt.
 - Lời trong comment phụ thuộc thứ tự "comment hàng đầu" của YouTube, mỗi lần tải có thể khác nhau. Tăng "Số trang comment quét" nếu hay bị sót.
 - Lời từ LRCLIB được canh theo bản audio. Với MV có đoạn mở đầu dài, cần chỉnh "Lệch".
+- Tiêu đề tiếng Anh dạng "Bài - Ca sĩ" đăng ở kênh không mang tên ca sĩ sẽ bị đọc ngược (bài ↔ ca sĩ). Việc tìm lời gần như không bị ảnh hưởng vì các nguồn tìm theo cả hai.
 - Chạy trên video thường và Shorts của `www.youtube.com` (YouTube Music đã có lời riêng).
 
 ## Đưa lên Chrome Web Store (sau này)
