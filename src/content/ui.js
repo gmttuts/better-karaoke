@@ -361,7 +361,9 @@ BYL.ui = (() => {
 
   async function mount() {
     const shorts = BYL.isShorts();
-    const parent = shorts ? (await waitFor('#shorts-player')) && document.body : await waitFor('#secondary-inner, #secondary');
+    const parent = shorts
+      ? (await waitFor('#shorts-player')) && document.body
+      : (await waitFor('#secondary')) && (document.querySelector('#secondary-inner') || document.querySelector('#secondary'));
     if (!parent) return false;
     if (!panelHost) buildPanel();
     panelHost.toggleAttribute('data-float', shorts);
@@ -396,6 +398,19 @@ BYL.ui = (() => {
     }
   }
   window.addEventListener('resize', placeFloat);
+
+  // YouTube sometimes rebuilds the side column and drops the panel with it,
+  // which left the lyrics frozen on the video with no button to turn them off.
+  async function remount() {
+    if (!panelHost || panelHost.hidden || panelHost.isConnected || remounting) return;
+    remounting = true;
+    try {
+      if (await mount()) setOverlay(state.overlayOn, false);
+    } finally {
+      remounting = false;
+    }
+  }
+  let remounting = false;
 
   function hide() {
     if (panelHost) panelHost.hidden = true;
@@ -563,7 +578,8 @@ BYL.ui = (() => {
       if (!lookSel.value) return;
       BYL.settings.set({ overlayStyle: lookSel.value, overlayLook: null });
       refreshLook();
-      if (!state.overlayOn && !F) setOverlay(true, true);
+      // Show the change on this video; "Tự bật lời trên video" stays as set.
+      if (!state.overlayOn && !F) setOverlay(true, false);
     });
     posBtn.addEventListener('click', () => {
       BYL.settings.set({ overlayPosition: BYL.settings.value.overlayPosition === 'top' ? 'bottom' : 'top' });
@@ -574,7 +590,7 @@ BYL.ui = (() => {
       studioBtn.classList.toggle('on', !studio.hidden);
       if (!studio.hidden) {
         buildStudio();
-        if (!state.overlayOn && !F) setOverlay(true, true);
+        if (!state.overlayOn && !F) setOverlay(true, false);
       }
     });
     copy.addEventListener('click', async () => {
@@ -1607,6 +1623,7 @@ BYL.ui = (() => {
       if (gen !== loopGen) return;
       if (!panelHost?.isConnected || panelHost.hidden) {
         looping = false;
+        O?.host.remove();
         return;
       }
       try {
@@ -2334,6 +2351,6 @@ BYL.ui = (() => {
   }
 
   // main.js fills in onLoadSource, hasCaptions and captionWordsFor per video.
-  const api = { mount, hide, reset, setSong, setSourceStatus, addCandidates, state, onLoadSource: null };
+  const api = { mount, remount, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, onLoadSource: null };
   return api;
 })();

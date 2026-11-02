@@ -3,6 +3,7 @@
 // Only the settings shown in this popup; the overlay look is edited in the
 // panel (🎨) on YouTube. Defaults must match BYL.DEFAULTS in content/util.js.
 const DEFAULTS = {
+  enabled: true,
   srcDescription: true,
   srcComments: true,
   srcDuplicates: true,
@@ -14,6 +15,7 @@ const DEFAULTS = {
   commentPages: 3,
 };
 
+const LIVE = ['enabled', 'overlayOnByDefault'];
 const saved = document.getElementById('saved');
 let timer;
 
@@ -22,6 +24,7 @@ chrome.storage.sync.get(DEFAULTS).then((values) => {
     const k = input.dataset.k;
     if (input.type === 'checkbox') input.checked = !!values[k];
     else input.value = values[k];
+    if (k === 'enabled') document.body.classList.toggle('off', !input.checked);
     input.addEventListener('change', async () => {
       let v = input.type === 'checkbox' ? input.checked : Number(input.value);
       if (input.type === 'number') {
@@ -29,7 +32,9 @@ chrome.storage.sync.get(DEFAULTS).then((values) => {
         input.value = v;
       }
       await chrome.storage.sync.set({ [k]: v });
-      saved.textContent = 'Đã lưu, áp dụng từ video tiếp theo.';
+      if (k === 'enabled') document.body.classList.toggle('off', !v);
+      // These two reach open YouTube tabs right away (main.js listens).
+      saved.textContent = LIVE.includes(k) ? 'Đã lưu.' : 'Đã lưu, áp dụng từ video tiếp theo.';
       clearTimeout(timer);
       timer = setTimeout(() => (saved.textContent = ''), 2000);
     });

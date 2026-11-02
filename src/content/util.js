@@ -6,6 +6,7 @@ var BYL = (globalThis.BYL = globalThis.BYL || {});
 // ---------- settings ----------
 
 BYL.DEFAULTS = {
+  enabled: true, // master switch in the toolbar popup
   srcDescription: true,
   srcComments: true,
   srcDuplicates: true,

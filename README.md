@@ -48,7 +48,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 `manifest.json` có trường `key` để ID của extension luôn là `hpklleajpolgkiipenbegkgjmeogllno`, dù thư mục nằm ở đâu hay đổi tên. Dữ liệu trong `chrome.storage` gắn với ID này nên không bị mất khi chuyển thư mục.
 3. Mở một video nhạc trên YouTube. Panel hiện ở đầu cột bên phải.
 
-Bấm biểu tượng extension để bật/tắt từng nguồn, ưu tiên lời có thời gian, số trang comment cần quét. Kiểu chữ chỉnh trong panel (🎨).
+Bấm biểu tượng extension để **tắt hẳn extension** (công tắc "Bật trên YouTube", áp dụng ngay cho mọi tab), bật/tắt **tự hiện lời trên video** (mặc định tắt; chọn kiểu chữ hay mở 🎨 chỉ bật lời cho video đang xem), bật/tắt từng nguồn, ưu tiên lời có thời gian, số trang comment cần quét. Kiểu chữ chỉnh trong panel (🎨).
 
 ## Cách hoạt động
 

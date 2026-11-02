@@ -13,11 +13,16 @@
       BYL.ui.hide();
       return;
     }
-    if (BYL.ui.state.videoId === videoId && document.getElementById('byl-panel-host')?.isConnected) return;
+    const host = document.getElementById('byl-panel-host');
+    if (BYL.ui.state.videoId === videoId && host?.isConnected && !host.hidden) return;
     const my = ++run;
     const alive = () => my === run;
 
     const settings = await BYL.settings.load();
+    if (!settings.enabled) {
+      BYL.ui.hide();
+      return;
+    }
     if (!(await BYL.ui.mount()) || !alive()) return;
     BYL.ui.reset({ videoId, saved: await BYL.videoStore.get(videoId) });
 
@@ -94,10 +99,29 @@
   // Swiping between Shorts doesn't always fire a navigation event.
   let lastHref = location.href;
   setInterval(() => {
-    if (location.href === lastHref) return;
+    if (location.href === lastHref) return BYL.ui.remount();
     lastHref = location.href;
     onPage();
   }, 700);
+
+  // The popup's master switch and "Tự bật lời trên video" apply at once.
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'sync') return;
+    if (changes.enabled) {
+      BYL.settings.value.enabled = changes.enabled.newValue !== false;
+      if (BYL.settings.value.enabled) onPage();
+      else {
+        run++;
+        BYL.ui.hide();
+      }
+    }
+    if (changes.overlayOnByDefault) {
+      const on = !!changes.overlayOnByDefault.newValue;
+      BYL.settings.value.overlayOnByDefault = on;
+      const host = document.getElementById('byl-panel-host');
+      if (BYL.ui.state.videoId && host && !host.hidden) BYL.ui.setOverlay(on, false);
+    }
+  });
   window.addEventListener('popstate', () => setTimeout(onPage, 300));
   onPage();
 })();

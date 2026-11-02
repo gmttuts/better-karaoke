@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Better YouTube Lyric",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq4CGuXgzUI1b41JvGlbNHkFe4ScpNNK23MpFzvRXNdIUSpdqDCPsTVNaL+RbleVwrgIR63Ii4lzaB9ZXVc2jQi65Jlww1Jy5PdqHXacpWwC0girt/mPtdQIsf8TOY6Ye2VY6oABfKJLRW58FZ1llABOH6n9bVDkzEyymbP5NBkdbB0Ju+I/AW3yZuILfuuS16IBTyADhusHZIhpPMV3KZaoX7G5lXnhCCqQ4jAoqqoyN7bjNNWButFs2Z7EJGj/5hGEVl95WKd8HJN6kf+TwOatXDAUBWlk6LPA1uwgkh2ouf6s5VOJ6d1A8cBLtTX30lfifjlFhPaNZ/HjiAWmfLwIDAQAB",
   "description": "Tìm lời bài hát ngay trên YouTube (comment, bản đăng lại, LRCLIB, Hợp âm chuẩn, phụ đề) và hát karaoke trên video.",
   "icons": {
