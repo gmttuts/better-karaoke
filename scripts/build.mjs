@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
 const out = join(dist, 'better-youtube-lyric');
-const INCLUDE = ['manifest.json', 'README.md', 'fonts', 'icons', 'src'];
+const INCLUDE = ['manifest.json', 'README.md', '_locales', 'fonts', 'icons', 'src'];
 
 const manifest = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
 const version = manifest.version;

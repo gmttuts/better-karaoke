@@ -15,7 +15,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     return {
       id,
       source: 'custom',
-      label: label || 'Bản đã sửa',
+      label: label || L('Bản đã sửa'),
       synced,
       lines: synced ? BYL.parseLrc(text) : BYL.plainLines(text),
       score: 1000,
@@ -31,12 +31,12 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     const tip = el(
       'div',
       'tip',
-      'Sửa trực tiếp, mỗi câu một dòng, để trống một dòng giữa các đoạn. Giữ [phút:giây] ở đầu dòng để giữ thời gian (lời dịch vẫn chạy đúng nhịp). ' +
-        'Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.'
+      L('Sửa trực tiếp, mỗi câu một dòng, để trống một dòng giữa các đoạn. Giữ [phút:giây] ở đầu dòng để giữ thời gian (lời dịch vẫn chạy đúng nhịp). ') +
+        L('Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.')
     );
     const ta = el('textarea');
     ta.spellcheck = false;
-    ta.placeholder = 'Dán hoặc gõ lời bài hát vào đây…';
+    ta.placeholder = L('Dán hoặc gõ lời bài hát vào đây…');
     // Timed lyrics are written with the current offset folded in.
     ta.value = c ? (c.synced ? BYL.toLrc(c.lines.map((l) => (l.t === undefined ? l : { ...l, t: effT(l.t) }))) : BYL.lyricsText(c.lines)) : '';
     const mirror = el('div', 'mirror');
@@ -46,32 +46,32 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     const search = el('div', 'row esearch');
     const q = el('input');
     q.type = 'text';
-    q.placeholder = '🔎 Tìm trong lời (gõ không dấu cũng được)…';
+    q.placeholder = L('🔎 Tìm trong lời (gõ không dấu cũng được)…');
     const count = el('span', 'muted', '');
     const up = el('button', '', '↑');
     const down = el('button', '', '↓');
-    up.title = 'Kết quả trước (Shift+Enter)';
-    down.title = 'Kết quả sau (Enter)';
+    up.title = L('Kết quả trước (Shift+Enter)');
+    down.title = L('Kết quả sau (Enter)');
     search.append(q, count, up, down);
 
     const tools = el('div', 'row');
-    const stamp = el('button', '', '📍 Gắn giờ đang phát');
-    stamp.title = 'Ghi thời gian video hiện tại vào đầu dòng có con trỏ rồi xuống dòng kế. Vừa nghe vừa bấm để canh lời (phím tắt: Ctrl/⌘ + Enter)';
+    const stamp = el('button', '', L('📍 Gắn giờ đang phát'));
+    stamp.title = L('Ghi thời gian video hiện tại vào đầu dòng có con trỏ rồi xuống dòng kế. Vừa nghe vừa bấm để canh lời (phím tắt: Ctrl/⌘ + Enter)');
     const followBox = el('label');
     const follow = el('input');
     follow.type = 'checkbox';
     follow.checked = true;
-    followBox.append(follow, 'Cuộn theo nhạc');
-    followBox.title = 'Tô và cuộn tới dòng đang phát';
-    tools.append(stamp, followBox, el('span', 'muted', 'Nháy đúp một dòng có giờ để tua tới đó'));
+    followBox.append(follow, L('Cuộn theo nhạc'));
+    followBox.title = L('Tô và cuộn tới dòng đang phát');
+    tools.append(stamp, followBox, el('span', 'muted', L('Nháy đúp một dòng có giờ để tua tới đó')));
 
     const row = el('div', 'row');
-    const save = el('button', 'on', '💾 Lưu lời');
-    const cancel = el('button', '', 'Huỷ');
-    const fromCaps = el('button', '', '📝 Lấy khung từ phụ đề');
-    fromCaps.title = 'Điền lời từ phụ đề YouTube kèm thời gian, bạn chỉ cần sửa chữ (hoặc thay bằng lời dịch)';
+    const save = el('button', 'on', L('💾 Lưu lời'));
+    const cancel = el('button', '', L('Huỷ'));
+    const fromCaps = el('button', '', L('📝 Lấy khung từ phụ đề'));
+    fromCaps.title = L('Điền lời từ phụ đề YouTube kèm thời gian, bạn chỉ cần sửa chữ (hoặc thay bằng lời dịch)');
     fromCaps.hidden = !api.hasCaptions?.();
-    const del = el('button', '', '🗑 Xoá bản của bạn');
+    const del = el('button', '', L('🗑 Xoá bản của bạn'));
     del.hidden = c?.source !== 'custom';
     row.append(save, cancel, fromCaps, del);
     box.append(tip, search, taWrap, tools, row);
@@ -116,7 +116,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     down.addEventListener('click', () => jumpHit(ED.hit + 1));
 
     save.addEventListener('click', () =>
-      saveCustom(ta.value, c?.source === 'custom' ? c.label : c ? 'Sửa từ ' + S[c.source].name : 'Tự nhập', slotFor(c))
+      saveCustom(ta.value, c?.source === 'custom' ? c.label : c ? L('Sửa từ ') + S[c.source].name : L('Tự nhập'), slotFor(c))
     );
     cancel.addEventListener('click', closeEditor);
     del.addEventListener('click', () => {
@@ -136,7 +136,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
       renderSelect();
       maybeAutoPick();
       if (!state.current) renderLines();
-      say('Đã xoá bản lời của bạn cho video này.');
+      say(L('Đã xoá bản lời của bạn cho video này.'));
     });
     fromCaps.addEventListener('click', () => {
       const t = state.candidates.find((x) => x.source === 'transcript');
@@ -146,7 +146,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
         return;
       }
       fromCaps.disabled = true;
-      fromCaps.textContent = 'Đang tải phụ đề…';
+      fromCaps.textContent = L('Đang tải phụ đề…');
       api.onLoadSource?.('transcript');
       // The transcript source reports back through addCandidates; poll briefly.
       let tries = 0;
@@ -155,11 +155,11 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
         if (got || ++tries > 40 || state.sourceStatus.transcript === 'none' || state.sourceStatus.transcript === 'error') {
           clearInterval(wait);
           fromCaps.disabled = false;
-          fromCaps.textContent = '📝 Lấy khung từ phụ đề';
+          fromCaps.textContent = L('📝 Lấy khung từ phụ đề');
           if (got && ED?.ta === ta) {
             ta.value = BYL.toLrc(got.lines);
             paintEditor();
-          } else if (!got) say('Không lấy được phụ đề của video này.');
+          } else if (!got) say(L('Không lấy được phụ đề của video này.'));
         }
       }, 250);
     });
@@ -222,7 +222,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     });
     mirror.replaceChildren(frag);
     ED.hit = Math.min(ED.hit, ED.hits.length - 1);
-    count.textContent = needle ? (ED.hits.length ? `${Math.max(1, ED.hit + 1)}/${ED.hits.length}` : '0 kết quả') : '';
+    count.textContent = needle ? (ED.hits.length ? `${Math.max(1, ED.hit + 1)}/${ED.hits.length}` : L('0 kết quả')) : '';
     fitMirror();
   }
 
@@ -285,7 +285,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
 
   function saveCustom(text, label, slot = 'custom') {
     text = String(text || '').replace(/\r/g, '').trim();
-    if (!text) return say('Chưa có lời để lưu.');
+    if (!text) return say(L('Chưa có lời để lưu.'));
     const c = customCandidate(text, label, slot);
     state.candidates = state.candidates.filter((x) => baseId(x) !== slot);
     state.candidates.unshift(c);
@@ -299,7 +299,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     choose(c, true);
     renderSelect();
     setSourceStatus('custom', 'ok', state.candidates.filter((x) => x.source === 'custom').length);
-    if (!P.note.textContent) say('💾 Đã lưu lời của bạn. Lần sau mở video này sẽ hiện bản này trước.');
+    if (!P.note.textContent) say(L('💾 Đã lưu lời của bạn. Lần sau mở video này sẽ hiện bản này trước.'));
   }
 
   return { customCandidate, closeEditor, editorTick, openEditor, saveCustom };

@@ -30,26 +30,26 @@ BYL.look = (() => {
   // Chữ thường trắng viền đen; chữ đã hát đổi màu và đổi viền sang trắng, bóng
   // đổ tối phía dưới giữ chữ đọc được trên mọi nền.
   BYL.LOOKS = {
-    red: { name: 'Karaoke đỏ', look: {} },
-    classic: { name: 'Karaoke xanh dương', look: { sung: '#3346f2' } },
+    red: { get name() { return L('Karaoke đỏ'); }, look: {} },
+    classic: { get name() { return L('Karaoke xanh dương'); }, look: { sung: '#3346f2' } },
     focus: {
-      name: 'Nổi bật',
+      get name() { return L('Nổi bật'); },
       look: { textGrad: false, sung: '#ffe066', sung2: '#ff7aa2', strokeW: 0, layout: 'center2', nextScale: 50, scale: 100, margin: 13 },
     },
     box: {
-      name: 'Khung tối',
+      get name() { return L('Khung tối'); },
       look: { weight: 700, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'box', bg: '#0a0a0e', bgAlpha: 62, layout: 'center2', nextScale: 55, scale: 100, margin: 13 },
     },
     captions: {
-      name: 'Phụ đề YouTube',
+      get name() { return L('Phụ đề YouTube'); },
       look: { weight: 500, textGrad: false, sung: '#ffe14d', strokeW: 0, shadow: false, shape: 'lines', bg: '#080808', bgAlpha: 75, layout: 'center2', nextScale: 85, scale: 80, margin: 7 },
     },
     cinema: {
-      name: 'Dải điện ảnh',
+      get name() { return L('Dải điện ảnh'); },
       look: { weight: 600, textGrad: false, sung: '#7fd4ff', strokeW: 0, shape: 'band', bg: '#000000', bgAlpha: 50, layout: 'center2', nextScale: 60, scale: 90, margin: 6 },
     },
     mini: {
-      name: 'Gọn nhẹ',
+      get name() { return L('Gọn nhẹ'); },
       look: { weight: 600, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'pill', layout: 'single', scale: 62, margin: 9 },
     },
   };
@@ -58,6 +58,7 @@ BYL.look = (() => {
   const PAD_KEYS = ['padT', 'padR', 'padB', 'padL'];
   const SHAPE_PAD = { box: [35, 90, 45, 90], pill: [20, 80, 20, 80], band: [30, 0, 35, 0], lines: [6, 30, 10, 30], none: [0, 0, 0, 0] };
   const padOf = (look, k) => look[k] ?? (SHAPE_PAD[look.shape] || SHAPE_PAD.none)[PAD_KEYS.indexOf(k)];
+  // Labels go through L() where they're shown.
   const FONTS = [
     [KARAOKE_FONT, 'Chữ hẹp karaoke'],
     ['', 'Roboto (như YouTube)'],

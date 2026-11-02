@@ -14,7 +14,7 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
 
   function startTap() {
     const c = state.current;
-    if (!c || !singable(c.lines).length) return say('Chưa có lời để gõ nhịp.');
+    if (!c || !singable(c.lines).length) return say(L('Chưa có lời để gõ nhịp.'));
     closeEditor();
     const lines = c.lines.map((l) => ({ text: l.text, section: l.section }));
     const idx = singable(lines);
@@ -30,13 +30,13 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
 
     const bar = P.tapbar;
     bar.replaceChildren();
-    const tip = el('div', '', 'Phát bài và bấm Space đúng lúc bắt đầu hát dòng có viền. Backspace: lùi một dòng (video tua lại). Bấm vào một dòng để gõ lại từ đó.');
+    const tip = el('div', '', L('Phát bài và bấm Space đúng lúc bắt đầu hát dòng có viền. Backspace: lùi một dòng (video tua lại). Bấm vào một dòng để gõ lại từ đó.'));
     const now2 = el('div', 'tapnow');
     const row = el('div', 'row');
-    const go = el('button', 'on', '⏱ Gõ (Space)');
-    const back = el('button', '', '↶ Lùi');
-    const save = el('button', '', '💾 Lưu');
-    const cancel = el('button', '', 'Huỷ');
+    const go = el('button', 'on', L('⏱ Gõ (Space)'));
+    const back = el('button', '', L('↶ Lùi'));
+    const save = el('button', '', L('💾 Lưu'));
+    const cancel = el('button', '', L('Huỷ'));
     row.append(go, back, save, cancel);
     bar.append(tip, now2, row);
     bar.hidden = false;
@@ -69,7 +69,7 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
       const t = TAP.stamps[i];
       if (t !== undefined || k === TAP.ptr) lines.push({ text: TAP.lines[i].text, t: t ?? Infinity, src: i });
     });
-    return { id: 'tap', source: 'custom', label: 'Đang gõ nhịp', synced: true, lines, score: 0 };
+    return { id: 'tap', source: 'custom', label: L('Đang gõ nhịp'), synced: true, lines, score: 0 };
   }
 
   function tapRefresh() {
@@ -135,8 +135,8 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
     const done = TAP.idx.filter((i) => TAP.stamps[i] !== undefined).length;
     P.tapNow.textContent =
       next === undefined
-        ? `Đã gõ hết ${done} dòng. Bấm 💾 Lưu.`
-        : `Dòng kế (${TAP.ptr + 1}/${TAP.idx.length}): ${TAP.lines[next].text}`;
+        ? L('Đã gõ hết {0} dòng. Bấm 💾 Lưu.', done)
+        : L('Dòng kế ({0}/{1}): {2}', TAP.ptr + 1, TAP.idx.length, TAP.lines[next].text);
   }
 
   // Leave tap mode without touching the lyrics (new video, or after save/cancel).
@@ -161,7 +161,7 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
     if (!save || pressed < 2) {
       state.current = null;
       choose(T.from, false);
-      if (save) say('Cần gõ ít nhất 2 dòng để lưu.');
+      if (save) say(L('Cần gõ ít nhất 2 dòng để lưu.'));
       return;
     }
     // Lines that never got a press: spread them between their neighbours.
@@ -181,9 +181,13 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
       .join('\n');
     const from = T.from;
     state.current = from;
-    saveCustom(text, from.source === 'custom' ? from.label : 'Gõ nhịp từ ' + S[from.source].name, slotFor(from));
+    saveCustom(text, from.source === 'custom' ? from.label : L('Gõ nhịp từ ') + S[from.source].name, slotFor(from));
     const guessed = T.idx.length - pressed;
-    say(`⏱ Đã lưu thời gian ${pressed} dòng${guessed ? `, ${guessed} dòng chưa gõ được ước lượng (bấm ⏱ Gõ nhịp để gõ lại)` : ''}.`);
+    say(
+      guessed
+        ? L('⏱ Đã lưu thời gian {0} dòng, {1} dòng chưa gõ được ước lượng (bấm ⏱ Gõ nhịp để gõ lại).', pressed, guessed)
+        : L('⏱ Đã lưu thời gian {0} dòng.', pressed)
+    );
   }
 
   return { tap, tapJump, endTap, tapUndo, stopTap, renderTapLines, startTap, tapping };

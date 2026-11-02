@@ -7,6 +7,7 @@ var BYL = (globalThis.BYL = globalThis.BYL || {});
 
 BYL.DEFAULTS = {
   enabled: true, // master switch in the toolbar popup
+  uiLang: 'auto', // 'auto' | 'vi' | 'en', see i18n.js
   srcDescription: true,
   srcComments: true,
   srcDuplicates: true,
@@ -43,6 +44,7 @@ BYL.settings = {
       const got = await chrome.storage.sync.get(BYL.DEFAULTS);
       Object.assign(got, await chrome.storage.local.get(local));
       this.value = { ...BYL.DEFAULTS, ...got };
+      BYL.setLang(this.value.uiLang);
     } catch {
       this.value = { ...BYL.DEFAULTS };
     }

@@ -145,9 +145,9 @@ BYL.ui = (() => {
   function stale() {
     if (!P || P.wrap.querySelector('.stale')) return;
     const bar = el('div', 'stale');
-    const go = el('button', 'primary', 'Tải lại trang');
+    const go = el('button', 'primary', L('Tải lại trang'));
     go.addEventListener('click', () => location.reload());
-    bar.append(el('span', '', '🔄 Better Lyric vừa được cập nhật. Tải lại trang để dùng bản mới.'), go);
+    bar.append(el('span', '', L('🔄 Better Lyric vừa được cập nhật. Tải lại trang để dùng bản mới.')), go);
     P.wrap.querySelector('.body').prepend(bar);
     P.wrap.classList.remove('collapsed');
   }
@@ -181,10 +181,10 @@ BYL.ui = (() => {
     const header = el('header');
     const song = el('div', 'song');
     const songTitle = el('b', '', 'Better Lyric');
-    const songArtist = el('span', '', 'Đang tìm lời bài hát…');
+    const songArtist = el('span', '', L('Đang tìm lời bài hát…'));
     song.append(songTitle, songArtist);
     const favBtn = el('button', 'fav', '☆');
-    favBtn.title = 'Thêm vào bài yêu thích (xem ở tab "Đã xem")';
+    favBtn.title = L('Thêm vào bài yêu thích (xem ở tab "Đã xem")');
     favBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!state.videoId) return;
@@ -197,9 +197,9 @@ BYL.ui = (() => {
 
     const body = el('div', 'body');
     const nav = el('nav');
-    const tabLyric = el('button', 'on', 'Lời bài hát');
-    const tabKaraoke = el('button', '', 'Bản Karaoke');
-    const tabHistory = el('button', '', 'Đã xem');
+    const tabLyric = el('button', 'on', L('Lời bài hát'));
+    const tabKaraoke = el('button', '', L('Bản Karaoke'));
+    const tabHistory = el('button', '', L('Đã xem'));
     nav.append(tabLyric, tabKaraoke, tabHistory);
 
     // Lyric tab
@@ -208,64 +208,64 @@ BYL.ui = (() => {
     const row1 = el('div', 'row');
     const select = el('select');
     const overlayBtn = el('button', '', '🎤 Karaoke');
-    overlayBtn.title = 'Hiện lời chữ to trên video (dùng được cả khi toàn màn hình)';
-    const pipBtn = el('button', '', '⧉ Cửa sổ nổi');
-    pipBtn.title = 'Mở lời trong một cửa sổ nhỏ luôn nằm trên cùng, kéo đi đâu cũng được (kể cả khi chuyển tab)';
+    overlayBtn.title = L('Hiện lời chữ to trên video (dùng được cả khi toàn màn hình)');
+    const pipBtn = el('button', '', L('⧉ Cửa sổ nổi'));
+    pipBtn.title = L('Mở lời trong một cửa sổ nhỏ luôn nằm trên cùng, kéo đi đâu cũng được (kể cả khi chuyển tab)');
     row1.append(select, overlayBtn, pipBtn);
 
     const rowT = el('div', 'row');
     const transSel = el('select');
-    transSel.title = 'Hiện thêm một bản lời khác (thường là lời dịch) dưới mỗi dòng';
+    transSel.title = L('Hiện thêm một bản lời khác (thường là lời dịch) dưới mỗi dòng');
     const swapBtn = el('button', '', '⇅');
-    swapBtn.title = 'Đổi chỗ lời chính và lời dịch';
-    rowT.append(el('span', 'muted', '🌐 Song ngữ'), transSel, swapBtn);
+    swapBtn.title = L('Đổi chỗ lời chính và lời dịch');
+    rowT.append(el('span', 'muted', L('🌐 Song ngữ')), transSel, swapBtn);
 
     const row2 = el('div', 'row');
-    const syncBtn = el('button', 'sync', '🎯 Tự canh theo phụ đề');
-    syncBtn.title = 'Khớp lời với phụ đề YouTube của video để lời tự chạy đúng nhịp';
+    const syncBtn = el('button', 'sync', L('🎯 Tự canh theo phụ đề'));
+    syncBtn.title = L('Khớp lời với phụ đề YouTube của video để lời tự chạy đúng nhịp');
     const minus = el('button', '', '−0.5s');
     const offLabel = el('span', 'off', '0.0s');
     const plus = el('button', '', '+0.5s');
-    minus.title = 'Lời hiện sớm hơn (giữ Shift: 0.1s)';
-    plus.title = 'Lời hiện muộn hơn (giữ Shift: 0.1s)';
-    offLabel.title = 'Bấm để đưa về 0 và bỏ các mốc 📍';
+    minus.title = L('Lời hiện sớm hơn (giữ Shift: 0.1s)');
+    plus.title = L('Lời hiện muộn hơn (giữ Shift: 0.1s)');
+    offLabel.title = L('Bấm để đưa về 0 và bỏ các mốc 📍');
     const offWrap = el('span', 'offwrap');
     const pinCount = el('span', 'muted', '');
-    offWrap.append(pinCount, el('span', 'muted', 'Lệch'), minus, offLabel, plus);
+    offWrap.append(pinCount, el('span', 'muted', L('Lệch')), minus, offLabel, plus);
     row2.append(syncBtn, offWrap);
 
     const row3 = el('div', 'row');
     const lookSel = el('select', 'look');
-    lookSel.title = 'Kiểu chữ trên video và cửa sổ nổi';
+    lookSel.title = L('Kiểu chữ trên video và cửa sổ nổi');
     const fontDown = el('button', '', 'A−');
     const fontUp = el('button', '', 'A+');
-    fontDown.title = fontUp.title = 'Cỡ chữ';
+    fontDown.title = fontUp.title = L('Cỡ chữ');
     const posBtn = el('button', '', '');
-    posBtn.title = 'Đặt lời ở trên hoặc dưới video (tránh che chữ có sẵn trong video)';
+    posBtn.title = L('Đặt lời ở trên hoặc dưới video (tránh che chữ có sẵn trong video)');
     const studioBtn = el('button', '', '🎨');
-    studioBtn.title = 'Tuỳ chỉnh màu, phông, viền, nền… và lưu thành preset';
+    studioBtn.title = L('Tuỳ chỉnh màu, phông, viền, nền… và lưu thành preset');
     const chanBtn = el('button', 'chan', '📌');
-    row3.append(el('span', 'muted', 'Kiểu chữ'), lookSel, fontDown, fontUp, posBtn, studioBtn, chanBtn);
+    row3.append(el('span', 'muted', L('Kiểu chữ')), lookSel, fontDown, fontUp, posBtn, studioBtn, chanBtn);
 
     const studio = el('div', 'studio');
     studio.hidden = true;
 
     const row4 = el('div', 'row links');
-    const copy = el('button', '', 'Sao chép');
-    const open = el('a', 'muted', 'Mở nguồn ↗');
+    const copy = el('button', '', L('Sao chép'));
+    const open = el('a', 'muted', L('Mở nguồn ↗'));
     open.target = '_blank';
     open.rel = 'noopener';
-    const editBtn = el('button', '', '✏️ Sửa lời');
-    editBtn.title = 'Sửa lời đang hiện, hoặc tự nhập / dịch lời. Bản sửa được nhớ cho video này.';
-    const tapBtn = el('button', '', '⏱ Gõ nhịp');
-    tapBtn.title = 'Phát bài và bấm Space mỗi khi bắt đầu hát một dòng: ghi thời gian chính xác cho từng dòng';
-    const againBtn = el('button', '', '↻ Tìm lại');
-    againBtn.title = 'Kết quả tìm được lưu lại để mở video nhanh hơn. Bấm để tìm lại từ đầu ở mọi nguồn.';
+    const editBtn = el('button', '', L('✏️ Sửa lời'));
+    editBtn.title = L('Sửa lời đang hiện, hoặc tự nhập / dịch lời. Bản sửa được nhớ cho video này.');
+    const tapBtn = el('button', '', L('⏱ Gõ nhịp'));
+    tapBtn.title = L('Phát bài và bấm Space mỗi khi bắt đầu hát một dòng: ghi thời gian chính xác cho từng dòng');
+    const againBtn = el('button', '', L('↻ Tìm lại'));
+    againBtn.title = L('Kết quả tìm được lưu lại để mở video nhanh hơn. Bấm để tìm lại từ đầu ở mọi nguồn.');
     againBtn.addEventListener('click', () => api.onSearchAgain?.());
-    const findBtn = el('button', '', '🔍 Tìm theo tên');
-    findBtn.title = 'Tên bài hoặc ca sĩ bị đoán sai? Tự gõ lại rồi tìm';
-    const exportBtn = el('button', '', '⬇ Xuất');
-    exportBtn.title = 'Lưu lời ra file .lrc / .srt (giữ thời gian bạn đã canh), hoặc gửi lên LRCLIB';
+    const findBtn = el('button', '', L('🔍 Tìm theo tên'));
+    findBtn.title = L('Tên bài hoặc ca sĩ bị đoán sai? Tự gõ lại rồi tìm');
+    const exportBtn = el('button', '', L('⬇ Xuất'));
+    exportBtn.title = L('Lưu lời ra file .lrc / .srt (giữ thời gian bạn đã canh), hoặc gửi lên LRCLIB');
     row4.append(editBtn, tapBtn, findBtn, copy, exportBtn, againBtn, open);
 
     // Manual search: the title/artist typed here replace the guess from the
@@ -275,12 +275,12 @@ BYL.ui = (() => {
     const fTitle = el('input');
     const fArtist = el('input');
     fTitle.type = fArtist.type = 'text';
-    fTitle.placeholder = 'Tên bài';
-    fArtist.placeholder = 'Ca sĩ';
+    fTitle.placeholder = L('Tên bài');
+    fArtist.placeholder = L('Ca sĩ');
     fTitle.maxLength = fArtist.maxLength = 120;
-    const fGo = el('button', 'primary', 'Tìm');
+    const fGo = el('button', 'primary', L('Tìm'));
     fGo.type = 'submit';
-    const fUndo = el('button', '', 'Dùng tên tự đoán');
+    const fUndo = el('button', '', L('Dùng tên tự đoán'));
     fUndo.type = 'button';
     findRow.append(fTitle, fArtist, fGo, fUndo);
     const openFind = () => {
@@ -310,12 +310,12 @@ BYL.ui = (() => {
     const exportRow = el('div', 'row exports');
     exportRow.hidden = true;
     const lrcBtn = el('button', '', '⬇ File LRC');
-    lrcBtn.title = 'Lời có thời gian cho trình phát nhạc (foobar, VLC, Poweramp…)';
+    lrcBtn.title = L('Lời có thời gian cho trình phát nhạc (foobar, VLC, Poweramp…)');
     const srtBtn = el('button', '', '⬇ File SRT');
-    srtBtn.title = 'Phụ đề cho video (VLC, CapCut, Premiere, tải lên YouTube Studio…)';
-    const pubBtn = el('button', '', '☁ Gửi lên LRCLIB');
-    pubBtn.title = 'Chia sẻ lời có thời gian lên thư viện mở LRCLIB để người khác dùng. Sẽ hỏi lại trước khi gửi.';
-    exportRow.append(el('span', 'muted', 'Xuất lời'), lrcBtn, srtBtn, pubBtn);
+    srtBtn.title = L('Phụ đề cho video (VLC, CapCut, Premiere, tải lên YouTube Studio…)');
+    const pubBtn = el('button', '', L('☁ Gửi lên LRCLIB'));
+    pubBtn.title = L('Chia sẻ lời có thời gian lên thư viện mở LRCLIB để người khác dùng. Sẽ hỏi lại trước khi gửi.');
+    exportRow.append(el('span', 'muted', L('Xuất lời')), lrcBtn, srtBtn, pubBtn);
     exportBtn.addEventListener('click', () => {
       exportRow.hidden = !exportRow.hidden;
       exportBtn.classList.toggle('on', !exportRow.hidden);
@@ -334,7 +334,7 @@ BYL.ui = (() => {
     const note = el('div', 'note');
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
-    grip.title = 'Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)';
+    grip.title = L('Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)');
     lyricTab.append(findRow, status, row1, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4, exportRow);
     makeResizable(lines, grip);
 
@@ -349,10 +349,10 @@ BYL.ui = (() => {
     const historyTab = el('div');
     historyTab.hidden = true;
     const hFilter = el('div', 'row');
-    const hAll = el('button', 'on', 'Tất cả');
-    const hFav = el('button', '', '★ Yêu thích');
-    const hClear = el('button', 'danger', 'Xoá lịch sử');
-    hClear.title = 'Xoá các bài đã xem, giữ lại bài yêu thích';
+    const hAll = el('button', 'on', L('Tất cả'));
+    const hFav = el('button', '', L('★ Yêu thích'));
+    const hClear = el('button', 'danger', L('Xoá lịch sử'));
+    hClear.title = L('Xoá các bài đã xem, giữ lại bài yêu thích');
     hFilter.append(hAll, hFav, hClear);
     const hlist = el('div', 'klist');
     historyTab.append(hFilter, hlist);
@@ -425,7 +425,7 @@ BYL.ui = (() => {
       BYL.settings.set({ channelStyles: all });
       refreshLook();
       if (!studio.hidden) buildStudio();
-      say(all[ch] ? `📌 Kênh "${ch}" giờ có kiểu chữ riêng. Đổi kiểu hay chỉnh 🎨 lúc này chỉ áp dụng cho kênh này.` : `Kênh "${ch}" dùng lại kiểu chữ chung.`);
+      say(all[ch] ? L('📌 Kênh "{0}" giờ có kiểu chữ riêng. Đổi kiểu hay chỉnh 🎨 lúc này chỉ áp dụng cho kênh này.', ch) : L('Kênh "{0}" dùng lại kiểu chữ chung.', ch));
     });
     posBtn.addEventListener('click', () => {
       BYL.settings.set({ overlayPosition: BYL.settings.value.overlayPosition === 'top' ? 'bottom' : 'top' });
@@ -443,11 +443,11 @@ BYL.ui = (() => {
       if (!state.current) return;
       try {
         await navigator.clipboard.writeText(BYL.lyricsText(state.current.lines));
-        copy.textContent = 'Đã chép ✓';
+        copy.textContent = L('Đã chép ✓');
       } catch {
-        copy.textContent = 'Không chép được';
+        copy.textContent = L('Không chép được');
       }
-      setTimeout(() => (copy.textContent = 'Sao chép'), 1500);
+      setTimeout(() => (copy.textContent = L('Sao chép')), 1500);
     });
     lines.addEventListener('wheel', () => (state.userScrollUntil = Date.now() + 4000), { passive: true });
     lines.addEventListener('touchmove', () => (state.userScrollUntil = Date.now() + 4000), { passive: true });
@@ -507,27 +507,27 @@ BYL.ui = (() => {
       o.value = value;
       parent.append(o);
     };
-    if (slot().look) add(sel, '', '✎ Đang tuỳ chỉnh');
+    if (slot().look) add(sel, '', L('✎ Đang tuỳ chỉnh'));
     const builtIn = el('optgroup');
-    builtIn.label = 'Có sẵn';
+    builtIn.label = L('Có sẵn');
     for (const [k, p] of Object.entries(BYL.LOOKS)) add(builtIn, k, p.name);
     sel.append(builtIn);
     const mine = v.overlayPresets || [];
     if (mine.length) {
       const g = el('optgroup');
-      g.label = 'Preset của bạn';
+      g.label = L('Preset của bạn');
       for (const p of mine) add(g, 'u:' + p.name, '★ ' + p.name);
       sel.append(g);
     }
     sel.value = slot().look ? '' : slot().style;
     if (sel.selectedIndex < 0) sel.value = 'red';
-    P.posBtn.textContent = v.overlayPosition === 'top' ? '⬆ Trên' : '⬇ Dưới';
+    P.posBtn.textContent = v.overlayPosition === 'top' ? L('⬆ Trên') : L('⬇ Dưới');
     const pinned = !!chanSlot();
     P.chanBtn.hidden = !state.channel;
     P.chanBtn.classList.toggle('on', pinned);
     P.chanBtn.title = pinned
-      ? `Kênh "${state.channel}" đang dùng kiểu chữ riêng. Bấm để dùng lại kiểu chung.`
-      : `Ghi nhớ kiểu chữ này riêng cho kênh "${state.channel}"`;
+      ? L('Kênh "{0}" đang dùng kiểu chữ riêng. Bấm để dùng lại kiểu chung.', state.channel)
+      : L('Ghi nhớ kiểu chữ này riêng cho kênh "{0}"', state.channel);
   }
 
   // Re-apply the look everywhere after a settings change.
@@ -572,7 +572,7 @@ BYL.ui = (() => {
     const pick = (key, options) => {
       const s = el('select');
       for (const [v, t] of options) {
-        const o = el('option', '', t);
+        const o = el('option', '', L(t));
         o.value = v;
         s.append(o);
       }
@@ -622,7 +622,7 @@ BYL.ui = (() => {
       });
       r.addEventListener('change', () => editLook({ [key]: Number(r.value) }, true));
       // Double-click: back to the chosen style's value (padding: the shape's).
-      r.title = 'Nháy đúp để về mặc định';
+      r.title = L('Nháy đúp để về mặc định');
       r.addEventListener('dblclick', () => {
         const def = compose(slot().style)[key];
         editLook({ [key]: def }, true);
@@ -643,63 +643,63 @@ BYL.ui = (() => {
     };
     const flag = (key, text) => toggle(!!look[key], text, (on) => editLook({ [key]: on }, true));
 
-    section('Chữ');
-    row('Phông', pick('font', FONTS));
-    row('Độ đậm', pick('weight', [['400', 'Thường'], ['600', 'Vừa'], ['700', 'Đậm'], ['800', 'Rất đậm'], ['900', 'Đen']]));
-    row('Cỡ chữ', range('scale', 50, 160));
-    row('Hiệu ứng', seg('wipe', [['word', 'Chạy từng chữ'], ['line', 'Sáng cả dòng']]));
+    section(L('Chữ'));
+    row(L('Phông'), pick('font', FONTS));
+    row(L('Độ đậm'), pick('weight', [['400', L('Thường')], ['600', L('Vừa')], ['700', L('Đậm')], ['800', L('Rất đậm')], ['900', L('Đen')]]));
+    row(L('Cỡ chữ'), range('scale', 50, 160));
+    row(L('Hiệu ứng'), seg('wipe', [['word', L('Chạy từng chữ')], ['line', L('Sáng cả dòng')]]));
 
-    section('Màu');
-    row('Chưa hát', color('text', 'Màu chữ chưa hát'), flag('textGrad', 'Ánh bạc'));
+    section(L('Màu'));
+    row(L('Chưa hát'), color('text', L('Màu chữ chưa hát')), flag('textGrad', L('Ánh bạc')));
     // Gradient: switch on to fade the sung colour into a second one.
-    const sung2 = color('sung2', 'Màu thứ hai của dải chuyển màu');
+    const sung2 = color('sung2', L('Màu thứ hai của dải chuyển màu'));
     sung2.hidden = !look.sung2;
     row(
-      'Đã hát',
-      color('sung', 'Màu chữ đã hát'),
-      toggle(!!look.sung2, 'Chuyển màu', (on) => {
+      L('Đã hát'),
+      color('sung', L('Màu chữ đã hát')),
+      toggle(!!look.sung2, L('Chuyển màu'), (on) => {
         sung2.hidden = !on;
         editLook({ sung2: on ? sung2.value : '' }, true);
       }),
       sung2
     );
-    row('Viền', color('stroke', 'Màu viền'), color('sstroke', 'Màu viền khi đã hát'), range('strokeW', 0, 30, ''));
-    row('Bóng', flag('shadow', 'Đổ bóng'));
+    row(L('Viền'), color('stroke', L('Màu viền')), color('sstroke', L('Màu viền khi đã hát')), range('strokeW', 0, 30, ''));
+    row(L('Bóng'), flag('shadow', L('Đổ bóng')));
 
-    section('Nền');
+    section(L('Nền'));
     // A new shape starts from its own padding.
     const reshape = () => {
       editLook(Object.fromEntries(PAD_KEYS.map((k) => [k, undefined])), true);
       buildStudio();
     };
-    row('Kiểu', seg('shape', [['none', 'Không'], ['box', 'Khung'], ['pill', 'Viên'], ['band', 'Dải ngang'], ['lines', 'Từng dòng']], reshape));
+    row(L('Kiểu'), seg('shape', [['none', L('Không')], ['box', L('Khung')], ['pill', L('Viên')], ['band', L('Dải ngang')], ['lines', L('Từng dòng')]], reshape));
     if (look.shape !== 'none') {
-      row('Màu nền', color('bg', 'Màu nền'), range('bgAlpha', 0, 100));
+      row(L('Màu nền'), color('bg', L('Màu nền')), range('bgAlpha', 0, 100));
       // Padding sliders follow the shape's default until the user moves them.
       const pads = el('div', 'pads');
-      for (const [k, text] of [['padT', 'Trên'], ['padB', 'Dưới'], ['padL', 'Trái'], ['padR', 'Phải']]) {
+      for (const [k, text] of [['padT', L('Trên')], ['padB', L('Dưới')], ['padL', L('Trái')], ['padR', L('Phải')]]) {
         const p = el('div', 'pad');
-        p.title = `Lề ${text.toLowerCase()} trong khung, tính theo cỡ chữ`;
+        p.title = L('Lề {0} trong khung, tính theo cỡ chữ', text.toLowerCase());
         p.append(el('span', 'muted', text), range(k, 0, 200, '%', padOf(look, k)));
         pads.append(p);
       }
-      row('Lề trong', pads);
+      row(L('Lề trong'), pads);
     }
 
-    section('Bố cục');
-    row('Số dòng', pick('layout', [['stagger', 'So le 2 dòng'], ['center2', 'Dòng hát + dòng kế'], ['three', '3 dòng'], ['single', 'Một dòng']]));
-    row('Dòng phụ', range('nextScale', 40, 100));
-    row('Cách mép', range('margin', 2, 40));
+    section(L('Bố cục'));
+    row(L('Số dòng'), pick('layout', [['stagger', L('So le 2 dòng')], ['center2', L('Dòng hát + dòng kế')], ['three', L('3 dòng')], ['single', L('Một dòng')]]));
+    row(L('Dòng phụ'), range('nextScale', 40, 100));
+    row(L('Cách mép'), range('margin', 2, 40));
 
     const presets = el('div', 'presets');
     const name = el('input');
     name.type = 'text';
-    name.placeholder = 'Tên preset…';
+    name.placeholder = L('Tên preset…');
     name.maxLength = 24;
-    const save = el('button', 'primary', 'Lưu preset');
-    const reset = el('button', '', 'Bỏ chỉnh');
-    reset.title = 'Quay về kiểu đang chọn, bỏ các chỉnh sửa';
-    const del = el('button', 'danger', 'Xoá preset');
+    const save = el('button', 'primary', L('Lưu preset'));
+    const reset = el('button', '', L('Bỏ chỉnh'));
+    reset.title = L('Quay về kiểu đang chọn, bỏ các chỉnh sửa');
+    const del = el('button', 'danger', L('Xoá preset'));
     const style = slot().style;
     del.hidden = !style?.startsWith('u:');
     if (style?.startsWith('u:')) name.value = style.slice(2);
@@ -712,8 +712,8 @@ BYL.ui = (() => {
       buildStudio();
       say(
         ok
-          ? `💾 Đã lưu preset "${n}". Chọn lại trong "Kiểu chữ" bất cứ lúc nào.`
-          : `⚠ Không lưu được preset "${n}" vào trình duyệt. Preset vẫn dùng được đến khi tải lại trang.`
+          ? L('💾 Đã lưu preset "{0}". Chọn lại trong "Kiểu chữ" bất cứ lúc nào.', n)
+          : L('⚠ Không lưu được preset "{0}" vào trình duyệt. Preset vẫn dùng được đến khi tải lại trang.', n)
       );
     });
     reset.addEventListener('click', () => {
@@ -762,7 +762,7 @@ BYL.ui = (() => {
     P.wrap.classList.toggle('collapsed', !!BYL.settings.value.panelCollapsed);
     paintFav(false);
     P.songTitle.textContent = 'Better Lyric';
-    P.songArtist.textContent = 'Đang tìm lời bài hát…';
+    P.songArtist.textContent = L('Đang tìm lời bài hát…');
     P.status.replaceChildren();
     P.select.replaceChildren();
     P.warn.textContent = '';
@@ -801,9 +801,9 @@ BYL.ui = (() => {
     state.channel = channel || '';
     refreshLook();
     state.duration = duration || 0;
-    P.songTitle.textContent = song.title || 'Không rõ tên bài';
+    P.songTitle.textContent = song.title || L('Không rõ tên bài');
     P.songArtist.textContent = (song.manual ? '✎ ' : '') + (song.artist || '');
-    P.songArtist.title = song.manual ? 'Tên bạn đã sửa bằng 🔍 Tìm theo tên' : '';
+    P.songArtist.title = song.manual ? L('Tên bạn đã sửa bằng 🔍 Tìm theo tên') : '';
     pipTitle();
     remember(song);
   }
@@ -823,11 +823,11 @@ BYL.ui = (() => {
     chip.textContent = `${s.icon} ${s.name}${tail}`;
     chip.title =
       {
-        loading: 'Đang tìm…',
-        ok: count > 1 ? `Có ${count} kết quả. Bấm để xem, bấm tiếp để đổi kết quả khác` : 'Bấm để xem lời từ nguồn này',
-        none: 'Nguồn này không có lời cho bài này',
-        error: 'Lỗi khi tìm. Bấm để thử lại',
-        idle: 'Bấm để tải (dùng khi các nguồn khác không đúng)',
+        loading: L('Đang tìm…'),
+        ok: count > 1 ? L('Có {0} kết quả. Bấm để xem, bấm tiếp để đổi kết quả khác', count) : L('Bấm để xem lời từ nguồn này'),
+        none: L('Nguồn này không có lời cho bài này'),
+        error: L('Lỗi khi tìm. Bấm để thử lại'),
+        idle: L('Bấm để tải (dùng khi các nguồn khác không đúng)'),
       }[status];
     maybeAutoPick();
   }
@@ -838,15 +838,15 @@ BYL.ui = (() => {
     const st = state.sourceStatus[key];
     const name = S[key].name;
     if (st === 'idle' || st === 'error') {
-      say(`Đang tìm lời từ ${name}…`);
+      say(L('Đang tìm lời từ {0}…', name));
       return api.onLoadSource?.(key);
     }
-    if (st === 'loading') return say(`Đang tìm lời từ ${name}, chờ chút…`);
+    if (st === 'loading') return say(L('Đang tìm lời từ {0}, chờ chút…', name));
     const list = state.candidates.filter((c) => c.source === key);
-    if (!list.length) return say(`${name} không có lời cho bài này.`);
+    if (!list.length) return say(L('{0} không có lời cho bài này.', name));
     const at = list.indexOf(state.current);
     choose(list[(at + 1) % list.length], true);
-    if (list.length > 1) say(`${S[key].icon} ${name}: kết quả ${list.indexOf(state.current) + 1}/${list.length}. Bấm chip lần nữa để xem kết quả khác.`);
+    if (list.length > 1) say(L('{0} {1}: kết quả {2}/{3}. Bấm chip lần nữa để xem kết quả khác.', S[key].icon, name, list.indexOf(state.current) + 1, list.length));
   }
 
   function markChips() {
@@ -919,11 +919,11 @@ BYL.ui = (() => {
   // time on every line; timed lyrics get the offset worked out for them.
   async function autoSync(c, auto) {
     const tell = (t) => state.current === c && say(t);
-    if (!api.captionWordsFor || !api.hasCaptions?.()) return tell('Video này không có phụ đề để canh theo.');
+    if (!api.captionWordsFor || !api.hasCaptions?.()) return tell(L('Video này không có phụ đề để canh theo.'));
     if (c.syncing) return;
     c.syncing = true;
     P.syncBtn.disabled = true;
-    tell('🎯 Đang canh lời theo phụ đề YouTube…');
+    tell(L('🎯 Đang canh lời theo phụ đề YouTube…'));
     let r = null;
     let words = null;
     try {
@@ -936,16 +936,16 @@ BYL.ui = (() => {
     P.syncBtn.disabled = false;
     if (state.current !== c) return;
     if (!words?.length) {
-      return tell('Chưa lấy được phụ đề của video. Thử bấm "🎯 Tự canh theo phụ đề" lại sau khi video đã phát.');
+      return tell(L('Chưa lấy được phụ đề của video. Thử bấm "🎯 Tự canh theo phụ đề" lại sau khi video đã phát.'));
     }
     if (!r) {
       return tell(
         c.synced
-          ? 'Phụ đề của video không khớp với lời này. Chỉnh "Lệch" bằng tay, hoặc bấm 📍 ở dòng đang hát.'
-          : 'Phụ đề không khớp với lời này. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.'
+          ? L('Phụ đề của video không khớp với lời này. Chỉnh "Lệch" bằng tay, hoặc bấm 📍 ở dòng đang hát.')
+          : L('Phụ đề không khớp với lời này. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.')
       );
     }
-    const matched = `khớp ${r.matchedLines}/${r.totalLines} dòng` + (r.wordLines ? `, ${r.wordLines} dòng tô theo từng chữ` : '');
+    const matched = L('khớp {0}/{1} dòng', r.matchedLines, r.totalLines) + (r.wordLines ? L(', {0} dòng tô theo từng chữ', r.wordLines) : '');
     if (c.synced) {
       // Word timing from the captions, unless the lyrics brought their own.
       if (r.wordLines && !c.lines.some((l) => l.wd)) c.lines = c.lines.map((l, i) => (r.lines[i].wd ? { ...l, wd: r.lines[i].wd } : l));
@@ -958,12 +958,12 @@ BYL.ui = (() => {
         state.warps[c.id] = pts;
         saveWarps();
         setOffset(0);
-        tell(`🎯 Đã canh theo phụ đề YouTube tại ${pts.length} điểm trong bài (${matched}); lệch từ ${fmtOffset(Math.min(...ds))} đến ${fmtOffset(Math.max(...ds))}.`);
+        tell(L('🎯 Đã canh theo phụ đề YouTube tại {0} điểm trong bài ({1}); lệch từ {2} đến {3}.', pts.length, matched, fmtOffset(Math.min(...ds)), fmtOffset(Math.max(...ds))));
       } else {
         delete state.warps[c.id];
         saveWarps();
         setOffset(r.offset);
-        tell(`🎯 Đã tự chỉnh lệch ${fmtOffset(r.offset)} theo phụ đề YouTube (${matched}).`);
+        tell(L('🎯 Đã tự chỉnh lệch {0} theo phụ đề YouTube ({1}).', fmtOffset(r.offset), matched));
       }
       return;
     }
@@ -974,7 +974,7 @@ BYL.ui = (() => {
     renderSelect();
     setOffset(0);
     choose(synced, state.manual);
-    say(`🎯 Đã canh lời theo phụ đề YouTube (${matched}). Còn lệch thì bấm 📍 cạnh dòng đang hát, hoặc chỉnh "Lệch".`);
+    say(L('🎯 Đã canh lời theo phụ đề YouTube ({0}). Còn lệch thì bấm 📍 cạnh dòng đang hát, hoặc chỉnh "Lệch".', matched));
   }
 
   // Two slots for the user's own lyrics, so a translation and a re-timed
@@ -1027,8 +1027,8 @@ BYL.ui = (() => {
   function showPins() {
     const pts = state.current && state.warps[state.current.id];
     const mine = pts ? pts.filter((p) => !p.auto).length : 0;
-    P.pinCount.textContent = !pts?.length ? '' : mine ? `📍${mine} mốc` : '🎯 theo phụ đề';
-    P.pinCount.title = pts?.length ? `${pts.length} điểm canh trong bài. Bấm số lệch để bỏ hết.` : '';
+    P.pinCount.textContent = !pts?.length ? '' : mine ? L('📍{0} mốc', mine) : L('🎯 theo phụ đề');
+    P.pinCount.title = pts?.length ? L('{0} điểm canh trong bài. Bấm số lệch để bỏ hết.', pts.length) : '';
   }
 
   function refreshTitles() {
@@ -1043,7 +1043,7 @@ BYL.ui = (() => {
     if (c) delete state.warps[c.id];
     saveWarps();
     setOffset(0);
-    say('Đã bỏ chỉnh lệch và các mốc 📍 của lời này.');
+    say(L('Đã bỏ chỉnh lệch và các mốc 📍 của lời này.'));
   }
 
   function setOffset(v) {
@@ -1063,11 +1063,11 @@ BYL.ui = (() => {
     setOffset(state.offset + d);
     if (!state.current) return;
     if (!state.current.synced && !state.anchor) {
-      say('Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.');
+      say(L('Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.'));
       return;
     }
-    const dir = d < 0 ? `sớm hơn ${Math.abs(d)}s` : `muộn hơn ${d}s`;
-    say(`Cả bài hiện ${dir} (tổng lệch ${fmtOffset(state.offset)}). Nếu chỉ một đoạn lệch, bấm 📍 ở dòng đang hát trong đoạn đó thay vì chỉnh cả bài.`);
+    const dir = d < 0 ? L('sớm hơn {0}s', Math.abs(d)) : L('muộn hơn {0}s', d);
+    say(L('Cả bài hiện {0} (tổng lệch {1}). Nếu chỉ một đoạn lệch, bấm 📍 ở dòng đang hát trong đoạn đó thay vì chỉnh cả bài.', dir, fmtOffset(state.offset)));
   }
 
   // 📍 on a line: "this line is being sung right now". It becomes a sync
@@ -1089,8 +1089,8 @@ BYL.ui = (() => {
     state.userScrollUntil = 0;
     const n = pts.filter((p) => !p.auto).length;
     say(
-      `📍 Đã ghim dòng này vào ${BYL.fmtTime(v.currentTime)} (mốc ${n}). ` +
-        (n === 1 ? 'Cả bài dời theo. Nếu đoạn sau vẫn lệch, ghim thêm một dòng ở đoạn đó: chỉ phần giữa hai mốc co giãn, phần đã đúng giữ nguyên.' : 'Các dòng giữa các mốc tự co giãn theo.')
+      L('📍 Đã ghim dòng này vào {0} (mốc {1}). ', BYL.fmtTime(v.currentTime), n) +
+        (n === 1 ? L('Cả bài dời theo. Nếu đoạn sau vẫn lệch, ghim thêm một dòng ở đoạn đó: chỉ phần giữa hai mốc co giãn, phần đã đúng giữ nguyên.') : L('Các dòng giữa các mốc tự co giãn theo.'))
     );
   }
 
@@ -1109,21 +1109,21 @@ BYL.ui = (() => {
     if (!c?.synced) return null;
     return c.lines.map((l) => ({ ...l, t: typeof l.t === 'number' ? Math.round(effT(l.t) * 100) / 100 : undefined }));
   }
-  const NO_TIMING = 'Lời này chưa có thời gian từng dòng. Bấm "🎯 Tự canh theo phụ đề" hoặc "⏱ Gõ nhịp" trước rồi xuất.';
+  const noTiming = () => L('Lời này chưa có thời gian từng dòng. Bấm "🎯 Tự canh theo phụ đề" hoặc "⏱ Gõ nhịp" trước rồi xuất.');
 
   function exportFile(kind) {
     const lines = timedLines();
-    if (!lines) return say(NO_TIMING);
+    if (!lines) return say(noTiming());
     const meta = { title: state.song?.title, artist: state.song?.artist, duration: state.duration };
     const text = kind === 'srt' ? BYL.exporter.toSrt(lines, state.duration) : BYL.exporter.toLrc(lines, meta);
     BYL.exporter.download(text, BYL.exporter.fileName(meta, kind), kind === 'srt');
     const fixed = state.offset || state.warps[state.current.id]?.length;
-    say(`⬇ Đã lưu file .${kind}` + (fixed ? ', đã tính cả độ lệch và các mốc 📍.' : '.'));
+    say(L('⬇ Đã lưu file .{0}', kind) + (fixed ? L(', đã tính cả độ lệch và các mốc 📍.') : '.'));
   }
 
   async function publishLrclib() {
     const lines = timedLines();
-    if (!lines) return say(NO_TIMING);
+    if (!lines) return say(noTiming());
     const body = lines.filter((l) => typeof l.t === 'number' && !l.section);
     try {
       await BYL.exporter.openPublish({
@@ -1135,9 +1135,9 @@ BYL.ui = (() => {
         plainLyrics: body.map((l) => l.text).join('\n').replace(/\n{3,}/g, '\n\n').trim(),
         syncedLyrics: BYL.toLrc(body),
       });
-      say('☁ Đã mở trang gửi lên LRCLIB trong tab mới. Kiểm tra lại tên bài, ca sĩ rồi mới bấm gửi.');
+      say(L('☁ Đã mở trang gửi lên LRCLIB trong tab mới. Kiểm tra lại tên bài, ca sĩ rồi mới bấm gửi.'));
     } catch (err) {
-      say('Không mở được trang gửi: ' + (err?.message || err));
+      say(L('Không mở được trang gửi: ') + (err?.message || err));
     }
   }
 
@@ -1172,12 +1172,12 @@ BYL.ui = (() => {
           'div',
           'empty',
           searching
-            ? 'Đang tìm lời trong comment, các bản đăng khác và các trang lời bài hát…'
-            : 'Chưa tìm thấy lời cho video này. Bạn có thể tự nhập (hoặc dịch) lời, extension sẽ nhớ cho video này. Hoặc mở tab "Tìm bản Karaoke".'
+            ? L('Đang tìm lời trong comment, các bản đăng khác và các trang lời bài hát…')
+            : L('Chưa tìm thấy lời cho video này. Bạn có thể tự nhập (hoặc dịch) lời, extension sẽ nhớ cho video này. Hoặc mở tab "Tìm bản Karaoke".')
         )
       );
       if (!searching) {
-        const b = el('button', '', '✍ Tự nhập lời');
+        const b = el('button', '', L('✍ Tự nhập lời'));
         b.addEventListener('click', () => openEditor());
         box.lastChild.append(el('br'), b);
       }
@@ -1186,8 +1186,8 @@ BYL.ui = (() => {
     if (!c.synced) {
       box.append(
         el('div', 'empty', api.hasCaptions?.()
-            ? 'Lời này chưa có thời gian. Bấm "🎯 Tự canh theo phụ đề", hoặc bấm vào dòng đang hát để lời tự cuộn.'
-            : 'Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.')
+            ? L('Lời này chưa có thời gian. Bấm "🎯 Tự canh theo phụ đề", hoặc bấm vào dòng đang hát để lời tự cuộn.')
+            : L('Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.'))
       );
     }
     c.lines.forEach((l, i) => {
@@ -1201,7 +1201,7 @@ BYL.ui = (() => {
         d.title = BYL.fmtTime(effT(l.t));
         if (!l.section) {
           const pin = el('span', 'pin', '📍');
-          pin.title = 'Đang hát dòng này: canh lời ngay theo dòng này';
+          pin.title = L('Đang hát dòng này: canh lời ngay theo dòng này');
           d.append(pin);
         }
       }
@@ -1342,7 +1342,7 @@ BYL.ui = (() => {
     const sel = P.transSel;
     sel.replaceChildren();
     const add = (c) => {
-      const o = el('option', '', c ? `${S[c.source].icon} ${c.label}${c.detail ? ' · ' + c.detail : ''}` : 'Không');
+      const o = el('option', '', c ? `${S[c.source].icon} ${c.label}${c.detail ? ' · ' + c.detail : ''}` : L('Không'));
       o.value = c ? c.id : '';
       sel.append(o);
     };
@@ -1477,13 +1477,13 @@ BYL.ui = (() => {
     }
     const dpip = window.documentPictureInPicture;
     if (!dpip) {
-      say('Trình duyệt này chưa hỗ trợ cửa sổ nổi (cần Chrome 116 trở lên).');
+      say(L('Trình duyệt này chưa hỗ trợ cửa sổ nổi (cần Chrome 116 trở lên).'));
       return;
     }
     try {
       pipWin = await dpip.requestWindow({ width: 640, height: 260 });
     } catch (err) {
-      say('Không mở được cửa sổ nổi: ' + (err?.message || err));
+      say(L('Không mở được cửa sổ nổi: ') + (err?.message || err));
       return;
     }
     const d = pipWin.document;
@@ -1628,14 +1628,14 @@ BYL.ui = (() => {
       btns.append(b);
       return b;
     };
-    mk('prevSong', 'Bài trước', () => skipVideo(-1));
-    mk('prevLine', 'Câu trước', () => skipLine(-1));
-    const play = mk('play', 'Phát / dừng (Space)', () => {
+    mk('prevSong', L('Bài trước'), () => skipVideo(-1));
+    mk('prevLine', L('Câu trước'), () => skipLine(-1));
+    const play = mk('play', L('Phát / dừng (Space)'), () => {
       const v = video();
       if (v) v.paused ? v.play() : v.pause();
     }, 'big');
-    mk('nextLine', 'Câu sau', () => skipLine(1));
-    mk('nextSong', 'Bài sau', () => skipVideo(1));
+    mk('nextLine', L('Câu sau'), () => skipLine(1));
+    mk('nextSong', L('Bài sau'), () => skipVideo(1));
     box.append(seek, btns);
 
     let dragging = false;
@@ -1734,7 +1734,7 @@ BYL.ui = (() => {
     if (!c) return;
     const idx = singable(c.lines);
     if (pos.i < 0) {
-      const hint = c.synced ? '♪' : 'Bấm vào dòng đang hát trong panel bên phải để bắt đầu';
+      const hint = c.synced ? '♪' : L('Bấm vào dòng đang hát trong panel bên phải để bắt đầu');
       ov.append(el('div', 'l hint', hint));
       const first = c.lines[idx[0]];
       if (first && c.synced) ov.append(wordLine(R, first.text, 'next', false));
@@ -1852,17 +1852,17 @@ BYL.ui = (() => {
   // main.js fills in onLoadSource, hasCaptions and captionWordsFor per video.
   // Keyboard shortcuts (keys.js). Each returns a short note for the toast.
   const actions = {
-    overlay: () => (setOverlay(!state.overlayOn, true), state.overlayOn ? 'Lời trên video: bật' : 'Lời trên video: tắt'),
-    pip: () => (togglePip(), 'Cửa sổ lời nổi'),
-    nudge: (d) => (nudge(d), 'Lệch ' + fmtOffset(state.offset)),
+    overlay: () => (setOverlay(!state.overlayOn, true), state.overlayOn ? L('Lời trên video: bật') : L('Lời trên video: tắt')),
+    pip: () => (togglePip(), L('Cửa sổ lời nổi')),
+    nudge: (d) => (nudge(d), L('Lệch ') + fmtOffset(state.offset)),
     pin: () => {
       const v = video();
       const i = state.current && v ? position(v.currentTime).i : -1;
-      if (i < 0) return 'Chưa có dòng nào đang hát';
+      if (i < 0) return L('Chưa có dòng nào đang hát');
       pinLine(i);
-      return '📍 Đã ghim dòng đang hát';
+      return L('📍 Đã ghim dòng đang hát');
     },
-    font: (d) => (setFont(d), 'Cỡ chữ ' + BYL.settings.value.overlayFontSize),
+    font: (d) => (setFont(d), L('Cỡ chữ ') + BYL.settings.value.overlayFontSize),
   };
   const api = { mount, remount, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
   const ctx = { P, S, addCandidates, api, baseId, choose, closeEditor, effT, el, frame, maybeAutoPick, renderLines, renderSelect, saveCustom, saveWarps, say, setOffset, setSourceStatus, singable, slot, slotFor, state, stopTap, tap, tapping, video };

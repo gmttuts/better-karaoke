@@ -74,6 +74,8 @@ npm run build:store  # thêm bản zip bỏ trường "key" để nộp Chrome W
 
 `build` dừng lại nếu thiếu file mà `manifest.json` cần (icon, script, trang cài đặt, font). `test` chạy các bộ test (tách tên bài, thời gian từng chữ, xuất LRC/SRT, bài toán của LRCLIB), rồi mở video `6HQWus2DOsI` (đổi bằng `VIDEO=<id>`) và kiểm tra: panel, bảng 🎨, nút 🎤 Karaoke, tên bài, phím tắt, 📌, xuất SRT, trang gửi LRCLIB (không gửi thật) và lỗi JavaScript. Video có lời LRCLIB như `VIDEO=JGwWNGJdvx8` kiểm tra được cả file SRT.
 
+**Ngôn ngữ giao diện**: tiếng Việt hoặc tiếng Anh, chọn trong cửa sổ cài đặt ("Ngôn ngữ / Language"). Mặc định *Tự động*: tiếng Việt khi Chrome hoặc danh sách ngôn ngữ ưa thích của trình duyệt có tiếng Việt, còn lại là tiếng Anh. Đổi ngôn ngữ xong thì tải lại tab YouTube.
+
 Bấm biểu tượng extension để **tắt hẳn extension** (công tắc "Bật trên YouTube", áp dụng ngay cho mọi tab), bật/tắt **tự hiện lời trên video** (mặc định tắt; chọn kiểu chữ hay mở 🎨 chỉ bật lời cho video đang xem), bật/tắt từng nguồn, ưu tiên lời có thời gian, số trang comment cần quét. Kiểu chữ chỉnh trong panel (🎨).
 
 ## Cách hoạt động
@@ -97,8 +99,10 @@ src/
     export.js          Xuất .lrc / .srt, chuyển lời sang trang gửi LRCLIB
     keys.js            Phím tắt Alt + phím
     main.js            Theo dõi chuyển trang trong YouTube, chạy các nguồn, chọn kết quả tốt nhất
+  i18n.js              Chữ giao diện tiếng Việt / tiếng Anh (từ điển L('…'))
   options/             Trang cài đặt (cũng là popup)
   publish/             Trang gửi lời lên LRCLIB, pow.js giải bài toán chống spam (SHA-256) trong worker
+_locales/              Mô tả extension theo ngôn ngữ (vi, en)
 scripts/               build.mjs (đóng gói + kiểm tra file), smoke.mjs (test headless)
 tests/                 Test tách tên bài, thời gian từng chữ, xuất file, bài toán LRCLIB
 fonts/                 Roboto Condensed (Apache 2.0, có bộ chữ tiếng Việt) cho kiểu Karaoke

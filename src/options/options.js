@@ -4,6 +4,7 @@
 // panel (🎨) on YouTube. Defaults must match BYL.DEFAULTS in content/util.js.
 const DEFAULTS = {
   enabled: true,
+  uiLang: 'auto',
   srcDescription: true,
   srcComments: true,
   srcDuplicates: true,
@@ -22,21 +23,25 @@ const saved = document.getElementById('saved');
 let timer;
 
 chrome.storage.sync.get(DEFAULTS).then((values) => {
+  BYL.setLang(values.uiLang);
+  BYL.localizePage();
   for (const input of document.querySelectorAll('[data-k]')) {
     const k = input.dataset.k;
     if (input.type === 'checkbox') input.checked = !!values[k];
     else input.value = values[k];
     if (k === 'enabled') document.body.classList.toggle('off', !input.checked);
     input.addEventListener('change', async () => {
-      let v = input.type === 'checkbox' ? input.checked : Number(input.value);
+      let v = input.type === 'checkbox' ? input.checked : input.tagName === 'SELECT' ? input.value : Number(input.value);
       if (input.type === 'number') {
         v = Math.min(Number(input.max), Math.max(Number(input.min), v || DEFAULTS[k]));
         input.value = v;
       }
       await chrome.storage.sync.set({ [k]: v });
       if (k === 'enabled') document.body.classList.toggle('off', !v);
+      // The page's text was swapped once on load: reload it in the new language.
+      if (k === 'uiLang') return location.reload();
       // These two reach open YouTube tabs right away (main.js listens).
-      saved.textContent = LIVE.includes(k) ? 'Đã lưu.' : 'Đã lưu, áp dụng từ video tiếp theo.';
+      saved.textContent = LIVE.includes(k) ? L('Đã lưu.') : L('Đã lưu, áp dụng từ video tiếp theo.');
       clearTimeout(timer);
       timer = setTimeout(() => (saved.textContent = ''), 2000);
     });
@@ -77,7 +82,7 @@ async function showStats() {
   const [local, bytes] = await Promise.all([chrome.storage.local.get(null), chrome.storage.local.getBytesInUse(null)]);
   const s = summarize(local);
   document.getElementById('stats').textContent =
-    `${s.videos} video đã nhớ · ${s.custom} lời bạn sửa · ${s.warps} bài có điểm 📍 · ${s.presets} preset · ${(bytes / 1024).toFixed(0)} KB`;
+    L('{0} video đã nhớ · {1} lời bạn sửa · {2} bài có điểm 📍 · {3} preset · {4} KB', s.videos, s.custom, s.warps, s.presets, (bytes / 1024).toFixed(0));
 }
 if (isTab) showStats();
 
@@ -99,7 +104,7 @@ document.getElementById('export').addEventListener('click', async () => {
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
   const s = summarize(local);
-  say(`Đã xuất ${s.videos} video, ${s.custom} lời bạn sửa, ${s.presets} preset.`);
+  say(L('Đã xuất {0} video, {1} lời bạn sửa, {2} preset.', s.videos, s.custom, s.presets));
 });
 
 const file = document.getElementById('file');
@@ -112,20 +117,20 @@ file.addEventListener('change', async () => {
   try {
     data = JSON.parse(await f.text());
   } catch {
-    return say('File này không phải JSON hợp lệ.', true);
+    return say(L('File này không phải JSON hợp lệ.'), true);
   }
   if (data?.app !== 'better-youtube-lyric' || typeof data.local !== 'object' || typeof data.settings !== 'object') {
-    return say('File này không phải bản sao lưu của Better YouTube Lyric.', true);
+    return say(L('File này không phải bản sao lưu của Better YouTube Lyric.'), true);
   }
   try {
     const counts = await importBackup(data);
     say(
-      `Đã nhập ${counts.videos} video (${counts.newer} được cập nhật), ${counts.presets} preset.\n` +
-        'Tải lại các tab YouTube đang mở để thấy thay đổi.'
+      L('Đã nhập {0} video ({1} được cập nhật), {2} preset.\n', counts.videos, counts.newer, counts.presets) +
+        L('Tải lại các tab YouTube đang mở để thấy thay đổi.')
     );
     showStats();
   } catch (err) {
-    say('Nhập không thành công: ' + (err?.message || err), true);
+    say(L('Nhập không thành công: ') + (err?.message || err), true);
   }
 });
 

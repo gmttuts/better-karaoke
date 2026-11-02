@@ -27,12 +27,12 @@ BYL.uiParts.tabs = ({ P, el, state }) => {
     }
 
     const q = [state.song.title, state.song.artist, 'karaoke', extra].filter(Boolean).join(' ');
-    P.klist.replaceChildren(el('div', 'empty', 'Đang tìm bản karaoke…'));
+    P.klist.replaceChildren(el('div', 'empty', L('Đang tìm bản karaoke…')));
     try {
       const results = (await BYL.yt.search(q, 12)).filter((v) => v.videoId !== state.videoId);
       if (state.karaokeLoadedFor !== key) return;
       P.klist.replaceChildren();
-      if (!results.length) P.klist.append(el('div', 'empty', 'Không tìm thấy bản karaoke nào.'));
+      if (!results.length) P.klist.append(el('div', 'empty', L('Không tìm thấy bản karaoke nào.')));
       for (const v of results) {
         const a = el('a', 'kitem');
         a.href = '/watch?v=' + encodeURIComponent(v.videoId);
@@ -48,7 +48,7 @@ BYL.uiParts.tabs = ({ P, el, state }) => {
       }
     } catch {
       state.karaokeLoadedFor = null;
-      P.klist.replaceChildren(el('div', 'empty', 'Không tải được kết quả. Thử lại sau.'));
+      P.klist.replaceChildren(el('div', 'empty', L('Không tải được kết quả. Thử lại sau.')));
     }
   }
 
@@ -57,14 +57,14 @@ BYL.uiParts.tabs = ({ P, el, state }) => {
   function paintFav(on) {
     P.favBtn.classList.toggle('on', on);
     P.favBtn.textContent = on ? '★' : '☆';
-    P.favBtn.title = on ? 'Bỏ khỏi bài yêu thích' : 'Thêm vào bài yêu thích (xem ở tab "Đã xem")';
+    P.favBtn.title = on ? L('Bỏ khỏi bài yêu thích') : L('Thêm vào bài yêu thích (xem ở tab "Đã xem")');
   }
 
   const ago = (t) => {
     const m = Math.round((Date.now() - t) / 60000);
-    if (m < 60) return m <= 1 ? 'vừa xem' : m + ' phút trước';
-    if (m < 1440) return Math.round(m / 60) + ' giờ trước';
-    return Math.round(m / 1440) + ' ngày trước';
+    if (m < 60) return m <= 1 ? L('vừa xem') : m + L(' phút trước');
+    if (m < 1440) return Math.round(m / 60) + L(' giờ trước');
+    return Math.round(m / 1440) + L(' ngày trước');
   };
 
   async function renderHistory() {
@@ -74,7 +74,7 @@ BYL.uiParts.tabs = ({ P, el, state }) => {
     const list = (await BYL.history.list()).filter((x) => !state.favOnly || x.fav);
     P.hlist.replaceChildren();
     if (!list.length) {
-      P.hlist.append(el('div', 'empty', state.favOnly ? 'Chưa có bài yêu thích. Bấm ☆ cạnh tên bài để thêm.' : 'Chưa xem bài nào.'));
+      P.hlist.append(el('div', 'empty', state.favOnly ? L('Chưa có bài yêu thích. Bấm ☆ cạnh tên bài để thêm.') : L('Chưa xem bài nào.')));
       return;
     }
     for (const x of list) {
@@ -86,11 +86,11 @@ BYL.uiParts.tabs = ({ P, el, state }) => {
       img.loading = 'lazy';
       img.alt = '';
       const meta = el('div');
-      meta.append(el('b', '', x.title || x.id), el('div', 'muted', [x.artist, ago(x.at), x.n > 1 ? x.n + ' lần' : ''].filter(Boolean).join(' · ')));
+      meta.append(el('b', '', x.title || x.id), el('div', 'muted', [x.artist, ago(x.at), x.n > 1 ? x.n + L(' lần') : ''].filter(Boolean).join(' · ')));
       const star = el('button', 'fav' + (x.fav ? ' on' : ''), x.fav ? '★' : '☆');
-      star.title = x.fav ? 'Bỏ khỏi bài yêu thích' : 'Thêm vào bài yêu thích';
+      star.title = x.fav ? L('Bỏ khỏi bài yêu thích') : L('Thêm vào bài yêu thích');
       const del = el('button', 'x', '✕');
-      del.title = 'Xoá khỏi lịch sử';
+      del.title = L('Xoá khỏi lịch sử');
       for (const b of [star, del]) b.addEventListener('click', (e) => (e.preventDefault(), e.stopPropagation()));
       star.addEventListener('click', async () => {
         await BYL.history.setFav(x.id, !x.fav);

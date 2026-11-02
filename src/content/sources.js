@@ -7,13 +7,13 @@
 // uploads of the song, then external sites, and YouTube captions last.
 
 BYL.SOURCES = {
-  custom: { name: 'Lời của bạn', icon: '✍', priority: 0 }, // typed/edited in the panel, never fetched
-  description: { name: 'Mô tả video', icon: '📄', priority: 1, setting: 'srcDescription' },
+  custom: { get name() { return L('Lời của bạn'); }, icon: '✍', priority: 0 }, // typed/edited in the panel, never fetched
+  description: { get name() { return L('Mô tả video'); }, icon: '📄', priority: 1, setting: 'srcDescription' },
   comments: { name: 'Comment', icon: '💬', priority: 1, setting: 'srcComments' },
-  duplicates: { name: 'Bản đăng khác', icon: '🔁', priority: 2, setting: 'srcDuplicates' },
+  duplicates: { get name() { return L('Bản đăng khác'); }, icon: '🔁', priority: 2, setting: 'srcDuplicates' },
   lrclib: { name: 'LRCLIB', icon: '🌐', priority: 3, setting: 'srcLrclib' },
-  hopamchuan: { name: 'Hợp âm chuẩn', icon: '🎸', priority: 3, setting: 'srcHopamchuan' },
-  transcript: { name: 'Phụ đề YouTube', icon: '📝', priority: 4, setting: 'srcTranscript' },
+  hopamchuan: { get name() { return L('Hợp âm chuẩn'); }, icon: '🎸', priority: 3, setting: 'srcHopamchuan' },
+  transcript: { get name() { return L('Phụ đề YouTube'); }, icon: '📝', priority: 4, setting: 'srcTranscript' },
 };
 
 BYL.sources = (() => {
@@ -44,7 +44,7 @@ BYL.sources = (() => {
   async function description(ctx) {
     const block = BYL.extractLyricBlock(BYL.yt.descriptionOf(ctx.next), ctx.song);
     if (!block) return [];
-    return [{ id: 'desc', source: 'description', label: 'Mô tả của video này', detail: '', ...block }];
+    return [{ id: 'desc', source: 'description', label: L('Mô tả của video này'), detail: '', ...block }];
   }
 
   async function comments(ctx) {
@@ -154,7 +154,7 @@ BYL.sources = (() => {
         score: Math.round(score),
         warn:
           synced && diff > 3
-            ? `Bản này dài ${BYL.fmtTime(r.duration)}, video dài ${BYL.fmtTime(duration)}. Nếu lời chạy lệch, chỉnh "Lệch" bên dưới.`
+            ? L('Bản này dài {0}, video dài {1}. Nếu lời chạy lệch, chỉnh "Lệch" bên dưới.', BYL.fmtTime(r.duration), BYL.fmtTime(duration))
             : '',
       };
     });
@@ -244,7 +244,7 @@ BYL.sources = (() => {
     }
     if (!segs.length) {
       segs = await BYL.yt.transcriptPanel(ctx.next).catch(() => []);
-      used = segs.length ? { name: 'Bản ghi', kind: '' } : null;
+      used = segs.length ? { get name() { return L('Bản ghi'); }, kind: '' } : null;
     }
     const lines = segs
       .map((s) => ({ t: s.t, text: cleanCaption(s.text) }))
@@ -255,7 +255,7 @@ BYL.sources = (() => {
       {
         id: 'tr',
         source: 'transcript',
-        label: used.kind === 'asr' ? `Phụ đề tự động (${used.name})` : `Phụ đề: ${used.name}`,
+        label: used.kind === 'asr' ? L('Phụ đề tự động ({0})', used.name) : L('Phụ đề: {0}', used.name),
         detail: '',
         synced: true,
         lines,

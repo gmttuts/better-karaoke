@@ -35,8 +35,8 @@ async function checkExisting() {
     show(
       $('exists'),
       near.length
-        ? `LRCLIB đã có ${near.length} bản lời có thời gian cho "${near[0].trackName}" – ${near[0].artistName} cùng thời lượng. ` +
-            'Chỉ nên gửi nếu bản của bạn đúng hơn.'
+        ? L('LRCLIB đã có {0} bản lời có thời gian cho "{1}" – {2} cùng thời lượng. ', near.length, near[0].trackName, near[0].artistName) +
+            L('Chỉ nên gửi nếu bản của bạn đúng hơn.')
         : '',
       'warn'
     );
@@ -61,7 +61,7 @@ function solve(prefix, target) {
 async function send(e) {
   e.preventDefault();
   const synced = stamped($('synced').value);
-  if (synced.length < 3) return show($('msg'), 'Cần ít nhất 3 dòng có dấu thời gian dạng [01:23.45].', 'err');
+  if (synced.length < 3) return show($('msg'), L('Cần ít nhất 3 dòng có dấu thời gian dạng [01:23.45].'), 'err');
   const body = {
     trackName: $('track').value.trim(),
     artistName: $('artist').value.trim(),
@@ -70,20 +70,20 @@ async function send(e) {
     plainLyrics: plainOf(synced.join('\n')),
     syncedLyrics: synced.map((l) => l.trim()).join('\n'),
   };
-  if (!body.trackName || !body.artistName || !(body.duration > 0)) return show($('msg'), 'Điền tên bài, ca sĩ và thời lượng.', 'err');
+  if (!body.trackName || !body.artistName || !(body.duration > 0)) return show($('msg'), L('Điền tên bài, ca sĩ và thời lượng.'), 'err');
 
   $('send').disabled = true;
   $('prog').hidden = false;
   try {
     for (let attempt = 0; attempt < 3; attempt++) {
       // LRCLIB asks for a small proof of work instead of an account.
-      show($('msg'), 'Đang xác thực với LRCLIB (mất khoảng 10–30 giây)…');
+      show($('msg'), L('Đang xác thực với LRCLIB (mất khoảng 10–30 giây)…'));
       const ch = await fetch(`${API}/request-challenge`, { method: 'POST', headers }).then((r) => {
         if (!r.ok) throw new Error('request-challenge ' + r.status);
         return r.json();
       });
       const nonce = await solve(ch.prefix, ch.target);
-      show($('msg'), 'Đang gửi…');
+      show($('msg'), L('Đang gửi…'));
       const res = await fetch(`${API}/publish`, {
         method: 'POST',
         headers: { ...headers, 'content-type': 'application/json', 'X-Publish-Token': `${ch.prefix}:${nonce}` },
@@ -94,7 +94,7 @@ async function send(e) {
         const drop = ['publishDraft'];
         if (draft?.videoId) drop.push('c:' + draft.videoId);
         await chrome.storage.local.remove(drop);
-        show($('msg'), '✅ Đã gửi lên LRCLIB. Cảm ơn bạn! Lời sẽ có trong kết quả tìm kiếm sau ít phút.', 'ok');
+        show($('msg'), L('✅ Đã gửi lên LRCLIB. Cảm ơn bạn! Lời sẽ có trong kết quả tìm kiếm sau ít phút.'), 'ok');
         $('prog').hidden = true;
         return;
       }
@@ -105,15 +105,17 @@ async function send(e) {
       }
       throw new Error(err.message || `HTTP ${res.status}`);
     }
-    throw new Error('LRCLIB đang quá tải, thử lại sau.');
+    throw new Error(L('LRCLIB đang quá tải, thử lại sau.'));
   } catch (err) {
-    show($('msg'), 'Gửi không thành công: ' + (err?.message || err), 'err');
+    show($('msg'), L('Gửi không thành công: ') + (err?.message || err), 'err');
     $('send').disabled = !$('agree').checked;
   }
   $('prog').hidden = true;
 }
 
 (async () => {
+  BYL.setLang((await chrome.storage.sync.get({ uiLang: 'auto' })).uiLang);
+  BYL.localizePage();
   ({ publishDraft: draft } = await chrome.storage.local.get('publishDraft'));
   if (!draft?.syncedLyrics) return ($('empty').hidden = false);
   $('form').hidden = false;

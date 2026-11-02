@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const EXT = join(root, 'dist', 'better-youtube-lyric');
 const VIDEO = process.env.VIDEO || '6HQWus2DOsI';
+const EN = process.env.UI_LANG === 'en';
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const profile = mkdtempSync(join(tmpdir(), 'byl-smoke-'));
 
@@ -48,6 +49,15 @@ const check = (name, ok, detail = '') => {
 try {
   const ext = await send('Extensions.loadUnpacked', { path: EXT });
   check('Chrome nạp được extension', !!ext.result?.id, ext.error?.message || ext.result?.id);
+  // Interface language: Vietnamese, as the checks below look for its labels;
+  // an English pass only checks that the panel switches over.
+  {
+    const { result: o } = await send('Target.createTarget', { url: `chrome-extension://${ext.result.id}/src/options/options.html` });
+    const { result: { sessionId: os } } = await send('Target.attachToTarget', { targetId: o.targetId, flatten: true });
+    await sleep(800);
+    await send('Runtime.evaluate', { expression: `chrome.storage.sync.set({ uiLang: '${EN ? 'en' : 'vi'}' })`, awaitPromise: true }, os);
+    await send('Target.closeTarget', { targetId: o.targetId });
+  }
   const { result: { targetId } } = await send('Target.createTarget', { url: 'about:blank' });
   const { result: { sessionId } } = await send('Target.attachToTarget', { targetId, flatten: true });
   await send('Runtime.enable', {}, sessionId);
@@ -61,6 +71,11 @@ try {
     panel = await ev(`return !!document.getElementById('byl-panel-host')?.shadowRoot?.querySelector('.byl')`);
   }
   check('Panel hiện cạnh video', panel);
+  if (EN) {
+    const tabs = await ev(`return [...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('nav button')].map((b) => b.textContent).join()`);
+    check('Panel in English', tabs === 'Lyrics,Karaoke,History', tabs);
+    throw 'done';
+  }
   await sleep(4000);
   const r = await ev(`
     const sr = document.getElementById('byl-panel-host').shadowRoot;
@@ -146,7 +161,7 @@ try {
   }
   check('Không có lỗi JavaScript', !errors.some((e) => /BYL|byl|content\//.test(e)), errors.filter((e) => /BYL|byl|content\//.test(e))[0] || '');
 } catch (err) {
-  check('Chạy test', false, String(err));
+  if (err !== 'done') check('Chạy test', false, String(err));
 } finally {
   chrome.kill();
   await sleep(300);
