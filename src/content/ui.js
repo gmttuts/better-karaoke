@@ -374,6 +374,7 @@ BYL.ui = (() => {
     tapBtn.addEventListener('click', () => (tapping() ? stopTap(false) : startTap()));
     transSel.addEventListener('change', () => {
       const id = transSel.value;
+      if (id === 'roman') return state.current && romanTrans(state.current, true);
       setTrans(state.candidates.find((x) => x.id === id) || (state.trans?.id === id ? state.trans : null), true);
     });
     swapBtn.addEventListener('click', () => state.trans && choose(state.trans, true));
@@ -895,6 +896,8 @@ BYL.ui = (() => {
       BYL.videoStore.patch(state.videoId, { pick: c, trans: state.trans });
     }
     P.select.value = c.id;
+    // A Latin spelling follows the lyrics it was made from.
+    if (state.trans?.romanOf && state.trans.romanOf !== c.id) romanTrans(c, false);
     renderTransSelect();
     P.warn.textContent = c.warn || '';
     P.note.textContent = '';
@@ -1347,12 +1350,29 @@ BYL.ui = (() => {
       sel.append(o);
     };
     add(null);
+    // Korean / Japanese / Chinese lyrics can show their Latin spelling.
+    const cur = state.current;
+    const script = cur && cur.source !== 'roman' ? BYL.romanize.scriptOf(cur.lines.map((l) => l.text).join('\n')) : null;
+    if (script) {
+      const o = el('option', '', L('🔤 Phiên âm Latin') + ` (${{ ko: 'Hangul', ja: 'Kana', zh: 'Pinyin' }[script]})`);
+      o.value = 'roman';
+      sel.append(o);
+    }
     const list = state.candidates.filter((c) => c !== state.current && c.id !== 'tap');
-    if (state.trans && !list.includes(state.trans)) list.unshift(state.trans);
+    if (state.trans && state.trans.source !== 'roman' && !list.includes(state.trans)) list.unshift(state.trans);
     list.forEach(add);
-    sel.value = state.trans?.id || '';
-    P.rowT.style.display = state.current && list.length ? '' : 'none';
+    sel.value = state.trans?.source === 'roman' ? 'roman' : state.trans?.id || '';
+    P.rowT.style.display = state.current && (list.length || script) ? '' : 'none';
     P.swapBtn.hidden = !state.trans;
+  }
+
+  // The current lyrics spelt in Latin letters, as a second-language candidate.
+  async function romanTrans(c, persist) {
+    const r = await BYL.romanize.lines(c.lines);
+    if (state.current !== c) return;
+    if (!r) return setTrans(null, persist);
+    setTrans({ id: 'roman', source: 'roman', label: L('Phiên âm Latin'), synced: c.synced, lines: r.lines, romanOf: c.id }, persist);
+    renderTransSelect();
   }
 
   function transFor(i) {
@@ -1364,6 +1384,8 @@ BYL.ui = (() => {
   }
 
   function matchTrans(c, tr) {
+    // A Latin spelling has the very same lines.
+    if (tr.romanOf) return tr.romanOf === c.id ? Object.fromEntries(c.lines.map((l, i) => [i, tr.lines[i]?.text])) : {};
     const a = singable(c.lines);
     const b = singable(tr.lines);
     const m = {};

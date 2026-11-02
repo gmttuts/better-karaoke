@@ -14,6 +14,7 @@ BYL.SOURCES = {
   lrclib: { name: 'LRCLIB', icon: '🌐', priority: 3, setting: 'srcLrclib' },
   hopamchuan: { get name() { return L('Hợp âm chuẩn'); }, icon: '🎸', priority: 3, setting: 'srcHopamchuan' },
   transcript: { get name() { return L('Phụ đề YouTube'); }, icon: '📝', priority: 4, setting: 'srcTranscript' },
+  roman: { get name() { return L('Phiên âm'); }, icon: '🔤', priority: 9 }, // made in the panel from the lyrics shown
 };
 
 BYL.sources = (() => {

@@ -45,6 +45,7 @@
         "src/content/align.js",
         "src/content/panel-css.js",
         "src/content/looks.js",
+        "src/content/romanize.js",
         "src/content/ui-editor.js",
         "src/content/ui-tap.js",
         "src/content/ui-tabs.js",
@@ -59,7 +60,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "fonts/*.woff2"
+        "fonts/*.woff2",
+        "data/pinyin.json"
       ],
       "matches": [
         "https://www.youtube.com/*"

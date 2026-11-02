@@ -41,6 +41,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
   - **🔎 Tìm trong lời**: gõ không dấu cũng tìm được, Enter / Shift+Enter để qua lại giữa các kết quả.
   - **📍 Gắn giờ đang phát** (Ctrl/⌘ + Enter): ghi giờ hiện tại vào dòng có con trỏ rồi xuống dòng kế, vừa nghe vừa bấm để canh lời dịch.
 - **🌐 Song ngữ**: chọn một bản lời khác (thường là lời bạn tự dịch) để hiện thành dòng nhỏ dưới mỗi dòng, trên video, trong panel và cửa sổ nổi. Hai bản cùng có thời gian thì ghép theo thời gian, không thì ghép theo thứ tự dòng (giữ số dòng như bản gốc là khớp). Nút ⇅ đổi chỗ lời chính và lời dịch. Lựa chọn được nhớ cho từng video.
+- **🔤 Phiên âm Latin** (trong menu 🌐 Song ngữ): lời tiếng Hàn, tiếng Nhật, tiếng Trung hiện thêm cách đọc bằng chữ Latin dưới mỗi dòng, trên video và trong panel. Tiếng Hàn theo chuẩn Romanization của Hàn Quốc (có nối âm, biến âm mũi: 감사합니다 → gamsahamnida); tiếng Nhật đọc kana theo Hepburn (chữ Hán giữ nguyên vì cần từ điển theo từ); tiếng Trung ra pinyin có dấu thanh, mỗi chữ một cách đọc phổ biến nhất (dữ liệu Unihan của Unicode, 50 KB, chỉ tải khi cần).
 - **⏱ Gõ nhịp**: phát bài, bấm **Space** đúng lúc bắt đầu hát dòng có viền; mỗi lần bấm ghi thời gian cho một dòng. **Backspace** lùi một dòng và tua lại 3 giây; bấm vào một dòng để gõ lại từ đó. Dòng bị bỏ qua được ước lượng theo hai dòng bên cạnh. Kết quả lưu thành "✍ Lời của bạn" có thời gian. Mỗi video giữ được hai bản của bạn, nên gõ nhịp lời gốc không ghi đè lên bản dịch đang hiện.
 - **Kéo thanh dưới khung lời** để thu gọn hoặc mở rộng; độ cao được nhớ lại. Nháy đúp thanh để về mặc định.
 - **🔍 Tìm theo tên**: extension đoán sai tên bài hoặc ca sĩ? Gõ lại rồi bấm Tìm, mọi nguồn chạy lại theo tên mới. Tên sửa được nhớ cho video đó (hiện dấu ✎ cạnh tên ca sĩ); bấm "Dùng tên tự đoán" để bỏ.
@@ -92,6 +93,7 @@ src/
     panel-css.js       Giao diện panel (CSS)
     looks.js           Các kiểu chữ trên video, thông số 🎨, cách vẽ một kiểu lên overlay
     ui.js              Panel + overlay (shadow DOM), đồng bộ theo thời gian video, cửa sổ nổi
+    romanize.js        Phiên âm Latin cho lời Hàn / Nhật (kana) / Trung
     ui-editor.js       ✏️ Sửa lời / tự nhập lời
     ui-tap.js          ⏱ Gõ nhịp
     ui-tabs.js         Tab "Bản Karaoke" và "Đã xem" (lịch sử, ★ yêu thích)
@@ -105,6 +107,7 @@ src/
 _locales/              Mô tả extension theo ngôn ngữ (vi, en)
 scripts/               build.mjs (đóng gói + kiểm tra file), smoke.mjs (test headless)
 tests/                 Test tách tên bài, thời gian từng chữ, xuất file, bài toán LRCLIB
+data/pinyin.json       Cách đọc pinyin của 21 nghìn chữ Hán (Unicode Unihan, giấy phép Unicode v3)
 fonts/                 Roboto Condensed (Apache 2.0, có bộ chữ tiếng Việt) cho kiểu Karaoke
 ```
 
