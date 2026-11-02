@@ -31,6 +31,10 @@ const wanted = [
 const missing = wanted.filter((p) => !existsSync(join(out, p)));
 for (const w of manifest.web_accessible_resources || []) {
   for (const pattern of w.resources) {
+    if (!pattern.includes('*')) {
+      if (!existsSync(join(out, pattern))) missing.push(pattern);
+      continue;
+    }
     const dir = dirname(pattern);
     const ext = pattern.split('*').pop();
     if (!existsSync(join(out, dir)) || !readdirSync(join(out, dir)).some((f) => f.endsWith(ext))) missing.push(pattern);
