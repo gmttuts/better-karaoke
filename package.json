@@ -1,0 +1,11 @@
+{
+  "name": "better-youtube-lyric",
+  "private": true,
+  "type": "module",
+  "description": "Chrome extension: find lyrics on YouTube and sing karaoke on the video.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:store": "node scripts/build.mjs --store",
+    "test": "node scripts/build.mjs && node scripts/smoke.mjs"
+  }
+}

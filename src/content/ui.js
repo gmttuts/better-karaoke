@@ -48,14 +48,14 @@ BYL.ui = (() => {
     /* Shorts: no side column, so the panel floats beside the video. */
     :host([data-float]) { position: fixed; z-index: 2100; top: 72px; width: 360px; max-height: calc(100vh - 88px); overflow-y: auto;
       margin: 0; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
-    :host([data-float]) .byl { background: var(--yt-spec-base-background, #fff); }
     :host([data-float]) .lines { max-height: min(45vh, 420px); }
     :host([data-float]) .row > select { flex-basis: 100%; }
     * { box-sizing: border-box; }
-    .byl { --fg: var(--yt-spec-text-primary, #0f0f0f); --fg2: var(--yt-spec-text-secondary, #606060);
-      --chip: var(--yt-spec-badge-chip-background, rgba(0,0,0,.05)); --line: var(--yt-spec-10-percent-layer, rgba(0,0,0,.1));
-      --raised: var(--yt-spec-raised-background, #fff); --accent: #ff2e63; --accent2: #ffb800;
-      color: var(--fg); background: var(--yt-spec-base-background, #fff); border: 1px solid var(--line); border-radius: 12px;
+    /* YouTube's own colour variables were renamed and are gone, so keep a
+       light and a dark palette here and follow <html dark>. */
+    .byl { --base: #fff; --fg: #0f0f0f; --fg2: #606060; --chip: rgba(0,0,0,.05); --line: rgba(0,0,0,.1); --raised: #fff;
+      --accent: #ff2e63; --accent2: #ffb800;
+      color: var(--fg); background: var(--base); border: 1px solid var(--line); border-radius: 12px;
       overflow: hidden; font-size: 14px; }
     header { display: flex; align-items: center; gap: 10px; padding: 12px; cursor: pointer; user-select: none; }
     .logo { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px;
@@ -73,7 +73,10 @@ BYL.ui = (() => {
     button { font: inherit; font-size: 13px; font-weight: 500; color: var(--fg); background: var(--chip); border: 0;
       border-radius: 999px; padding: 7px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
     button:hover { background: var(--line); }
-    button.on { background: var(--fg); color: var(--yt-spec-base-background, #fff); }
+    button.on { background: var(--fg); color: var(--base); }
+    :host-context(html[dark]) .byl { --base: #0f0f0f; --fg: #f1f1f1; --fg2: #aaa; --chip: rgba(255,255,255,.1); --line: rgba(255,255,255,.2);
+      --raised: #3f3f3f; color-scheme: dark; }
+    :host-context(html[dark]) select option, :host-context(html[dark]) select optgroup { color: #f1f1f1; background: #272727; }
     .status { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 12px 8px; }
     .chip { font: inherit; font-size: 12px; font-weight: 400; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--fg2);
       border: 1px solid transparent; cursor: pointer; }
@@ -93,6 +96,9 @@ BYL.ui = (() => {
     .off.flash { animation: flash .6s; }
     @keyframes flash { from { background: rgba(255,46,99,.35); } to { background: transparent; } }
     .muted { color: var(--fg2); font-size: 12px; }
+    .stale { display: flex; align-items: center; gap: 8px; margin: 0 12px 10px; padding: 8px 10px; border-radius: 10px; font-size: 12px;
+      line-height: 1.4; background: rgba(255,46,99,.12); }
+    .stale span { flex: 1; }
     .note { margin: 0 12px 10px; padding: 8px 10px; border-radius: 10px; font-size: 12px; line-height: 1.45; background: rgba(62,166,255,.12); }
     .note:empty { display: none; }
     .offwrap { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
@@ -186,7 +192,7 @@ BYL.ui = (() => {
     /* Same text laid out behind the (transparent) textarea, to paint the line
        playing now and the search hits. */
     .mirror { position: absolute; inset: 0; overflow: hidden; pointer-events: none; color: transparent; border-color: transparent;
-      background: var(--yt-spec-base-background, #fff); }
+      background: var(--base); }
     .mirror .now { background: rgba(255,46,99,.22); border-radius: 3px; box-shadow: -4px 0 0 rgba(255,46,99,.22), 4px 0 0 rgba(255,46,99,.22); }
     .mirror mark { color: transparent; background: rgba(255,184,0,.45); border-radius: 2px; }
     .mirror mark.cur { background: rgba(255,120,0,.9); }
@@ -447,6 +453,19 @@ BYL.ui = (() => {
   }
   let remounting = false;
 
+  // After the extension is updated or reloaded, the copy already running in
+  // an open tab can't reach chrome.* any more and keeps the old look. Say so
+  // instead of letting it look like the update didn't work.
+  function stale() {
+    if (!P || P.wrap.querySelector('.stale')) return;
+    const bar = el('div', 'stale');
+    const go = el('button', 'primary', 'Tải lại trang');
+    go.addEventListener('click', () => location.reload());
+    bar.append(el('span', '', '🔄 Better Lyric vừa được cập nhật. Tải lại trang để dùng bản mới.'), go);
+    P.wrap.querySelector('.body').prepend(bar);
+    P.wrap.classList.remove('collapsed');
+  }
+
   function hide() {
     if (panelHost) panelHost.hidden = true;
     if (O) O.host.remove();
@@ -479,6 +498,7 @@ BYL.ui = (() => {
     const songArtist = el('span', '', 'Đang tìm lời bài hát…');
     song.append(songTitle, songArtist);
     header.append(el('span', 'logo', '🎤'), song, el('span', 'chev', '▾'));
+    header.title = 'Better YouTube Lyric v' + chrome.runtime.getManifest().version;
 
     const body = el('div', 'body');
     const nav = el('nav');
@@ -1686,6 +1706,7 @@ BYL.ui = (() => {
 
   let looping = false;
   let ticks = 0;
+  let lastFrame = 0;
   let loopGen = 0;
   function startLoop(restart) {
     if (looping && !restart) return;
@@ -1699,7 +1720,14 @@ BYL.ui = (() => {
         return;
       }
       try {
-        frame();
+        // Paused: the lyrics only move on a seek or an edit, so a few
+        // frames a second are plenty and spare the battery.
+        const v = video();
+        const t = performance.now();
+        if (!v || !v.paused || t - lastFrame > 200) {
+          lastFrame = t;
+          frame();
+        }
         if (++ticks % 30 === 0) {
           placeFloat(); // Shorts: follow the video if the layout shifts
           shortsLift();
@@ -2423,6 +2451,6 @@ BYL.ui = (() => {
   }
 
   // main.js fills in onLoadSource, hasCaptions and captionWordsFor per video.
-  const api = { mount, remount, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, onLoadSource: null };
+  const api = { mount, remount, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, onLoadSource: null };
   return api;
 })();

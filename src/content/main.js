@@ -98,7 +98,12 @@
   document.addEventListener('yt-navigate-finish', onPage);
   // Swiping between Shorts doesn't always fire a navigation event.
   let lastHref = location.href;
-  setInterval(() => {
+  const timer = setInterval(() => {
+    if (!chrome.runtime?.id) {
+      clearInterval(timer);
+      BYL.ui.stale();
+      return;
+    }
     if (location.href === lastHref) return BYL.ui.remount();
     lastHref = location.href;
     onPage();

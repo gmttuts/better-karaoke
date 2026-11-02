@@ -15,6 +15,8 @@ const DEFAULTS = {
   commentPages: 3,
 };
 
+document.getElementById('ver').textContent = 'v' + chrome.runtime.getManifest().version;
+
 const LIVE = ['enabled', 'overlayOnByDefault'];
 const saved = document.getElementById('saved');
 let timer;

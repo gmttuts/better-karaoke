@@ -48,6 +48,20 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 `manifest.json` có trường `key` để ID của extension luôn là `hpklleajpolgkiipenbegkgjmeogllno`, dù thư mục nằm ở đâu hay đổi tên. Dữ liệu trong `chrome.storage` gắn với ID này nên không bị mất khi chuyển thư mục.
 3. Mở một video nhạc trên YouTube. Panel hiện ở đầu cột bên phải.
 
+**Khi cập nhật:** bấm ↻ trên thẻ extension rồi tải lại các tab YouTube đang mở. Tab mở từ trước vẫn chạy bản cũ; từ 0.11 panel ở tab đó tự báo "Better Lyric vừa được cập nhật" kèm nút tải lại. Số phiên bản hiện trong popup và khi rê chuột lên tiêu đề panel.
+
+## Phát triển
+
+Cần Node 18+ và Google Chrome (không cần cài gói nào).
+
+```bash
+npm run build        # dist/better-youtube-lyric (thư mục để Load unpacked) + file zip
+npm test             # build rồi chạy thử headless (tắt tiếng) trên một video YouTube
+npm run build:store  # thêm bản zip bỏ trường "key" để nộp Chrome Web Store
+```
+
+`build` dừng lại nếu thiếu file mà `manifest.json` cần (icon, script, trang cài đặt, font). `test` mở video `6HQWus2DOsI` (đổi bằng `VIDEO=<id>`) và kiểm tra: panel, bảng 🎨, nút 🎤 Karaoke, tên bài và lỗi JavaScript.
+
 Bấm biểu tượng extension để **tắt hẳn extension** (công tắc "Bật trên YouTube", áp dụng ngay cho mọi tab), bật/tắt **tự hiện lời trên video** (mặc định tắt; chọn kiểu chữ hay mở 🎨 chỉ bật lời cho video đang xem), bật/tắt từng nguồn, ưu tiên lời có thời gian, số trang comment cần quét. Kiểu chữ chỉnh trong panel (🎨).
 
 ## Cách hoạt động
@@ -64,6 +78,7 @@ src/
     ui.js              Panel + overlay (shadow DOM), đồng bộ theo thời gian video, tab karaoke
     main.js            Theo dõi chuyển trang trong YouTube, chạy các nguồn, chọn kết quả tốt nhất
   options/             Trang cài đặt (cũng là popup)
+scripts/               build.mjs (đóng gói + kiểm tra file), smoke.mjs (test headless)
 fonts/                 Roboto Condensed (Apache 2.0, có bộ chữ tiếng Việt) cho kiểu Karaoke
 ```
 
@@ -91,6 +106,6 @@ Better YouTube Lyric lấy ý tưởng overlay và LRCLIB, rồi thêm phần nh
 
 ## Đưa lên Chrome Web Store (sau này)
 
-- Bỏ trường `key` trong `manifest.json` trước khi đóng gói (Store tự cấp ID).
+- Dùng `npm run build:store`: bản zip này đã bỏ trường `key` (Store tự cấp ID).
 - Quyền đang xin: `storage`, `unlimitedStorage` (không giới hạn 10 MB cho lời đã sửa), cùng host `lrclib.net` và `hopamchuan.com`. Không thu thập dữ liệu người dùng; cài đặt lưu trong `chrome.storage` (preset kiểu chữ và dữ liệu từng video ở `local`, các tuỳ chọn khác ở `sync`).
 - Cần thêm: ảnh chụp màn hình 1280×800, trang chính sách quyền riêng tư, và mô tả lý do đọc hopamchuan.com (hoặc tắt nguồn này mặc định trong bản Store).
