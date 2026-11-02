@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>🎙 Chấm điểm · Better YouTube Lyric</title>
+  <style>
+    :root { --fg: #f1f1f1; --fg2: #a8a8b3; --bg: #121218; --chip: rgba(255,255,255,.08); --accent: #ff2e63; color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 16px 18px; font: 14px/1.4 Roboto, -apple-system, Arial, sans-serif; color: var(--fg);
+      background: radial-gradient(400px 260px at 0 0, #2a1b4a, transparent 70%), var(--bg); min-height: 100vh; user-select: none; }
+    h1 { margin: 0 0 12px; font-size: 15px; font-weight: 600; color: var(--fg2); }
+    .total { display: flex; align-items: baseline; gap: 10px; }
+    .total b { font-size: 64px; line-height: 1; font-weight: 800;
+      background: linear-gradient(90deg, #ff2e63, #ffb800); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .total span { color: var(--fg2); }
+    .line { margin: 10px 0 14px; min-height: 22px; font-size: 16px; font-weight: 600; }
+    .meter { display: flex; align-items: center; gap: 10px; }
+    .bar { flex: 1; height: 8px; border-radius: 4px; background: var(--chip); overflow: hidden; }
+    .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #30a46c, #ffb800, #ff2e63); transition: width .08s; }
+    .note { width: 44px; text-align: right; font: 600 15px ui-monospace, Menlo, monospace; }
+    .hint { margin-top: 14px; color: var(--fg2); font-size: 12px; }
+    .err { color: #ff8a8a; }
+    button { font: inherit; font-weight: 500; border: 0; border-radius: 999px; padding: 7px 14px; cursor: pointer; background: var(--chip); color: var(--fg); margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1 id="song">🎙 Chấm điểm</h1>
+  <div class="total"><b id="total">–</b><span id="count">Hát theo lời đang chạy trên video</span></div>
+  <div class="line" id="line"></div>
+  <div class="meter"><div class="bar"><i id="level"></i></div><span class="note" id="note"></span></div>
+  <button id="reset">↺ Chấm lại từ đầu</button>
+  <p class="hint" id="hint">Đeo tai nghe để micro chỉ nghe giọng bạn, không nghe tiếng loa. Giữ cửa sổ này mở trong lúc hát.</p>
+  <script src="../i18n.js"></script>
+  <script src="pitch.js"></script>
+  <script src="score.js"></script>
+</body>
+</html>

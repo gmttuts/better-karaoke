@@ -6,10 +6,18 @@
 const ALLOWED_HOSTS = new Set(['lrclib.net', 'hopamchuan.com']);
 const LRCLIB_CLIENT = `BetterYouTubeLyric/${chrome.runtime.getManifest().version} (https://github.com/gmttuts/better-youtube-lyric)`;
 
-chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   // "☁ Gửi lên LRCLIB": the page reads the draft the panel left in storage.
   if (msg?.type === 'openPublish') {
     chrome.tabs.create({ url: chrome.runtime.getURL('src/publish/publish.html') }).then(() => sendResponse({ ok: true }));
+    return true;
+  }
+  // 🎙 Chấm điểm: a small window of our own holds the microphone.
+  if (msg?.type === 'openScore' && sender.tab?.id) {
+    chrome.windows
+      .create({ url: chrome.runtime.getURL(`src/score/score.html?tab=${sender.tab.id}`), type: 'popup', width: 380, height: 330 })
+      .then(() => sendResponse({ ok: true }))
+      .catch((err) => sendResponse({ error: String(err?.message || err) }));
     return true;
   }
   if (msg?.type !== 'fetch') return;

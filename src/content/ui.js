@@ -211,7 +211,10 @@ BYL.ui = (() => {
     overlayBtn.title = L('Hiện lời chữ to trên video (dùng được cả khi toàn màn hình)');
     const pipBtn = el('button', '', L('⧉ Cửa sổ nổi'));
     pipBtn.title = L('Mở lời trong một cửa sổ nhỏ luôn nằm trên cùng, kéo đi đâu cũng được (kể cả khi chuyển tab)');
-    row1.append(select, overlayBtn, pipBtn);
+    const scoreBtn = el('button', '', '🎙');
+    scoreBtn.title = L('Chấm điểm khi hát (cần micro, nên đeo tai nghe)');
+    scoreBtn.addEventListener('click', () => BYL.score.open());
+    row1.append(select, overlayBtn, pipBtn, scoreBtn);
 
     const rowT = el('div', 'row');
     const transSel = el('select');
@@ -1886,7 +1889,12 @@ BYL.ui = (() => {
     },
     font: (d) => (setFont(d), L('Cỡ chữ ') + BYL.settings.value.overlayFontSize),
   };
-  const api = { mount, remount, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
+  // Line being sung right now (score.js), -1 before the first one.
+  const lineNow = () => {
+    const v = video();
+    return state.current && v ? position(v.currentTime).i : -1;
+  };
+  const api = { lineNow, mount, remount, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
   const ctx = { P, S, addCandidates, api, baseId, choose, closeEditor, effT, el, frame, maybeAutoPick, renderLines, renderSelect, saveCustom, saveWarps, say, setOffset, setSourceStatus, singable, slot, slotFor, state, stopTap, tap, tapping, video };
   for (const k of ['editor', 'tap', 'tabs']) parts[k] = BYL.uiParts[k](ctx);
   return api;

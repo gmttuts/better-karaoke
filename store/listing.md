@@ -29,6 +29,7 @@ Mở một video nhạc trên YouTube là có lời bài hát ở cột bên ph�
 • 🎯 Tự canh lời theo phụ đề của video, ⏱ gõ nhịp bằng phím Space, 📍 ghim dòng đang hát để sửa lệch từng đoạn.
 • ⬇ Xuất file LRC / SRT với đúng thời gian bạn đã canh; ☁ chia sẻ lên LRCLIB (chỉ khi bạn xác nhận).
 • 🌐 Song ngữ: hiện lời dịch dưới mỗi dòng. 🔤 Phiên âm Latin cho lời Hàn, Nhật, Trung.
+• 🎙 Chấm điểm karaoke: hát vào micro, mỗi dòng có điểm (đủ lời, đúng nốt).
 • ⧉ Cửa sổ lời nổi luôn nằm trên cùng, kể cả khi chuyển tab.
 • ✏️ Sửa hoặc tự nhập lời, 🔍 tìm lại theo tên bài, ★ bài yêu thích, lịch sử bài đã xem, phím tắt Alt + phím.
 • Giao diện tiếng Việt và tiếng Anh.
@@ -45,6 +46,7 @@ Open a music video on YouTube and the lyrics appear in the right column, with th
 • 🎯 Sync the lyrics to the video's captions, ⏱ tap along with Space, 📍 pin the line being sung to fix one part of the song.
 • ⬇ Export LRC / SRT files with your timing; ☁ share them on LRCLIB (only after you confirm).
 • 🌐 Show a translation under each line. 🔤 Latin spelling for Korean, Japanese and Chinese lyrics.
+• 🎙 Karaoke scoring: sing into your microphone and get a mark for every line (in time, in tune).
 • ⧉ A floating, always-on-top lyrics window that keeps going when you switch tabs.
 • ✏️ Edit or type lyrics, 🔍 search again by name, ★ favourites, watch history, Alt + key shortcuts.
 • Vietnamese and English interface.

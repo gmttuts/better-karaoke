@@ -20,6 +20,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
   **📌 Kiểu chữ theo kênh**: bấm 📌 để kênh đang xem nhớ kiểu chữ riêng (ví dụ kênh nhạc Việt dùng Karaoke xanh dương, kênh K-pop dùng Phụ đề YouTube). Khi 📌 đang bật, đổi kiểu hay chỉnh 🎨 chỉ áp dụng cho kênh đó; bấm lại để dùng kiểu chung.
 
   **Tô theo từng chữ**: khi lời có thời gian từng chữ (LRC mở rộng dạng `<01:02.30>` trước mỗi chữ, hoặc canh theo phụ đề tự động của YouTube vốn ghi giờ từng chữ), mỗi chữ sáng đúng lúc được hát thay vì chạy đều cả dòng. Thông báo sau khi 🎯 canh cho biết bao nhiêu dòng được tô theo từng chữ.
+- **🎙 Chấm điểm** (nút 🎙 cạnh ⧉): mở một cửa sổ nhỏ nghe micro trong lúc bạn hát theo lời trên video. Hết mỗi dòng, video hiện điểm dòng đó và điểm tổng (cửa sổ cũng hiện điểm, nốt bạn đang hát, độ to). Điểm gồm 40% hát đủ dòng và 60% hát đúng nốt: nốt bạn hát được so với các nốt đang vang trong nhạc của video, quãng tám nào cũng được. Cần lời có thời gian (⏱ / 🎯 / LRCLIB). **Đeo tai nghe**, nếu không micro sẽ nghe cả giọng ca sĩ từ loa. Micro chạy trong cửa sổ của extension nên quyền micro cấp cho extension, không cấp cho youtube.com; âm thanh chỉ xử lý trên máy, không ghi lại, không gửi đi.
 - **⧉ Cửa sổ nổi**: mở lời trong một cửa sổ nhỏ luôn nằm trên cùng (Document Picture-in-Picture), vẫn chạy khi chuyển tab hoặc làm việc khác. Dùng chung kiểu chữ với overlay. Có thanh điều khiển như mini player của YouTube (hiện khi rê chuột, luôn hiện khi đang dừng): bài trước, câu trước, phát/dừng, câu sau, bài sau, thanh tua; phím Space và ←/→ cũng dùng được.
 - **YouTube Shorts**: panel nổi cạnh video Shorts (thu gọn được bằng cách bấm tiêu đề), lời karaoke hiện trên video đứng (tự nằm ngay trên tên kênh và tiêu đề, không che), tự tìm lời mới khi lướt sang Short khác. Short thường chỉ là một đoạn giữa bài: phụ đề sẽ tự canh, nếu không có thì bấm 📍 / bấm vào dòng đang hát.
 - **Tìm lời theo thứ tự ưu tiên** (chạy song song, kết quả hiện dần):
@@ -100,9 +101,11 @@ src/
     history.js         Lưu lịch sử bài đã xem và bài yêu thích
     export.js          Xuất .lrc / .srt, chuyển lời sang trang gửi LRCLIB
     keys.js            Phím tắt Alt + phím
+    score.js           🎙 Chấm điểm: nốt nhạc của video (chroma), điểm từng dòng
     main.js            Theo dõi chuyển trang trong YouTube, chạy các nguồn, chọn kết quả tốt nhất
   i18n.js              Chữ giao diện tiếng Việt / tiếng Anh (từ điển L('…'))
   options/             Trang cài đặt (cũng là popup)
+  score/               Cửa sổ 🎙 chấm điểm: nghe micro, tìm cao độ (YIN)
   publish/             Trang gửi lời lên LRCLIB, pow.js giải bài toán chống spam (SHA-256) trong worker
 _locales/              Mô tả extension theo ngôn ngữ (vi, en)
 scripts/               build.mjs (đóng gói + kiểm tra file), smoke.mjs (test headless)

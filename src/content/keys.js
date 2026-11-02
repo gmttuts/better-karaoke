@@ -21,7 +21,8 @@
   };
 
   let toastHost, toastTimer;
-  function toast(text) {
+  // Also used by score.js for the mark after each line.
+  const toast = (BYL.toast = (text, ms = 1200) => {
     const player = BYL.playerEl();
     if (!player || !text) return;
     if (!toastHost?.isConnected) {
@@ -39,8 +40,8 @@
     toastHost.shadowRoot.querySelector('span').textContent = text;
     toastHost.hidden = false;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => (toastHost.hidden = true), 1200);
-  }
+    toastTimer = setTimeout(() => (toastHost.hidden = true), ms);
+  });
 
   window.addEventListener(
     'keydown',

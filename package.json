@@ -7,6 +7,6 @@
     "build": "node scripts/build.mjs",
     "build:store": "node scripts/build.mjs --store",
     "build:firefox": "node scripts/build.mjs --firefox",
-    "test": "node tests/parse-song.test.mjs && node tests/timing.test.mjs && node tests/pow.test.mjs && node tests/romanize.test.mjs && node scripts/build.mjs && node scripts/smoke.mjs && UI_LANG=en node scripts/smoke.mjs"
+    "test": "node tests/parse-song.test.mjs && node tests/timing.test.mjs && node tests/pow.test.mjs && node tests/romanize.test.mjs && node tests/score.test.mjs && node scripts/build.mjs && node scripts/smoke.mjs && UI_LANG=en node scripts/smoke.mjs"
   }
 }

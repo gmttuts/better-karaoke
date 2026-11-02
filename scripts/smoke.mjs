@@ -16,7 +16,7 @@ const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/M
 const profile = mkdtempSync(join(tmpdir(), 'byl-smoke-'));
 
 const chrome = spawn(CHROME, ['--headless=new', `--user-data-dir=${profile}`, '--remote-debugging-pipe', '--enable-unsafe-extension-debugging',
-  '--no-first-run', '--mute-audio', '--window-size=1400,1000', '--lang=vi', 'about:blank'], { stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'] });
+  '--no-first-run', '--mute-audio', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream', '--window-size=1400,1000', '--lang=vi', 'about:blank'], { stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'] });
 const [out, inp] = [chrome.stdio[3], chrome.stdio[4]];
 let id = 0;
 let buf = '';
@@ -158,6 +158,19 @@ try {
     }
     const note = await ev(`return document.getElementById('byl-panel-host').shadowRoot.querySelector('.note').textContent`);
     check('Trang gửi LRCLIB mở và điền sẵn lời', !!filled?.track && filled.lines > 3 && filled.send === true, JSON.stringify(filled) + ' ' + (filled ? '' : note + ' ' + targetInfos.map((t) => t.url).join(' ')));
+  }
+  // 🎙 opens the score window, which connects to this tab.
+  await ev(`[...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('button')].find((b) => b.textContent.trim() === '🎙').click()`);
+  await sleep(3000);
+  {
+    const { result: { targetInfos } } = await send('Target.getTargets');
+    const win = targetInfos.find((t) => t.url.includes('/src/score/score.html'));
+    let song = null;
+    if (win) {
+      const { result: { sessionId: ws } } = await send('Target.attachToTarget', { targetId: win.targetId, flatten: true });
+      song = (await send('Runtime.evaluate', { expression: `[document.getElementById('song').textContent, document.getElementById('hint').className]`, returnByValue: true }, ws)).result?.result?.value;
+    }
+    check('Cửa sổ 🎙 chấm điểm mở và nối với tab', !!song && song[0].length > 3 && song[0] !== '🎙 Chấm điểm' && song[1] === 'hint', JSON.stringify(song));
   }
   check('Không có lỗi JavaScript', !errors.some((e) => /BYL|byl|content\//.test(e)), errors.filter((e) => /BYL|byl|content\//.test(e))[0] || '');
 } catch (err) {
