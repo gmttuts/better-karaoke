@@ -53,49 +53,57 @@ BYL.ui = (() => {
     :host([data-float]) .row > select { flex-basis: 100%; }
     * { box-sizing: border-box; }
     .byl { --fg: var(--yt-spec-text-primary, #0f0f0f); --fg2: var(--yt-spec-text-secondary, #606060);
-      --bg: var(--yt-spec-badge-chip-background, rgba(0,0,0,.05)); --line: var(--yt-spec-10-percent-layer, rgba(0,0,0,.1));
-      --accent: #ff2e63; --accent2: #ffb800;
-      color: var(--fg); background: var(--bg); border-radius: 12px; overflow: hidden; font-size: 14px; }
-    header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; cursor: pointer; user-select: none; }
-    .logo { font-size: 18px; }
+      --chip: var(--yt-spec-badge-chip-background, rgba(0,0,0,.05)); --line: var(--yt-spec-10-percent-layer, rgba(0,0,0,.1));
+      --raised: var(--yt-spec-raised-background, #fff); --accent: #ff2e63; --accent2: #ffb800;
+      color: var(--fg); background: var(--yt-spec-base-background, #fff); border: 1px solid var(--line); border-radius: 12px;
+      overflow: hidden; font-size: 14px; }
+    header { display: flex; align-items: center; gap: 10px; padding: 12px; cursor: pointer; user-select: none; }
+    .logo { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px;
+      background: linear-gradient(135deg, #ff2e63, #ff8a3d); }
     .song { flex: 1; min-width: 0; }
     .song b { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .song span { display: block; font-size: 12px; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .chev { color: var(--fg2); transition: transform .2s; }
     .byl.collapsed .chev { transform: rotate(-90deg); }
     .byl.collapsed .body { display: none; }
-    nav { display: flex; gap: 4px; padding: 0 12px 8px; }
-    nav button { flex: 1; }
-    button { font: inherit; font-size: 13px; color: var(--fg); background: transparent; border: 1px solid var(--line);
-      border-radius: 8px; padding: 6px 8px; cursor: pointer; }
+    nav { display: flex; gap: 2px; margin: 0 12px 10px; padding: 3px; border-radius: 10px; background: var(--chip); }
+    nav button { flex: 1; background: transparent; color: var(--fg2); border-radius: 8px; }
+    nav button:hover { background: transparent; color: var(--fg); }
+    nav button.on { background: var(--raised); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+    button { font: inherit; font-size: 13px; font-weight: 500; color: var(--fg); background: var(--chip); border: 0;
+      border-radius: 999px; padding: 7px 12px; cursor: pointer; white-space: nowrap; transition: background .15s; }
     button:hover { background: var(--line); }
-    button.on { background: var(--fg); color: var(--yt-spec-base-background, #fff); border-color: var(--fg); }
+    button.on { background: var(--fg); color: var(--yt-spec-base-background, #fff); }
     .status { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 12px 8px; }
-    .chip { font: inherit; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--line); color: var(--fg2);
+    .chip { font: inherit; font-size: 12px; font-weight: 400; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--fg2);
       border: 1px solid transparent; cursor: pointer; }
-    .chip:hover { border-color: var(--fg2); background: var(--line); }
+    .chip:hover { border-color: var(--line); background: var(--line); }
     .chip.ok { color: var(--fg); }
     .chip.cur { border-color: var(--accent); color: var(--fg); font-weight: 600; }
     .chip.none { opacity: .6; }
     .chip.idle { border: 1px dashed var(--fg2); }
     .chip.loading { cursor: progress; }
     .chip.loading::after { content: ' …'; }
-    .row { display: flex; align-items: center; gap: 6px; padding: 0 12px 8px; flex-wrap: wrap; }
-    select { flex: 1; min-width: 0; font: inherit; font-size: 13px; color: var(--fg); background: transparent;
-      border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+    .row { display: flex; align-items: center; gap: 6px; padding: 0 12px 10px; flex-wrap: wrap; }
+    select { flex: 1; min-width: 0; font: inherit; font-size: 13px; color: var(--fg); background: var(--chip);
+      border: 0; border-radius: 10px; padding: 7px 8px; cursor: pointer; outline: none; }
+    select:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     select option, select optgroup { color: #0f0f0f; }
     .off { min-width: 44px; text-align: center; font-variant-numeric: tabular-nums; font-size: 13px; border-radius: 6px; }
     .off.flash { animation: flash .6s; }
     @keyframes flash { from { background: rgba(255,46,99,.35); } to { background: transparent; } }
     .muted { color: var(--fg2); font-size: 12px; }
-    .note { margin: 0 12px 8px; padding: 6px 8px; border-radius: 8px; font-size: 12px; background: rgba(62,166,255,.15); }
+    .note { margin: 0 12px 10px; padding: 8px 10px; border-radius: 10px; font-size: 12px; line-height: 1.45; background: rgba(62,166,255,.12); }
     .note:empty { display: none; }
     .offwrap { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
     button.sync { font-weight: 600; }
     button.sync:disabled { opacity: .5; cursor: default; }
     .row.links { padding-top: 8px; border-top: 1px solid var(--line); margin: 0; }
-    .row.links button { border: 0; padding: 4px 6px; color: var(--fg2); }
-    .warn { margin: 0 12px 8px; padding: 6px 8px; border-radius: 8px; font-size: 12px; background: rgba(255,184,0,.15); }
+    .row.links button { background: transparent; padding: 5px 10px; color: var(--fg2); }
+    .row.links button:hover { background: var(--chip); color: var(--fg); }
+    .row.links a { font-size: 13px; text-decoration: none; padding: 5px 10px; border-radius: 999px; }
+    .row.links a:hover { background: var(--chip); color: var(--fg); }
+    .warn { margin: 0 12px 10px; padding: 8px 10px; border-radius: 10px; font-size: 12px; line-height: 1.45; background: rgba(255,184,0,.14); }
     .warn:empty { display: none; }
     .lines { position: relative; max-height: min(60vh, 560px); overflow-y: auto; padding: 4px 12px 40px; border-top: 1px solid var(--line); }
     .ln { position: relative; padding: 4px 30px 4px 6px; border-radius: 6px; line-height: 1.45; cursor: pointer; font-size: 15px; transition: color .15s, background .15s; }
@@ -126,21 +134,48 @@ BYL.ui = (() => {
     .kitem .muted { margin-top: 2px; }
     .kitem.hit b::before { content: '🎤 '; }
 
-    .studio { margin: 0 12px 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; }
-    .studio[hidden] { display: none; }
-    .studio .grid { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; }
-    .studio .grid > span { font-size: 12px; color: var(--fg2); white-space: nowrap; }
-    .studio .ctl { display: flex; align-items: center; gap: 6px; min-width: 0; }
-    .studio select { padding: 3px 4px; font-size: 12px; }
-    .studio input[type=range] { flex: 1; min-width: 60px; accent-color: var(--accent); }
-    .studio input[type=color] { width: 28px; height: 22px; padding: 0; border: 1px solid var(--line); border-radius: 4px; background: none; cursor: pointer; }
-    .studio input[type=checkbox] { accent-color: var(--accent); margin: 0; }
-    .studio label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--fg2); cursor: pointer; }
-    .studio .val { font-size: 11px; color: var(--fg2); min-width: 30px; text-align: right; font-variant-numeric: tabular-nums; }
-    .studio .presets { display: flex; gap: 6px; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line); flex-wrap: wrap; }
-    .studio .presets input[type=text] { flex: 1; min-width: 80px; font: inherit; font-size: 12px; color: var(--fg); background: transparent;
-      border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px; }
-    .studio .presets button { font-size: 12px; padding: 4px 8px; }
+    .studio { margin: 0 12px 10px; padding: 4px 12px 12px; border-radius: 12px; background: var(--chip); }
+    .studio[hidden], .studio [hidden] { display: none !important; }
+    .studio section + section { border-top: 1px solid var(--line); }
+    .studio h4 { margin: 0; padding: 12px 0 8px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--fg2); }
+    .studio .grid { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px 12px; align-items: center; padding-bottom: 12px; }
+    .studio .lbl { font-size: 13px; color: var(--fg2); }
+    .studio .ctl { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
+    .studio select { flex: 1; background: var(--raised); }
+    .studio .range { flex: 1; min-width: 110px; display: flex; align-items: center; gap: 8px; }
+    .studio input[type=range] { -webkit-appearance: none; appearance: none; flex: 1; min-width: 0; height: 4px; margin: 0; border-radius: 2px; cursor: pointer;
+      background: linear-gradient(var(--accent), var(--accent)) 0 / var(--fill, 0%) 100% no-repeat, var(--line); }
+    .studio input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff;
+      border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.06); transition: transform .12s; }
+    .studio input[type=range]:active::-webkit-slider-thumb { transform: scale(1.15); }
+    .studio .val { min-width: 38px; padding: 2px 6px; border-radius: 6px; background: var(--raised); font-size: 11px; text-align: center;
+      color: var(--fg); font-variant-numeric: tabular-nums; }
+    .studio .swatch { -webkit-appearance: none; appearance: none; flex: none; width: 26px; height: 26px; padding: 0; border: 2px solid var(--raised);
+      border-radius: 50%; box-shadow: 0 0 0 1px var(--line); background: none; cursor: pointer; }
+    .studio .swatch::-webkit-color-swatch-wrapper { padding: 0; }
+    .studio .swatch::-webkit-color-swatch { border: 0; border-radius: 50%; }
+    .studio .tg { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--fg); cursor: pointer; user-select: none; }
+    .studio .tg input { -webkit-appearance: none; appearance: none; position: relative; flex: none; width: 30px; height: 18px; margin: 0;
+      border-radius: 999px; background: var(--line); cursor: pointer; transition: background .15s; }
+    .studio .tg input::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: left .15s; }
+    .studio .tg input:checked { background: var(--accent); }
+    .studio .tg input:checked::after { left: 14px; }
+    .studio .seg { flex: 1; display: flex; padding: 3px; gap: 2px; border-radius: 10px; background: var(--line); }
+    .studio .seg button { flex: 1; padding: 5px 6px; border-radius: 8px; background: transparent; font-size: 12px; color: var(--fg2); white-space: nowrap; }
+    .studio .seg button:hover { color: var(--fg); background: transparent; }
+    .studio .seg button.on { background: var(--raised); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+    .studio .pads { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+    .studio .pad { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .studio .pad .muted { width: 28px; flex: none; }
+    .studio .pad .range { min-width: 0; }
+    .studio .presets { display: flex; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+    .studio .presets input[type=text] { flex: 1; min-width: 120px; font: inherit; font-size: 13px; color: var(--fg); background: var(--raised);
+      border: 1px solid transparent; border-radius: 999px; padding: 7px 12px; outline: none; }
+    .studio .presets input[type=text]:focus { border-color: var(--accent); }
+    button.primary { background: var(--accent); color: #fff; }
+    button.primary:hover { background: #e8114f; }
+    button.danger { color: #e5484d; background: transparent; }
     .editor { margin: 0 12px 8px; }
     .editor[hidden] { display: none; }
     .tawrap { position: relative; }
@@ -578,6 +613,7 @@ BYL.ui = (() => {
       if (!lookSel.value) return;
       BYL.settings.set({ overlayStyle: lookSel.value, overlayLook: null });
       refreshLook();
+      if (!studio.hidden) buildStudio();
       // Show the change on this video; "Tự bật lời trên video" stays as set.
       if (!state.overlayOn && !F) setOverlay(true, false);
     });
@@ -702,11 +738,20 @@ BYL.ui = (() => {
     const box = P.studio;
     box.replaceChildren();
     const look = currentLook();
-    const grid = el('div', 'grid');
+    const sections = [];
+    let grid;
+    const section = (title) => {
+      const s = el('section');
+      s.append(el('h4', '', title));
+      grid = el('div', 'grid');
+      s.append(grid);
+      sections.push(s);
+    };
     const row = (label, ...ctl) => {
       const c = el('div', 'ctl');
-      c.append(...ctl);
-      grid.append(el('span', '', label), c);
+      c.append(...ctl.flat());
+      grid.append(el('span', 'lbl', label), c);
+      return c;
     };
     const pick = (key, options) => {
       const s = el('select');
@@ -719,8 +764,22 @@ BYL.ui = (() => {
       s.addEventListener('change', () => editLook({ [key]: typeof BASE_LOOK[key] === 'number' ? Number(s.value) : s.value }, true));
       return s;
     };
+    // Segmented buttons for short option lists.
+    const seg = (key, options, after) => {
+      const g = el('div', 'seg');
+      for (const [v, t] of options) {
+        const b = el('button', String(look[key]) === v ? 'on' : '', t);
+        b.addEventListener('click', () => {
+          if (String(look[key]) === v) return;
+          editLook({ [key]: v }, true);
+          after ? after() : buildStudio();
+        });
+        g.append(b);
+      }
+      return g;
+    };
     const color = (key, title) => {
-      const c = el('input');
+      const c = el('input', 'swatch');
       c.type = 'color';
       c.value = look[key] || look.sung;
       c.title = title;
@@ -728,82 +787,95 @@ BYL.ui = (() => {
       c.addEventListener('change', () => editLook({ [key]: c.value }, true));
       return c;
     };
-    const range = (key, min, max, unit = '%') => {
+    const range = (key, min, max, unit = '%', value = look[key]) => {
+      const w = el('div', 'range');
       const r = el('input');
       r.type = 'range';
       r.min = min;
       r.max = max;
-      r.value = look[key];
-      const val = el('span', 'val', look[key] + unit);
-      r.addEventListener('input', () => {
+      r.value = value;
+      const val = el('span', 'val');
+      const show = () => {
         val.textContent = r.value + unit;
+        r.style.setProperty('--fill', ((r.value - min) / (max - min)) * 100 + '%');
+      };
+      show();
+      r.addEventListener('input', () => {
+        show();
         editLook({ [key]: Number(r.value) }, false);
       });
       r.addEventListener('change', () => editLook({ [key]: Number(r.value) }, true));
-      return [r, val];
+      w.append(r, val);
+      return w;
     };
-    const check = (key, text) => {
-      const l = el('label');
+    const toggle = (checked, text, onChange) => {
+      const l = el('label', 'tg');
       const c = el('input');
       c.type = 'checkbox';
-      c.checked = !!look[key];
-      c.addEventListener('change', () => editLook({ [key]: c.checked }, true));
-      l.append(c, text);
+      c.checked = checked;
+      c.addEventListener('change', () => onChange(c.checked));
+      l.append(c, el('span', '', text));
       return l;
     };
+    const flag = (key, text) => toggle(!!look[key], text, (on) => editLook({ [key]: on }, true));
 
-    row('Phông chữ', pick('font', FONTS), pick('weight', [['400', 'Thường'], ['600', 'Vừa'], ['700', 'Đậm'], ['800', 'Rất đậm'], ['900', 'Đen']]));
-    row('Cỡ chữ', ...range('scale', 50, 160));
-    // Gradient: tick to fade the sung colour into a second one.
-    const grad = el('label');
-    const gradOn = el('input');
-    gradOn.type = 'checkbox';
-    gradOn.checked = !!look.sung2;
+    section('Chữ');
+    row('Phông', pick('font', FONTS));
+    row('Độ đậm', pick('weight', [['400', 'Thường'], ['600', 'Vừa'], ['700', 'Đậm'], ['800', 'Rất đậm'], ['900', 'Đen']]));
+    row('Cỡ chữ', range('scale', 50, 160));
+    row('Hiệu ứng', seg('wipe', [['word', 'Chạy từng chữ'], ['line', 'Sáng cả dòng']]));
+
+    section('Màu');
+    row('Chưa hát', color('text', 'Màu chữ chưa hát'), flag('textGrad', 'Ánh bạc'));
+    // Gradient: switch on to fade the sung colour into a second one.
     const sung2 = color('sung2', 'Màu thứ hai của dải chuyển màu');
-    sung2.disabled = !gradOn.checked;
-    gradOn.addEventListener('change', () => {
-      sung2.disabled = !gradOn.checked;
-      editLook({ sung2: gradOn.checked ? sung2.value : '' }, true);
-    });
-    grad.append(gradOn, 'chuyển màu');
-    row('Màu chữ', color('text', 'Màu chữ chưa hát'), el('span', 'muted', 'đã hát'), color('sung', 'Màu chữ đã hát'), grad, sung2);
-    row('Viền', color('stroke', 'Màu viền'), color('sstroke', 'Màu viền khi đã hát'), ...range('strokeW', 0, 30, ''));
-    row('Bóng', check('shadow', 'đổ bóng'), check('textGrad', 'chữ ánh bạc'));
-    const shape = pick('shape', [['none', 'Không'], ['box', 'Khung'], ['pill', 'Viên thuốc']]);
-    row('Nền', shape, color('bg', 'Màu nền'), ...range('bgAlpha', 0, 100));
-    // Padding sliders follow the shape's default until the user moves them.
-    const pad = (k, text) => {
-      const [r, val] = range(k, 0, 200);
-      r.value = padOf(look, k);
-      val.textContent = r.value + '%';
-      r.title = `Lề ${text} của khung, tính theo cỡ chữ`;
-      return [el('span', 'muted', text), r, val];
-    };
-    const padRows = grid.childElementCount;
-    row('Lề khung', ...pad('padT', 'trên'), ...pad('padB', 'dưới'));
-    row('', ...pad('padL', 'trái'), ...pad('padR', 'phải'));
-    const padEls = [...grid.children].slice(padRows);
-    const showPad = () => padEls.forEach((e) => (e.hidden = shape.value === 'none'));
-    shape.addEventListener('change', () => {
-      // A new shape starts from its own padding.
+    sung2.hidden = !look.sung2;
+    row(
+      'Đã hát',
+      color('sung', 'Màu chữ đã hát'),
+      toggle(!!look.sung2, 'Chuyển màu', (on) => {
+        sung2.hidden = !on;
+        editLook({ sung2: on ? sung2.value : '' }, true);
+      }),
+      sung2
+    );
+    row('Viền', color('stroke', 'Màu viền'), color('sstroke', 'Màu viền khi đã hát'), range('strokeW', 0, 30, ''));
+    row('Bóng', flag('shadow', 'Đổ bóng'));
+
+    section('Nền');
+    // A new shape starts from its own padding.
+    const reshape = () => {
       editLook(Object.fromEntries(PAD_KEYS.map((k) => [k, undefined])), true);
       buildStudio();
-    });
-    showPad();
-    row('Bố cục', pick('layout', [['stagger', 'So le 2 dòng'], ['center2', 'Dòng hát + dòng kế'], ['three', '3 dòng'], ['single', 'Một dòng']]));
-    row('Dòng phụ', ...range('nextScale', 40, 100));
-    row('Hiệu ứng', pick('wipe', [['word', 'Chạy màu từng chữ'], ['line', 'Sáng cả dòng']]));
-    row('Cách mép', ...range('margin', 2, 40));
+    };
+    row('Kiểu', seg('shape', [['none', 'Không'], ['box', 'Khung'], ['pill', 'Viên thuốc']], reshape));
+    if (look.shape !== 'none') {
+      row('Màu nền', color('bg', 'Màu nền'), range('bgAlpha', 0, 100));
+      // Padding sliders follow the shape's default until the user moves them.
+      const pads = el('div', 'pads');
+      for (const [k, text] of [['padT', 'Trên'], ['padB', 'Dưới'], ['padL', 'Trái'], ['padR', 'Phải']]) {
+        const p = el('div', 'pad');
+        p.title = `Lề ${text.toLowerCase()} trong khung, tính theo cỡ chữ`;
+        p.append(el('span', 'muted', text), range(k, 0, 200, '%', padOf(look, k)));
+        pads.append(p);
+      }
+      row('Lề trong', pads);
+    }
+
+    section('Bố cục');
+    row('Số dòng', pick('layout', [['stagger', 'So le 2 dòng'], ['center2', 'Dòng hát + dòng kế'], ['three', '3 dòng'], ['single', 'Một dòng']]));
+    row('Dòng phụ', range('nextScale', 40, 100));
+    row('Cách mép', range('margin', 2, 40));
 
     const presets = el('div', 'presets');
     const name = el('input');
     name.type = 'text';
     name.placeholder = 'Tên preset…';
     name.maxLength = 24;
-    const save = el('button', '', '💾 Lưu preset');
-    const reset = el('button', '', '↺ Bỏ chỉnh');
+    const save = el('button', 'primary', 'Lưu preset');
+    const reset = el('button', '', 'Bỏ chỉnh');
     reset.title = 'Quay về kiểu đang chọn, bỏ các chỉnh sửa';
-    const del = el('button', '', '🗑 Xoá preset');
+    const del = el('button', 'danger', 'Xoá preset');
     const style = BYL.settings.value.overlayStyle;
     del.hidden = !style?.startsWith('u:');
     if (style?.startsWith('u:')) name.value = style.slice(2);
@@ -832,7 +904,7 @@ BYL.ui = (() => {
       buildStudio();
     });
     presets.append(name, save, reset, del);
-    box.append(grid, presets);
+    box.append(...sections, presets);
   }
 
   // ---------- state changes ----------
