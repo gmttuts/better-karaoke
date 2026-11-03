@@ -94,6 +94,17 @@ try {
   check('Nút 🎤 Karaoke bật/tắt được', r?.toggled);
   check('Đọc được tên bài', !!r?.title && r.title !== 'Better Lyric', r?.title);
 
+  // Loading a source by its chip ends with a message, not "Đang tìm…" for ever.
+  const chipEnd = await ev(`
+    const sr = document.getElementById('byl-panel-host').shadowRoot;
+    const chip = sr.querySelector('.status .chip[data-k=transcript]');
+    if (!chip || !/idle|error/.test(chip.className)) return { skipped: chip?.className || 'none' };
+    chip.click();
+    for (let i = 0; i < 50 && /loading/.test(chip.className); i++) await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 300));
+    return { chip: chip.className, note: sr.querySelector('.note').textContent };`);
+  check('Bấm chip 📝 Phụ đề: tải xong có báo kết quả', chipEnd?.skipped !== undefined || (!/loading/.test(chipEnd?.chip) && !/^Đang tìm/.test(chipEnd?.note)), JSON.stringify(chipEnd));
+
   // Alt+L (shortcut) toggles the lyrics on the video.
   const ovOn = () => ev(`return !!document.getElementById('byl-overlay-host')?.isConnected`);
   const before = await ovOn();

@@ -65,7 +65,11 @@
     const runSource = (key, fresh) => {
       if (!fresh && cached.has(key)) return Promise.resolve();
       BYL.ui.setSourceStatus(key, 'loading');
-      return BYL.sources[key](ctx)
+      // A source that never answers (a request left hanging) still ends.
+      let timer;
+      const late = new Promise((_, reject) => (timer = setTimeout(() => reject(new Error('timeout')), 45000)));
+      return Promise.race([BYL.sources[key](ctx), late])
+        .finally(() => clearTimeout(timer))
         .then((list) => {
           if (!alive()) return;
           BYL.searchCache.put(videoId, key, list);
@@ -116,7 +120,9 @@
     // Captions are the last resort: load them by themselves only when nothing
     // else turned up, otherwise leave a chip to load them on demand.
     if (cached.has('transcript')) return;
-    if (BYL.ui.state.candidates.length) BYL.ui.setSourceStatus('transcript', 'idle');
+    // No caption track at all: nothing to offer.
+    if (!tracks.length) BYL.ui.setSourceStatus('transcript', 'none');
+    else if (BYL.ui.state.candidates.length) BYL.ui.setSourceStatus('transcript', 'idle');
     else runSource('transcript');
   }
 

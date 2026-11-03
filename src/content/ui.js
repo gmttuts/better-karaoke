@@ -760,6 +760,7 @@ BYL.ui = (() => {
       sourceStatus: {},
       karaokeLoadedFor: null,
       lastActive: -2,
+      waitingFor: null, // source the user clicked to load
     });
     applyTheme();
     renderLookSelect();
@@ -825,6 +826,16 @@ BYL.ui = (() => {
     chip.className = 'chip ' + status + (state.current?.source === key ? ' cur' : '');
     const tail = { ok: ` ${count}`, none: ' –', error: ' ⚠', idle: ' ▸' }[status] || '';
     chip.textContent = `${s.icon} ${s.name}${tail}`;
+    // The user asked for this source (onChip): tell them how it went.
+    if (state.waitingFor === key && status !== 'loading') {
+      state.waitingFor = null;
+      const found = state.candidates.find((c) => c.source === key);
+      if (status === 'ok' && found) {
+        choose(found, true);
+        say(L('{0} {1}: đã tải xong.', s.icon, s.name));
+      } else if (status === 'error') say(L('{0} {1}: lỗi khi tải. Bấm chip để thử lại.', s.icon, s.name));
+      else say(key === 'transcript' ? L('Video này không có phụ đề, hoặc YouTube không cho tải phụ đề lúc này.') : L('{0} không có lời cho bài này.', s.name));
+    }
     chip.title =
       {
         loading: L('Đang tìm…'),
@@ -843,6 +854,7 @@ BYL.ui = (() => {
     const name = S[key].name;
     if (st === 'idle' || st === 'error') {
       say(L('Đang tìm lời từ {0}…', name));
+      state.waitingFor = key;
       return api.onLoadSource?.(key);
     }
     if (st === 'loading') return say(L('Đang tìm lời từ {0}, chờ chút…', name));
