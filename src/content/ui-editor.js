@@ -22,7 +22,8 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     };
   }
 
-  function openEditor() {
+  // opts.ocr: start 🔠 reading the video's on-screen text right away.
+  function openEditor(opts) {
     const box = P.editor;
     if (!box.hidden) return closeEditor();
     if (tapping()) stopTap(false);
@@ -73,7 +74,9 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     fromCaps.hidden = !api.hasCaptions?.();
     const del = el('button', '', L('🗑 Xoá bản của bạn'));
     del.hidden = c?.source !== 'custom';
-    row.append(save, cancel, fromCaps, del);
+    const fromOcr = el('button', '', L('🔠 Đọc chữ trên video'));
+    fromOcr.title = L('Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.');
+    row.append(save, cancel, fromCaps, fromOcr, del);
     box.append(tip, search, taWrap, tools, row);
     box.hidden = false;
     P.lines.hidden = true;
@@ -138,6 +141,33 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
       if (!state.current) renderLines();
       say(L('Đã xoá bản lời của bạn cho video này.'));
     });
+    async function readVideo() {
+      if (BYL.ocr.busy()) return BYL.ocr.stop();
+      const v = video();
+      if (!v) return;
+      fromOcr.textContent = L('⏹ Dừng đọc');
+      say(L('🔠 Đang đọc chữ trên video…'));
+      try {
+        const song = state.song || {};
+        const lines = await BYL.ocr.scan(
+          v,
+          (p) => ED?.ta === ta && say(L('🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)', Math.round(p * 100))),
+          [song.title, song.artist, [song.title, song.artist].filter(Boolean).join(' - ')]
+        );
+        if (ED?.ta !== ta) return;
+        if (!lines.length) return say(L('Không đọc được dòng chữ nào trên video này.'));
+        ta.value = BYL.ocr.toLrc(lines);
+        paintEditor();
+        say(L('🔠 Đọc được {0} dòng. Sửa chữ đọc sai (nếu có) rồi bấm 💾 Lưu lời. Thời gian là lúc dòng chữ hiện ra, lệch thì chỉnh "Lệch" hoặc ghim 📍.', lines.length));
+      } catch (err) {
+        say(L('Không đọc được chữ trên video: {0}', err?.message || err));
+      } finally {
+        fromOcr.textContent = L('🔠 Đọc chữ trên video');
+      }
+    }
+    fromOcr.addEventListener('click', readVideo);
+    if (opts?.ocr) readVideo();
+
     fromCaps.addEventListener('click', () => {
       const t = state.candidates.find((x) => x.source === 'transcript');
       if (t) {
@@ -166,6 +196,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
   }
 
   function closeEditor() {
+    BYL.ocr.stop();
     ED = null;
     P.editor.hidden = true;
     P.editor.replaceChildren();

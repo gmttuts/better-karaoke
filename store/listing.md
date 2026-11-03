@@ -65,6 +65,7 @@ Show song lyrics for the YouTube video being watched, in a side panel and as kar
 - **Host `https://www.youtube.com/*` (content scripts)**: the panel and the karaoke overlay are drawn on YouTube watch and Shorts pages, and read the video's description, comments and captions there.
 - **Host `https://lrclib.net/*`**: searches the open LRCLIB lyrics library by song title and artist, and (only when the user confirms on the publish page) sends lyrics the user timed.
 - **Host `https://hopamchuan.com/*`**: searches Vietnamese lyrics by song title and artist. Can be turned off in the settings.
+- **offscreen**: runs the on-device text recognition (Tesseract, WebAssembly) for "🔠 Read text in the video" in an offscreen document; nothing is sent anywhere.
 - **Remote code**: none. All code ships in the package; data/pinyin.json is a static reading table.
 
 ## Dữ liệu người dùng · Data usage (form)

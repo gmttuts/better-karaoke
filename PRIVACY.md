@@ -14,6 +14,8 @@ Better YouTube Lyric **không thu thập, không bán và không gửi dữ li�
 
 **Gửi lời lên LRCLIB** (chỉ khi bạn bấm "☁ Gửi lên LRCLIB", kiểm tra lại, tích ô xác nhận và bấm gửi): tên bài, ca sĩ, album, thời lượng và lời bạn đã canh được đăng **công khai** lên LRCLIB theo [điều khoản của LRCLIB](https://lrclib.net). Không gửi kèm thông tin nào về bạn.
 
+**🔠 Đọc chữ trên video**: các khung hình được đọc chữ ngay trên máy (Tesseract chạy trong extension), không gửi đi đâu.
+
 **Micro** (chỉ khi bạn bấm 🎙 Chấm điểm và cho phép): âm thanh được phân tích ngay trên máy để tìm nốt bạn hát, không ghi lại, không lưu, không gửi đi đâu. Đóng cửa sổ 🎙 là micro tắt.
 
 **File bạn xuất** (.lrc, .srt, sao lưu .json) chỉ được lưu xuống máy bạn.
@@ -29,6 +31,8 @@ Better YouTube Lyric **does not collect, sell or send your personal data to its 
 - **LRCLIB** (`lrclib.net`) and **Hợp âm chuẩn** (`hopamchuan.com`): the song title, artist (and video length) to search for lyrics. Each source can be turned off in the settings.
 
 **Sending lyrics to LRCLIB** (only when you click "☁ Send to LRCLIB", review the page, tick the confirmation box and press send): the title, artist, album, length and the lyrics you timed are published **publicly** on LRCLIB under [LRCLIB's terms](https://lrclib.net). Nothing about you is sent with them.
+
+**🔠 Read text in the video**: frames are read on your device (Tesseract runs inside the extension) and are not sent anywhere.
 
 **Microphone** (only when you click 🎙 Score and allow it): the sound is analysed on your device to find the note you sing; it is not recorded, stored or sent anywhere. Closing the 🎙 window turns the microphone off.
 

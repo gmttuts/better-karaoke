@@ -20,6 +20,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       .catch((err) => sendResponse({ error: String(err?.message || err) }));
     return true;
   }
+  // 🔠 Đọc chữ trên video: one frame at a time, to Tesseract.
+  if (msg?.type === 'ocr') {
+    ocr(msg.image)
+      .then((lines) => sendResponse({ lines }))
+      .catch((err) => sendResponse({ error: String(err?.message || err) }));
+    return true;
+  }
   if (msg?.type !== 'fetch') return;
   let url;
   try {
@@ -53,3 +60,24 @@ chrome.runtime.onInstalled.addListener(async () => {
   });
   await chrome.storage.sync.remove(keys);
 });
+
+// Tesseract needs a page (workers, WebAssembly): an offscreen document in
+// Chrome, opened the first time and kept while frames keep coming. Firefox
+// has no offscreen documents but loads ocr.js into its background page.
+let offscreen = null;
+async function ocr(image) {
+  if (self.BYL_OCR) return self.BYL_OCR.recognize(image);
+  offscreen ||= chrome.offscreen
+    .createDocument({ url: 'src/ocr/ocr.html', reasons: ['WORKERS'], justification: 'Read lyrics shown in video frames (OCR)' })
+    .catch((err) => {
+      // Already open (the service worker restarted while it was).
+      if (!/single offscreen/i.test(String(err?.message))) {
+        offscreen = null;
+        throw err;
+      }
+    });
+  await offscreen;
+  const res = await chrome.runtime.sendMessage({ target: 'ocr', image });
+  if (res?.error) throw new Error(res.error);
+  return res?.lines || [];
+}

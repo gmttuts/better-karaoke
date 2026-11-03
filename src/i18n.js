@@ -6,7 +6,7 @@
 var BYL = (globalThis.BYL = globalThis.BYL || {});
 // "auto": Vietnamese when Chrome's interface or any of the user's preferred
 // languages is Vietnamese (many Vietnamese users run Chrome in English).
-BYL.autoLang = () => ([chrome.i18n?.getUILanguage?.(), ...(navigator.languages || [])].some((l) => /^vi\b/i.test(l || '')) ? 'vi' : 'en');
+BYL.autoLang = () => ([globalThis.chrome?.i18n?.getUILanguage?.(), ...(globalThis.navigator?.languages || [])].some((l) => /^vi\b/i.test(l || '')) ? 'vi' : 'en');
 BYL.setLang = (pref) => (BYL.lang = pref === 'vi' || pref === 'en' ? pref : BYL.autoLang());
 BYL.setLang();
 
@@ -117,6 +117,8 @@ BYL.EN = {
   "Không rõ tên bài": "Unknown song",
   "Không tìm thấy bản karaoke nào.": "No karaoke versions found.",
   "Không tải được kết quả. Thử lại sau.": "Couldn't load results. Try again later.",
+  "Không đọc được chữ trên video: {0}": "Couldn't read the text in the video: {0}",
+  "Không đọc được dòng chữ nào trên video này.": "No lines of text could be read in this video.",
   "Khớp lời với phụ đề YouTube của video để lời tự chạy đúng nhịp": "Match the lyrics against the video's YouTube captions so they run in time",
   "Kiểu": "Shape",
   "Kiểu chữ": "Style",
@@ -232,6 +234,7 @@ BYL.EN = {
   "Từng dòng": "Per line",
   "Tự bật lời trên video": "Show lyrics on the video automatically",
   "Tự nhập": "Typed in",
+  "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "Lyrics shown in the picture? Plays the video fast (muted) and reads the text in its frames, with timing. Takes about half the length of the song.",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "Lyric videos / other uploads of the song on YouTube",
   "Video này không có phụ đề để canh theo.": "This video has no captions to sync to.",
   "Viên": "Pill",
@@ -245,6 +248,7 @@ BYL.EN = {
   "khớp {0}/{1} dòng": "{0}/{1} lines matched",
   "muộn hơn {0}s": "{0}s later",
   "sớm hơn {0}s": "{0}s earlier",
+  "video chưa tải xong, thử lại sau ít giây": "the video hasn't loaded yet, try again in a few seconds",
   "vừa xem": "just now",
   "{0} không có lời cho bài này.": "{0} has no lyrics for this song.",
   "{0} video đã nhớ · {1} lời bạn sửa · {2} bài có điểm 📍 · {3} preset · {4} KB": "{0} videos remembered · {1} edited lyrics · {2} songs with 📍 points · {3} presets · {4} KB",
@@ -292,6 +296,8 @@ BYL.EN = {
   "⏱ Gõ nhịp": "⏱ Tap along",
   "⏱ Đã lưu thời gian {0} dòng, {1} dòng chưa gõ được ước lượng (bấm ⏱ Gõ nhịp để gõ lại).": "⏱ Saved timing for {0} lines; {1} untapped lines were estimated (click ⏱ Tap along to redo them).",
   "⏱ Đã lưu thời gian {0} dòng.": "⏱ Saved timing for {0} lines.",
+  "⏹ Dừng đọc": "⏹ Stop reading",
+  "▶ Bắt đầu nghe": "▶ Start listening",
   "☁ Gửi lên LRCLIB": "☁ Send to LRCLIB",
   "☁ Đã mở trang gửi lên LRCLIB trong tab mới. Kiểm tra lại tên bài, ca sĩ rồi mới bấm gửi.": "☁ Opened the LRCLIB page in a new tab. Check the title and artist before sending.",
   "★ Yêu thích": "★ Favourites",
@@ -334,9 +340,12 @@ BYL.EN = {
   "🔄 Better Lyric vừa được cập nhật. Tải lại trang để dùng bản mới.": "🔄 Better Lyric was just updated. Reload the page to use the new version.",
   "🔍 Tìm theo tên": "🔍 Search by name",
   "🔎 Tìm trong lời (gõ không dấu cũng được)…": "🔎 Find in lyrics…",
+  "🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)": "🔠 Reading the text in the video: {0}%… (click ⏹ to stop)",
+  "🔠 Đang đọc chữ trên video…": "🔠 Reading the text in the video…",
+  "🔠 Đọc chữ trên video": "🔠 Read text in the video",
+  "🔠 Đọc được {0} dòng. Sửa chữ đọc sai (nếu có) rồi bấm 💾 Lưu lời. Thời gian là lúc dòng chữ hiện ra, lệch thì chỉnh \"Lệch\" hoặc ghim 📍.": "🔠 Read {0} lines. Fix any misread words, then click 💾 Save lyrics. Times are when each line appears; adjust \"Offset\" or pin 📍 if they're off.",
   "🔤 Phiên âm Latin": "🔤 Latin spelling",
-  "🗑 Xoá bản của bạn": "🗑 Delete your version",
-  "▶ Bắt đầu nghe": "▶ Start listening"
+  "🗑 Xoá bản của bạn": "🗑 Delete your version"
 };
 
 const L = (BYL.L = (text, ...args) => {

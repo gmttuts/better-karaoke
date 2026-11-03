@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
 const out = join(dist, 'better-youtube-lyric');
-const INCLUDE = ['manifest.json', 'README.md', '_locales', 'data', 'fonts', 'icons', 'src'];
+const INCLUDE = ['manifest.json', 'README.md', '_locales', 'data', 'fonts', 'icons', 'src', 'vendor'];
 
 const manifest = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
 const version = manifest.version;
@@ -69,7 +69,9 @@ if (process.argv.includes('--firefox')) {
   const ff = join(dist, 'better-youtube-lyric-firefox');
   rmSync(ff, { recursive: true, force: true });
   cpSync(out, ff, { recursive: true });
-  const m = { ...manifest, background: { scripts: [manifest.background.service_worker] } };
+  // No offscreen documents either: the background page runs the OCR itself.
+  const m = { ...manifest, background: { scripts: ['vendor/tesseract/tesseract.min.js', 'src/ocr/ocr.js', manifest.background.service_worker] } };
+  m.permissions = manifest.permissions.filter((p) => p !== 'offscreen');
   delete m.key;
   m.browser_specific_settings = {
     gecko: {

@@ -1185,7 +1185,10 @@ BYL.ui = (() => {
       if (!searching) {
         const b = el('button', '', L('✍ Tự nhập lời'));
         b.addEventListener('click', () => openEditor());
-        box.lastChild.append(el('br'), b);
+        const o = el('button', '', L('🔠 Đọc chữ trên video'));
+        o.title = L('Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.');
+        o.addEventListener('click', () => openEditor({ ocr: true }));
+        box.lastChild.append(el('br'), b, ' ', o);
       }
       return;
     }
