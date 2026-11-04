@@ -143,6 +143,12 @@
   // The popup's master switch and "Tự bật lời trên video" apply at once.
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'sync') return;
+    // 🌐 on the panel or in the options page: every open tab switches.
+    if (changes.uiLang) {
+      BYL.settings.value.uiLang = changes.uiLang.newValue;
+      BYL.setLang(changes.uiLang.newValue);
+      BYL.ui.relang();
+    }
     if (changes.enabled) {
       BYL.settings.value.enabled = changes.enabled.newValue !== false;
       if (BYL.settings.value.enabled) onPage();

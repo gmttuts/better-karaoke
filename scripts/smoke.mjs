@@ -74,6 +74,25 @@ try {
   if (EN) {
     const tabs = await ev(`return [...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('nav button')].map((b) => b.textContent).join()`);
     check('Panel in English', tabs === 'Lyrics,Karaoke,History', tabs);
+    // 🌐 on the panel switches the language on the spot, keeping the song.
+    const pick = (code) => ev(`
+      const sr = document.getElementById('byl-panel-host').shadowRoot;
+      const before = sr.querySelector('.song b').textContent;
+      const sel = sr.querySelector('.lang select');
+      sel.value = '${code}';
+      sel.dispatchEvent(new Event('change'));
+      await new Promise((r) => setTimeout(r, 1500));
+      const nr = document.getElementById('byl-panel-host').shadowRoot;
+      return { tabs: [...nr.querySelectorAll('nav button')].map((b) => b.textContent).join(), lang: nr.querySelector('.lang').textContent,
+        song: nr.querySelector('.song b').textContent, before, hosts: document.querySelectorAll('#byl-panel-host').length };`);
+    for (let t = 0; t < 15; t++) {
+      if ((await ev(`return document.getElementById('byl-panel-host').shadowRoot.querySelector('.song b').textContent`)) !== 'Better Lyric') break;
+      await sleep(1000);
+    }
+    const ja = await pick('ja');
+    check('🌐 đổi sang 日本語 ngay', /JA/.test(ja?.lang) && !/Lyrics|Lời/.test(ja?.tabs) && ja.song === ja.before && ja.hosts === 1, JSON.stringify(ja));
+    const back = await pick('en');
+    check('🌐 đổi lại English', back?.tabs === 'Lyrics,Karaoke,History' && back.hosts === 1, JSON.stringify(back));
     throw 'done';
   }
   await sleep(4000);

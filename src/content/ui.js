@@ -30,6 +30,7 @@ BYL.ui = (() => {
     trans: null, // candidate shown as a second language under each line
     transMap: null, // cache: { c, m: { lineIndex: text } }
     sourceStatus: {},
+    sourceCount: {},
     overlayOn: false,
     karaokeLoadedFor: null,
     lastActive: -2,
@@ -158,6 +159,33 @@ BYL.ui = (() => {
     if (pipWin) pipWin.close();
   }
 
+  // A new interface language: build the panel again in it, in the same
+  // place, with the same song, lyrics, chips and timing.
+  function relang() {
+    if (!panelHost) return;
+    closeEditor();
+    endTap();
+    const old = panelHost;
+    const collapsed = P.wrap.classList.contains('collapsed');
+    buildPanel();
+    panelHost.hidden = old.hidden;
+    panelHost.toggleAttribute('data-float', old.hasAttribute('data-float'));
+    panelHost.style.cssText = old.style.cssText;
+    if (old.isConnected) old.replaceWith(panelHost);
+    P.wrap.classList.toggle('collapsed', collapsed);
+    applyTheme();
+    if (state.song) setSong(state.song, state.duration, state.channel);
+    for (const [k, st] of Object.entries(state.sourceStatus)) setSourceStatus(k, st, state.sourceCount[k]);
+    renderSelect();
+    renderLines();
+    P.offLabel.textContent = fmtOffset(state.offset);
+    showPins();
+    markChips();
+    state.karaokeLoadedFor = null;
+    state.lastActive = -2;
+    setOverlay(state.overlayOn, false);
+  }
+
   // ---------- panel ----------
 
   function buildPanel() {
@@ -192,7 +220,16 @@ BYL.ui = (() => {
       paintFav(on);
       BYL.history.setFav(state.videoId, on);
     });
-    header.append(el('span', 'logo', '🎤'), song, favBtn, el('span', 'chev', '▾'));
+    // 🌐 Interface language, changed on the spot (main.js rebuilds the panel).
+    const lang = el('span', 'lang', '🌐 ' + BYL.lang.toUpperCase());
+    const langSel = el('select');
+    langSel.title = 'Language';
+    langSel.append(new Option('Auto (GMT+7 → Tiếng Việt, other → English)', 'auto'), ...BYL.LANGS.map(([c, n]) => new Option(n, c)));
+    langSel.value = BYL.settings.value.uiLang || 'auto';
+    lang.append(langSel);
+    lang.addEventListener('click', (e) => e.stopPropagation());
+    langSel.addEventListener('change', () => BYL.settings.set({ uiLang: langSel.value }));
+    header.append(el('span', 'logo', '🎤'), song, lang, favBtn, el('span', 'chev', '▾'));
     header.title = 'Better YouTube Lyric v' + chrome.runtime.getManifest().version;
 
     const body = el('div', 'body');
@@ -761,6 +798,7 @@ BYL.ui = (() => {
       trans: null,
       transMap: null,
       sourceStatus: {},
+      sourceCount: {},
       karaokeLoadedFor: null,
       lastActive: -2,
       waitingFor: null, // source the user clicked to load
@@ -818,6 +856,7 @@ BYL.ui = (() => {
 
   function setSourceStatus(key, status, count = 0) {
     state.sourceStatus[key] = status;
+    state.sourceCount[key] = count;
     let chip = P.status.querySelector(`[data-k="${key}"]`);
     if (!chip) {
       chip = el('button', 'chip');
@@ -1930,7 +1969,7 @@ BYL.ui = (() => {
     const v = video();
     return state.current && v ? position(v.currentTime).i : -1;
   };
-  const api = { lineNow, mount, remount, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
+  const api = { lineNow, mount, remount, relang, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
   const ctx = { P, S, addCandidates, api, baseId, choose, closeEditor, effT, el, frame, maybeAutoPick, renderLines, renderSelect, saveCustom, saveWarps, say, setOffset, setSourceStatus, singable, slot, slotFor, state, stopTap, tap, tapping, video };
   for (const k of ['editor', 'tap', 'tabs']) parts[k] = BYL.uiParts[k](ctx);
   return api;

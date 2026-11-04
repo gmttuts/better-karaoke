@@ -78,7 +78,7 @@ npm run build:store  # thêm bản zip bỏ trường "key" để nộp Chrome W
 
 `build` dừng lại nếu thiếu file mà `manifest.json` cần (icon, script, trang cài đặt, font). `test` chạy các bộ test (tách tên bài, thời gian từng chữ, xuất LRC/SRT/ASS, bài toán của LRCLIB), rồi mở video `6HQWus2DOsI` (đổi bằng `VIDEO=<id>`) và kiểm tra: panel, bảng 🎨, nút 🎤 Karaoke, tên bài, phím tắt, 📌, xuất SRT, trang gửi LRCLIB (không gửi thật) và lỗi JavaScript. Video có lời LRCLIB như `VIDEO=JGwWNGJdvx8` kiểm tra được cả file SRT và ASS.
 
-**Ngôn ngữ giao diện**: tiếng Việt hoặc tiếng Anh, chọn trong cửa sổ cài đặt ("Ngôn ngữ / Language"). Mặc định *Tự động*: tiếng Việt khi Chrome hoặc danh sách ngôn ngữ ưa thích của trình duyệt có tiếng Việt, còn lại là tiếng Anh. Đổi ngôn ngữ xong thì tải lại tab YouTube.
+**Ngôn ngữ giao diện**: tiếng Việt, English, 简体中文, 日本語, 한국어, ไทย, Bahasa Indonesia, Español, Português, Français, Deutsch, Русский. Đổi ngay bằng nút **🌐** trên đầu panel (mọi tab YouTube đang mở đổi theo, không cần tải lại) hoặc trong cửa sổ cài đặt. Mặc định *Tự động*: tiếng Việt khi máy ở múi giờ GMT+7, còn lại là tiếng Anh. Chuỗi nào bản dịch còn thiếu thì hiện tiếng Anh. Thêm ngôn ngữ: chép `src/lang/en.js` thành `src/lang/<mã>.js`, dịch phần giá trị, thêm mã vào `BYL.LANGS` (`src/i18n.js`), `manifest.json` và các trang trong `src/`; `node tests/i18n.test.mjs` báo chuỗi thiếu.
 
 Bấm biểu tượng extension để **tắt hẳn extension** (công tắc "Bật trên YouTube", áp dụng ngay cho mọi tab), bật/tắt **tự hiện lời trên video** (mặc định tắt; chọn kiểu chữ hay mở 🎨 chỉ bật lời cho video đang xem), bật/tắt từng nguồn, ưu tiên lời có thời gian, số trang comment cần quét. Kiểu chữ chỉnh trong panel (🎨).
 
@@ -106,12 +106,13 @@ src/
     keys.js            Phím tắt Alt + phím
     score.js           🎙 Chấm điểm: nốt nhạc của video (chroma), điểm từng dòng
     main.js            Theo dõi chuyển trang trong YouTube, chạy các nguồn, chọn kết quả tốt nhất
-  i18n.js              Chữ giao diện tiếng Việt / tiếng Anh (từ điển L('…'))
+  i18n.js              L('…'), danh sách ngôn ngữ, chọn ngôn ngữ theo múi giờ
+  lang/<mã>.js         Bản dịch giao diện (khoá là câu tiếng Việt gốc)
   options/             Trang cài đặt (cũng là popup)
   ocr/                 Trang chạy nền (offscreen) chạy Tesseract cho 🔠
   score/               Cửa sổ 🎙 chấm điểm: nghe micro, tìm cao độ (YIN)
   publish/             Trang gửi lời lên LRCLIB, pow.js giải bài toán chống spam (SHA-256) trong worker
-_locales/              Mô tả extension theo ngôn ngữ (vi, en)
+_locales/              Mô tả extension theo ngôn ngữ (12 ngôn ngữ)
 scripts/               build.mjs (đóng gói + kiểm tra file), smoke.mjs (test headless)
 tests/                 Test tách tên bài, thời gian từng chữ, xuất file, bài toán LRCLIB
 vendor/tesseract/       tesseract.js 5.1.1 + lõi WebAssembly + bộ chữ tiếng Việt (Apache 2.0), không tải từ CDN

@@ -116,6 +116,11 @@ BYL.PANEL_CSS = `
   button.fav { background: transparent; font-size: 18px; line-height: 1; padding: 4px 6px; color: var(--fg2); }
   button.fav:hover { background: var(--chip); }
   button.fav.on, .kitem button.fav.on { color: #f5b301; background: transparent; }
+  /* 🌐: a see-through select over the label, so the list shows each
+     language under its own name. */
+  .lang { position: relative; font-size: 12px; color: var(--fg2); padding: 4px 6px; border-radius: 8px; white-space: nowrap; }
+  .lang:hover { background: var(--chip); }
+  .lang select { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; font-size: 14px; }
 
   .studio { margin: 0 12px 10px; padding: 4px 12px 12px; border-radius: 12px; background: var(--chip); }
   .studio[hidden], .studio [hidden] { display: none !important; }

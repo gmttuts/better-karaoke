@@ -22,6 +22,9 @@ const LIVE = ['enabled', 'overlayOnByDefault'];
 const saved = document.getElementById('saved');
 let timer;
 
+// Each language under its own name, so anyone can find theirs.
+for (const [code, name] of BYL.LANGS) document.querySelector('[data-k="uiLang"]').append(new Option(name, code));
+
 chrome.storage.sync.get(DEFAULTS).then((values) => {
   BYL.setLang(values.uiLang);
   BYL.localizePage();

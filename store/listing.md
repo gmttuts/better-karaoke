@@ -32,7 +32,7 @@ Mở một video nhạc trên YouTube là có lời bài hát ở cột bên ph�
 • 🎙 Chấm điểm karaoke: hát vào micro, mỗi dòng có điểm (đủ lời, đúng nốt).
 • ⧉ Cửa sổ lời nổi luôn nằm trên cùng, kể cả khi chuyển tab.
 • ✏️ Sửa hoặc tự nhập lời, 🔍 tìm lại theo tên bài, ★ bài yêu thích, lịch sử bài đã xem, phím tắt Alt + phím.
-• Giao diện tiếng Việt và tiếng Anh.
+• Giao diện 12 ngôn ngữ (Việt, Anh, Trung, Nhật, Hàn, Thái, Indonesia, Tây Ban Nha, Bồ Đào Nha, Pháp, Đức, Nga), đổi ngay trên panel.
 
 Không quảng cáo, không thu thập dữ liệu. Mã nguồn mở: https://github.com/gmttuts/better-youtube-lyric
 
@@ -49,7 +49,7 @@ Open a music video on YouTube and the lyrics appear in the right column, with th
 • 🎙 Karaoke scoring: sing into your microphone and get a mark for every line (in time, in tune).
 • ⧉ A floating, always-on-top lyrics window that keeps going when you switch tabs.
 • ✏️ Edit or type lyrics, 🔍 search again by name, ★ favourites, watch history, Alt + key shortcuts.
-• Vietnamese and English interface.
+• Interface in 12 languages (Vietnamese, English, Chinese, Japanese, Korean, Thai, Indonesian, Spanish, Portuguese, French, German, Russian), switchable from the panel.
 
 No ads, no data collection. Open source: https://github.com/gmttuts/better-youtube-lyric
 
