@@ -1211,6 +1211,7 @@ BYL.ui = (() => {
     P.keyLabel.classList.toggle('on', !!BYL.fx.semis);
     P.vocalBtn.classList.toggle('on', BYL.fx.vocal > 0);
     P.vocalAmt.hidden = !(BYL.fx.vocal > 0);
+    P.vocalAmt.style.setProperty('--fill', ((P.vocalAmt.value - P.vocalAmt.min) / (P.vocalAmt.max - P.vocalAmt.min)) * 100 + '%');
   }
   // The key is kept per video; byUser: from a button or shortcut (a click,
   // so the sound can start), otherwise the saved key on opening a video.

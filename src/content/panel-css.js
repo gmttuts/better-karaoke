@@ -124,7 +124,14 @@ BYL.PANEL_CSS = `
   button.fav.on, .kitem button.fav.on { color: #f5b301; background: transparent; }
   /* 🌐: a see-through select over the label, so the list shows each
      language under its own name. */
-  .fx input[type=range] { width: 90px; accent-color: var(--accent, #e8212b); }
+  /* Key and vocal cut on one line: the slider takes what is left. */
+  .row.fx { flex-wrap: nowrap; }
+  .fx > * { flex: none; white-space: nowrap; }
+  .fx input[type=range] { -webkit-appearance: none; appearance: none; flex: 1; min-width: 40px; height: 4px; margin: 0 4px; border-radius: 2px; cursor: pointer;
+    background: linear-gradient(90deg, var(--accent, #e8212b) var(--fill, 100%), var(--line) var(--fill, 100%)); }
+  .fx input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+  .fx input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
   .fx .off.on { color: var(--accent, #e8212b); font-weight: 700; }
   .lang { position: relative; font-size: 12px; color: var(--fg2); padding: 4px 6px; border-radius: 8px; white-space: nowrap; }
   .lang:hover { background: var(--chip); }

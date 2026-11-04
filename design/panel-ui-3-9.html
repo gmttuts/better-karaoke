@@ -46,6 +46,14 @@
   .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
   .sw.on { background: #ff2e63; }
   .sw.on::after { left: 16px; }
+  .sw.sm { width: 28px; height: 16px; border-radius: 8px; }
+  .sw.sm::after { width: 12px; height: 12px; }
+  .sw.sm.on::after { left: 14px; }
+  .sw.sm.light { background: rgba(255,255,255,.35); }
+  /* Sources on one line that scrolls sideways: the found ones first. */
+  .srcs { display: flex; gap: 6px; overflow: hidden; padding: 0 14px 8px; position: relative; white-space: nowrap; }
+  .srcs::after { content: ''; position: absolute; right: 0; top: 0; bottom: 8px; width: 36px; background: linear-gradient(90deg, transparent, #fff); }
+  .srcs .chip { flex: none; }
   .range { flex: 1; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #ff2e63 var(--v, 60%), rgba(0,0,0,.12) var(--v, 60%)); position: relative; }
   .range::after { content: ''; position: absolute; top: -6px; left: calc(var(--v, 60%) - 8px); width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
   .kv { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; }
@@ -107,6 +115,8 @@
   const lyrics = (cur = 2, from = 0, trans = false) => `<div class="lyr">${LYR.slice(from).map((l, i) => `<div class="${i + from < cur ? 'done' : i + from === cur ? 'cur' : ''}">${l}${trans && TR[i + from] ? `<div style="padding:2px 0 0;font-size:12.5px;font-weight:400;color:#8a8a8a">${TR[i + from]}</div>` : ''}</div>`).join('')}</div>`;
   const head = (extra = '') => `<div class="hd"><div class="logo">🎤</div><div class="ti"><b>Báu Vật Trời Cho</b><span class="muted">Bùi Công Nam</span></div>${extra}<button class="icon">☆</button><button class="icon">⋯</button></div>`;
   const sources = (sel = 'LRCLIB') => `<div class="row">${[['📄', 'Mô tả', 1], ['💬', 'Comment', 2], ['🔁', 'Bản khác', 0], ['🌐', 'LRCLIB', 3], ['🎸', 'Hợp âm chuẩn', 1], ['🎵', 'Genius', 1], ['📝', 'Phụ đề', 0]].map(([i, n, c]) => `<span class="chip ${n === sel ? 'sel' : c ? '' : 'dim'}">${i} ${n}${c ? ' ' + c : ''}</span>`).join('')}</div>`;
+  // One line of sources: found ones first (the chosen one outlined), the empty ones last and faded.
+  const srcRow = () => `<div class="srcs">${[['🌐', 'LRCLIB', 3, 1], ['💬', 'Comment', 2], ['📄', 'Mô tả', 1], ['🎸', 'Hợp âm chuẩn', 1], ['🎵', 'Genius', 1], ['🔁', 'Bản khác', 0], ['📝', 'Phụ đề', 0]].map(([i, n, c, sel]) => `<span class="chip ${sel ? 'sel' : c ? '' : 'dim'}">${i} ${n}${c ? ' ' + c : ''}</span>`).join('')}</div>`;
   const key = (v = '0') => `<span class="step"><button>♭</button><b>${v}</b><button>♯</button></span>`;
   const sw = (on) => `<span class="sw ${on ? 'on' : ''}"></span>`;
   const range = (v, label) => `<div class="range" style="--v:${v}%"></div><span class="muted" style="width:34px;text-align:right">${label}</span>`;
@@ -159,10 +169,10 @@
   ];
 
   const V9 = [
-    ['9a. Xem lời', 'Chỉ có lời và một dòng nguồn. Bật song ngữ thì lời dịch hiện ngay dưới mỗi dòng. Hợp khi chỉ nghe nhạc.', () => `${head('<button class="icon">🕘</button>')}${modes(0)}
-      <div class="row" style="padding:0 14px 6px"><span class="chip sel">🌐 LRCLIB 3</span><span class="muted">· đổi nguồn ▾</span><span style="flex:1"></span><span class="chip">🌐 English ▾</span></div>
+    ['9a. Xem lời', 'Chỉ có lời và một hàng thẻ nguồn cuộn ngang: nguồn có lời đứng trước, bấm là đổi ngay. Bật song ngữ thì lời dịch hiện ngay dưới mỗi dòng. Hợp khi chỉ nghe nhạc.', () => `${head('<button class="icon">🕘</button>')}${modes(0)}
+      ${srcRow()}<div class="row" style="padding:0 14px 4px;justify-content:flex-end"><span class="muted">Song ngữ</span><span class="chip">🌐 English ▾</span></div>
       ${lyrics(2, 0, true)}`],
-    ['9b. Hát', 'Mọi thứ để hát: tông, lọc giọng, karaoke trên video, kiểu chữ, chấm điểm. Lời ở dưới.', () => `${head('<button class="icon">🕘</button>')}${modes(1)}
+    ['9b. Hát', 'Mọi thứ để hát: tông, lọc giọng, karaoke trên video, kiểu chữ, chấm điểm. Lời ở dưới.', () => `${head('<button class="icon">🕘</button>')}${modes(1)}${srcRow()}
       <div class="sec" style="border-top:0;padding-top:2px">
         ${kv('Tông', key('+1'), '<span class="muted">nâng nửa cung</span>')}
         ${kv('Lọc giọng', sw(1), range(70, '70%'))}
@@ -193,15 +203,15 @@
 
 
   // The 🎤 Karaoke switch kept outside the modes, always one click away.
-  const kbtn = (on) => `<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 8px 5px 10px;border-radius:999px;font-size:12.5px;font-weight:700;${on ? 'background:#ff2e63;color:#fff' : 'background:rgba(0,0,0,.06);color:#333'}">🎤 Karaoke <span class="sw ${on ? 'on' : ''}" style="width:28px;height:16px;${on ? 'background:rgba(255,255,255,.35)' : ''}"></span></span>`;
+  const kbtn = (on) => `<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 8px 5px 10px;border-radius:999px;font-size:12.5px;font-weight:700;${on ? 'background:#ff2e63;color:#fff' : 'background:rgba(0,0,0,.06);color:#333'}">🎤 Karaoke <span class="sw sm ${on ? 'on light' : ''}"></span></span>`;
   const headK = (on) => `<div class="hd"><div class="logo">🎤</div><div class="ti"><b>Báu Vật Trời Cho</b><span class="muted">Bùi Công Nam</span></div>${kbtn(on)}<button class="icon">⋯</button></div>`;
   const VK = [
     ['A1. Công tắc trên đầu panel (bật)', 'Nút 🎤 Karaoke có công tắc nằm cạnh tên bài, chế độ nào cũng thấy. Bật thì nút đỏ, tắt thì nút xám. ☆ và 🕘 chuyển vào menu ⋯.', () => `${headK(1)}${modes(0)}
-      <div class="row" style="padding:0 14px 6px"><span class="chip sel">🌐 LRCLIB 3</span><span class="muted">· đổi nguồn ▾</span></div>${lyrics()}`],
-    ['A2. Công tắc trên đầu panel (tắt)', 'Đang ở chế độ Hát và đang tắt karaoke. Dòng "Trên video" chỉ còn chỗ chọn kiểu chữ, vì nút bật tắt đã nằm trên đầu.', () => `${headK(0)}${modes(1)}
+      ${srcRow()}${lyrics()}`],
+    ['A2. Công tắc trên đầu panel (tắt)', 'Đang ở chế độ Hát và đang tắt karaoke. Dòng "Trên video" chỉ còn chỗ chọn kiểu chữ, vì nút bật tắt đã nằm trên đầu.', () => `${headK(0)}${modes(1)}${srcRow()}
       <div class="sec" style="border-top:0;padding-top:2px">${kv('Tông', key('+1'))}${kv('Lọc giọng', sw(1), range(70, '70%'))}${kv('Kiểu chữ', '<button>Sáng dần ▾</button>', '<button>A−</button>', '<button>A+</button>')}${kv('Chấm điểm', '<button class="pri">🎙 Bắt đầu hát</button>')}</div>${lyrics()}`],
     ['B. Thanh điều khiển cố định ở đáy', 'Một thanh nhỏ luôn nằm ở đáy panel: bật tắt karaoke, đổi kiểu chữ, cỡ chữ, đưa lời lên trên hay xuống dưới. Lời cuộn phía trên thanh.', () => `${head('<button class="icon">🕘</button>')}${modes(0)}
-      <div class="row" style="padding:0 14px 6px"><span class="chip sel">🌐 LRCLIB 3</span><span class="muted">· đổi nguồn ▾</span></div>${lyrics()}
+      ${srcRow()}${lyrics()}
       <div style="display:flex;align-items:center;gap:6px;padding:10px 12px;border-top:1px solid rgba(0,0,0,.08);background:#fafafa">${kbtn(1)}<button style="font-size:12px">Sáng dần ▾</button><button class="icon" style="width:28px">A−</button><button class="icon" style="width:28px">A+</button><button class="icon" style="width:28px">⬇</button></div>`],
     ['C. Nút ngay trên thanh điều khiển của YouTube', 'Thêm biểu tượng 🎤 cạnh nút phụ đề CC của trình phát. Bật tắt được cả khi xem toàn màn hình hay đã ẩn panel. Phím tắt Alt L vẫn dùng được.', () => `<div style="padding:14px"><div style="position:relative;height:214px;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,#1d3b5c,#4a2f6b 50%,#b0466b)">
         <div style="position:absolute;left:0;right:0;bottom:92px;text-align:center;font:800 17px Roboto;color:#fff;text-shadow:0 2px 4px #000"><span style="color:#ffd23f">Hát lên cho</span> nhau nghe một câu</div>
