@@ -114,14 +114,14 @@
     const { row, video } = stage('Lời bài hát &amp; <em>karaoke</em> ngay trên YouTube',
       'Tự tìm lời trong mô tả, comment, LRCLIB, Hợp âm chuẩn, phụ đề. Chữ đổi màu theo nhịp hát.',
       ['🎤 Karaoke trên video', '⧉ Cửa sổ nổi', '🌐 Song ngữ', '🔤 Phiên âm', '⌨ Phím tắt']);
-    overlay(video, 'classic', 'Hát cùng nhau nào, Better Lyric', 'Lệch một chút thôi, ghim lại là xong', 14, 34);
+    overlay(video, 'classic', 'Hát cùng nhau nào, Better Karaoke', 'Lệch một chút thôi, ghim lại là xong', 14, 34);
     const img = h('img', 'panel');
     img.src = 'p-lyrics.png';
     row.append(img);
   } else if (scene === '2') {
     const { row, video } = stage('Kiểu chữ <em>theo ý bạn</em>',
-      '7 kiểu có sẵn, 5 kiểu nền, màu, viền, phông, lề… Lưu thành preset, hoặc ghim 📌 riêng cho từng kênh.');
-    overlay(video, 'captions', 'Chữ đổi màu theo từng nhịp tim', 'Hát cùng nhau nào, Better Lyric', 17, 34);
+      '9 kiểu có sẵn, 6 kiểu nền, màu, viền, phông, lề… Lưu thành preset, hoặc ghim 📌 riêng cho từng kênh.');
+    overlay(video, 'captions', 'Chữ đổi màu theo từng nhịp tim', 'Hát cùng nhau nào, Better Karaoke', 17, 34);
     const img = h('img', 'panel');
     img.src = 'p-studio.png';
     row.append(img);
@@ -140,7 +140,7 @@
     const logo = h('div', 'logo');
     const ic = h('img');
     ic.src = '../icons/icon128.png';
-    logo.append(ic, h('span', '', 'Better Lyric for YouTube'));
+    logo.append(ic, h('span', '', 'Better Karaoke'));
     p.append(logo, h('p', '', 'Lời bài hát, karaoke, song ngữ và phiên âm ngay trên YouTube.'));
     document.body.append(p);
   }

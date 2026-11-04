@@ -86,7 +86,7 @@ try {
       return { tabs: [...nr.querySelectorAll('nav button')].map((b) => b.textContent).join(), lang: nr.querySelector('.lang').textContent,
         song: nr.querySelector('.song b').textContent, before, hosts: document.querySelectorAll('#byl-panel-host').length };`);
     for (let t = 0; t < 15; t++) {
-      if ((await ev(`return document.getElementById('byl-panel-host').shadowRoot.querySelector('.song b').textContent`)) !== 'Better Lyric') break;
+      if ((await ev(`return document.getElementById('byl-panel-host').shadowRoot.querySelector('.song b').textContent`)) !== 'Better Karaoke') break;
       await sleep(1000);
     }
     const ja = await pick('ja');
@@ -111,7 +111,7 @@ try {
   check('Bảng 🎨 có đủ 4 nhóm', r?.studio?.join() === 'Chữ,Màu,Nền,Bố cục', r?.studio?.join());
   check('Mở 🎨 hiện lời trên video', r?.overlay);
   check('Nút 🎤 Karaoke bật/tắt được', r?.toggled);
-  check('Đọc được tên bài', !!r?.title && r.title !== 'Better Lyric', r?.title);
+  check('Đọc được tên bài', !!r?.title && r.title !== 'Better Karaoke', r?.title);
 
   // Loading a source by its chip ends with a message, not "Đang tìm…" for ever.
   const chipEnd = await ev(`

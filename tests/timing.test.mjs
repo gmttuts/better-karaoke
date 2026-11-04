@@ -66,7 +66,7 @@ const eq = (name, got, want) => {
     BYL.exporter.toSrt(lines, 33),
     '1\n00:00:01,500 --> 00:00:03,950\nDòng một\n\n2\n00:00:05,250 --> 00:00:12,200\nDòng hai\n\n3\n00:00:30,000 --> 00:00:32,950\nCuối\n'
   );
-  eq('lrc', BYL.exporter.toLrc(lines, { title: 'Bài', artist: 'Ca sĩ', duration: 33 }), '[ti:Bài]\n[ar:Ca sĩ]\n[length:0:33]\n[re:Better Lyric for YouTube]\n\n[00:01.50] Dòng một\n[00:04.00]\n[00:05.25] Dòng hai\n[00:30.00] Cuối\n');
+  eq('lrc', BYL.exporter.toLrc(lines, { title: 'Bài', artist: 'Ca sĩ', duration: 33 }), '[ti:Bài]\n[ar:Ca sĩ]\n[length:0:33]\n[re:Better Karaoke]\n\n[00:01.50] Dòng một\n[00:04.00]\n[00:05.25] Dòng hai\n[00:30.00] Cuối\n');
   eq('file name', BYL.exporter.fileName({ title: 'A/B: "C"', artist: 'D' }, 'srt'), 'D - A B C.srt');
   eq('srt stamp hours', BYL.exporter.srtStamp(3725.4), '01:02:05,400');
 }

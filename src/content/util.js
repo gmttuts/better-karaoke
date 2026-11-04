@@ -62,7 +62,7 @@ BYL.settings = {
       if (Object.keys(sync).length) await chrome.storage.sync.set(sync);
       return true;
     } catch (err) {
-      console.warn('[Better Lyric] save failed', err);
+      console.warn('[Better Karaoke] save failed', err);
       return false;
     }
   },

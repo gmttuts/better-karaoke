@@ -102,7 +102,7 @@ BYL.look = (() => {
         win.document.fonts.add(await face.load());
       }
     } catch (err) {
-      console.debug('[Better Lyric] font', err);
+      console.debug('[Better Karaoke] font', err);
     }
   }
 

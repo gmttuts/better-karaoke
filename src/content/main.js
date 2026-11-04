@@ -78,7 +78,7 @@
         })
         .catch((err) => {
           if (!alive()) return;
-          console.debug('[Better Lyric]', key, err);
+          console.debug('[Better Karaoke]', key, err);
           BYL.ui.setSourceStatus(key, 'error');
         });
     };

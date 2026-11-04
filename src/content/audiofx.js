@@ -110,7 +110,7 @@ BYL.fx = (() => {
       route(graphs.get(v));
       return true;
     } catch (err) {
-      console.warn('[Better Lyric] audio', err);
+      console.warn('[Better Karaoke] audio', err);
       return false;
     }
   }

@@ -148,7 +148,7 @@ BYL.ui = (() => {
     const bar = el('div', 'stale');
     const go = el('button', 'primary', L('Tải lại trang'));
     go.addEventListener('click', () => location.reload());
-    bar.append(el('span', '', L('🔄 Better Lyric vừa được cập nhật. Tải lại trang để dùng bản mới.')), go);
+    bar.append(el('span', '', L('🔄 Better Karaoke vừa được cập nhật. Tải lại trang để dùng bản mới.')), go);
     P.wrap.querySelector('.body').prepend(bar);
     P.wrap.classList.remove('collapsed');
   }
@@ -209,7 +209,7 @@ BYL.ui = (() => {
     const wrap = el('div', 'byl');
     const header = el('header');
     const song = el('div', 'song');
-    const songTitle = el('b', '', 'Better Lyric');
+    const songTitle = el('b', '', 'Better Karaoke');
     const songArtist = el('span', '', L('Đang tìm lời bài hát…'));
     song.append(songTitle, songArtist);
     const favBtn = el('button', 'fav', '☆');
@@ -231,7 +231,7 @@ BYL.ui = (() => {
     lang.addEventListener('click', (e) => e.stopPropagation());
     langSel.addEventListener('change', () => BYL.settings.set({ uiLang: langSel.value }));
     header.append(el('span', 'logo', '🎤'), song, lang, favBtn, el('span', 'chev', '▾'));
-    header.title = 'Better Lyric for YouTube v' + chrome.runtime.getManifest().version;
+    header.title = 'Better Karaoke v' + chrome.runtime.getManifest().version;
 
     const body = el('div', 'body');
     const nav = el('nav');
@@ -849,7 +849,7 @@ BYL.ui = (() => {
     renderLookSelect();
     P.wrap.classList.toggle('collapsed', !!BYL.settings.value.panelCollapsed);
     paintFav(false);
-    P.songTitle.textContent = 'Better Lyric';
+    P.songTitle.textContent = 'Better Karaoke';
     P.songArtist.textContent = L('Đang tìm lời bài hát…');
     P.status.replaceChildren();
     P.select.replaceChildren();
@@ -1033,7 +1033,7 @@ BYL.ui = (() => {
       words = await api.captionWordsFor(c.lines);
       r = words?.length ? BYL.alignLyrics(c.lines, words) : null;
     } catch (err) {
-      console.debug('[Better Lyric] align', err);
+      console.debug('[Better Karaoke] align', err);
     }
     c.syncing = false;
     P.syncBtn.disabled = false;
@@ -1839,8 +1839,8 @@ BYL.ui = (() => {
   function pipTitle() {
     if (!F?.bar) return;
     const s = state.song;
-    F.bar.textContent = s ? `🎤 ${s.title || ''}${s.artist ? ' — ' + s.artist : ''}` : '🎤 Better Lyric';
-    if (pipWin) pipWin.document.title = s?.title || 'Better Lyric';
+    F.bar.textContent = s ? `🎤 ${s.title || ''}${s.artist ? ' — ' + s.artist : ''}` : '🎤 Better Karaoke';
+    if (pipWin) pipWin.document.title = s?.title || 'Better Karaoke';
   }
 
   // Break a long line in two near the middle so it doesn't run edge to edge.

@@ -74,7 +74,7 @@ BYL.score = (() => {
         ctx.resume();
         audio = { video: v, ctx, an, buf: new Float32Array(an.frequencyBinCount) };
       } catch (err) {
-        console.debug('[Better Lyric] score audio', err);
+        console.debug('[Better Karaoke] score audio', err);
         return null;
       }
     }

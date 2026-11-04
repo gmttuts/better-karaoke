@@ -1,4 +1,4 @@
-# Better Lyric for YouTube
+# Better Karaoke
 
 Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài hát cho video đang xem, chạy lời theo nhạc, hiện chữ to trên video, và tìm nhanh bản karaoke của bài, tất cả trong cùng một khung hình.
 
@@ -11,9 +11,11 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
   - **Khung tối**: khung tối mờ, dễ đọc trên mọi nền video.
   - **Phụ đề YouTube**: mỗi dòng một khung đen mờ như phụ đề của YouTube.
   - **Dải điện ảnh**: một dải tối mờ chạy ngang hết video, chữ xanh nhạt.
+  - **Sáng dần**: chữ chưa hát mờ, hát tới đâu sáng trắng tới đó, trên một lớp tối mờ dần (như lời bài hát của Apple Music, Spotify).
+  - **Chữ lớn**: một dòng chữ in hoa rất to giữa màn hình, viền đen dày, hát tới đâu vàng tới đó (kiểu video TikTok, Shorts).
   - **Gọn nhẹ**: một dòng nhỏ dạng viên thuốc, ít che video.
 
-  - **🎨 Tuỳ chỉnh** (chia nhóm Chữ / Màu / Nền / Bố cục): phông chữ, độ đậm, cỡ chữ, màu chữ / màu đã hát (có chuyển màu), viền, bóng đổ, nền (khung, viên thuốc, dải ngang, từng dòng) cùng lề trong khung trên / dưới / trái / phải, bố cục (so le, 1 dòng, 2 dòng, 3 dòng), hiệu ứng (chạy từng chữ hoặc sáng cả dòng), khoảng cách mép. Lưu lại thành **preset** riêng, chọn lại trong "Kiểu chữ". **Nháy đúp một thanh trượt** để đưa thông số đó về mặc định của kiểu đang chọn.
+  - **🎨 Tuỳ chỉnh** (chia nhóm Chữ / Màu / Nền / Bố cục): phông chữ, độ đậm, cỡ chữ, giãn chữ, in hoa, màu chữ / màu đã hát (có chuyển màu), độ rõ chữ chưa hát (kéo về 0 thành chữ rỗng), tô nền bút dạ quang, viền, bóng đổ, phát sáng, nền (khung, viên thuốc, dải ngang, từng dòng, phủ mờ) cùng lề trong khung trên / dưới / trái / phải, bố cục (so le, 1 dòng, 2 dòng, 3 dòng), hiệu ứng (chạy từng chữ hoặc sáng cả dòng), khoảng cách mép. Lưu lại thành **preset** riêng, chọn lại trong "Kiểu chữ". **Nháy đúp một thanh trượt** để đưa thông số đó về mặc định của kiểu đang chọn.
 
   Nút **⬇ Dưới / ⬆ Trên** đổi vị trí lời để không che chữ có sẵn trong MV. Chỉnh cỡ chữ bằng A− / A+.
 
@@ -67,7 +69,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 `manifest.json` có trường `key` để ID của extension luôn là `hpklleajpolgkiipenbegkgjmeogllno`, dù thư mục nằm ở đâu hay đổi tên. Dữ liệu trong `chrome.storage` gắn với ID này nên không bị mất khi chuyển thư mục.
 3. Mở một video nhạc trên YouTube. Panel hiện ở đầu cột bên phải.
 
-**Khi cập nhật:** bấm ↻ trên thẻ extension rồi tải lại các tab YouTube đang mở. Tab mở từ trước vẫn chạy bản cũ; từ 0.11 panel ở tab đó tự báo "Better Lyric vừa được cập nhật" kèm nút tải lại. Số phiên bản hiện trong popup và khi rê chuột lên tiêu đề panel.
+**Khi cập nhật:** bấm ↻ trên thẻ extension rồi tải lại các tab YouTube đang mở. Tab mở từ trước vẫn chạy bản cũ; từ 0.11 panel ở tab đó tự báo "Better Karaoke vừa được cập nhật" kèm nút tải lại. Số phiên bản hiện trong popup và khi rê chuột lên tiêu đề panel.
 
 ## Phát triển
 
@@ -143,7 +145,7 @@ fonts/                 Roboto Condensed (Apache 2.0, có bộ chữ tiếng Vi�
 | Singify | Widget nổi, cửa sổ luôn ở trên, tự căn theo CC | Phụ thuộc phụ đề |
 | LyricYT, LyricScroll | Nhẹ, có chế độ karaoke | Ít nguồn, ít người dùng |
 
-Better Lyric for YouTube lấy ý tưởng overlay và LRCLIB, rồi thêm phần những extension trên chưa có: lời từ comment, từ bản đăng lại trên YouTube, nguồn nhạc Việt, và tìm bản karaoke ngay trong panel.
+Better Karaoke lấy ý tưởng overlay và LRCLIB, rồi thêm phần những extension trên chưa có: lời từ comment, từ bản đăng lại trên YouTube, nguồn nhạc Việt, và tìm bản karaoke ngay trong panel.
 
 ## Giới hạn
 

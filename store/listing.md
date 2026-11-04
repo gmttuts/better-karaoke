@@ -4,7 +4,7 @@
 - Ảnh chụp 1280×800, tải lên theo ngôn ngữ của trang: `vi/1-hero.png` …
   `vi/5-studio.png` (tiếng Việt), `en/1-hero.png` … `en/4-sound.png` (English).
   Nguồn: `mockups.html` dựng quanh ảnh chụp thật trên YouTube ở `shots/`
-  (panel, 7 kiểu chữ ở chế độ rạp); `5-studio` từ `assets.html`.
+  (panel, các kiểu chữ ở chế độ rạp); `5-studio` từ `assets.html`.
 - Ô quảng cáo nhỏ 440×280 (bắt buộc): `promo-440x280.png`.
 - Ảnh marquee 1400×560 (tuỳ chọn): `vi/marquee-1400x560.png`, `en/marquee-1400x560.png`.
 - Icon 128×128: `../icons/icon128.png`.
@@ -19,7 +19,7 @@ Bản nộp: `npm run build:store` → `dist/better-youtube-lyric-<version>-stor
 ---
 
 ## Tên · Name
-Better Lyric for YouTube
+Better Karaoke
 
 (Không mở đầu bằng "YouTube" để không bị hiểu là sản phẩm của YouTube; tên cũ "Better YouTube Lyric" dễ bị từ chối vì nhãn hiệu.)
 
@@ -35,7 +35,7 @@ Mở một video nhạc trên YouTube là có lời bài hát ở cột bên ph�
 
 • Tự tìm lời ở nhiều nơi: mô tả video, comment, các bản đăng lại cùng bài, thư viện mở LRCLIB, Hợp âm chuẩn, Genius, phụ đề YouTube.
 • 🎤 Karaoke trên video: chữ đổi màu theo nhịp hát, cả khi toàn màn hình và trên YouTube Shorts. Tô theo từng chữ khi có thời gian từng chữ.
-• 🎨 7 kiểu chữ có sẵn, 5 kiểu nền, chỉnh màu, viền, phông, lề… lưu thành preset, ghim 📌 kiểu riêng cho từng kênh.
+• 🎨 9 kiểu chữ có sẵn, 6 kiểu nền, chỉnh màu, viền, phông, lề… lưu thành preset, ghim 📌 kiểu riêng cho từng kênh.
 • 🎯 Tự canh lời theo phụ đề của video, ⏱ gõ nhịp bằng phím Space, 📍 ghim dòng đang hát để sửa lệch từng đoạn.
 • 🎚 Đổi tông (nâng / hạ nửa cung, không đổi tốc độ) và 🎤 Lọc giọng ca sĩ để hát trên bài gốc, chạy ngay trên máy.
 • ⬇ Xuất file LRC / SRT / ASS (phụ đề karaoke đúng kiểu chữ, ghép cứng được vào video của bạn) với đúng thời gian bạn đã canh; ☁ chia sẻ lên LRCLIB (chỉ khi bạn xác nhận).
@@ -53,7 +53,7 @@ Open a music video on YouTube and the lyrics appear in the right column, with th
 
 • Finds lyrics in many places: the video description, comments, other uploads of the song, the open LRCLIB library, Hợp âm chuẩn, Genius, YouTube captions.
 • 🎤 Karaoke on the video: words change colour as they are sung, in full screen and on YouTube Shorts too. Word-by-word when the timing allows.
-• 🎨 7 built-in styles, 5 background shapes, colours, outline, font, padding… saved as presets, or pinned 📌 per channel.
+• 🎨 9 built-in styles, 6 background shapes, colours, outline, font, padding… saved as presets, or pinned 📌 per channel.
 • 🎯 Sync the lyrics to the video's captions, ⏱ tap along with Space, 📍 pin the line being sung to fix one part of the song.
 • 🎚 Change the key (semitones up / down, same speed) and 🎤 cut the singer's voice to sing over the original, all on your device.
 • ⬇ Export LRC / SRT / ASS files (styled karaoke subtitles you can burn into your own video) with your timing; ☁ share them on LRCLIB (only after you confirm).
