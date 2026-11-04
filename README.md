@@ -110,7 +110,6 @@ src/
     ocr.js             🔠 Đọc chữ trên video: quét khung hình, gom các dòng chữ thành lời có thời gian
     keys.js            Phím tắt Alt + phím
     audiofx.js         🎚 Đổi tông, 🎤 Lọc giọng (Web Audio trên âm thanh video)
-  audio/vocal-worklet.js  Bộ lọc giọng theo dải tần (giữa · dải giọng · ngân dài)
     score.js           🎙 Chấm điểm: nốt nhạc của video (chroma), điểm từng dòng
     main.js            Theo dõi chuyển trang trong YouTube, chạy các nguồn, chọn kết quả tốt nhất
   i18n.js              L('…'), danh sách ngôn ngữ, chọn ngôn ngữ theo múi giờ
@@ -118,6 +117,7 @@ src/
   options/             Trang cài đặt (cũng là popup)
   ocr/                 Trang chạy nền (offscreen) chạy Tesseract cho 🔠
   audio/pitch-worklet.js  Bộ đổi tông (phase vocoder) chạy trong AudioWorklet
+  audio/vocal-worklet.js  Bộ lọc giọng theo dải tần (giữa · dải giọng · ngân dài)
   score/               Cửa sổ 🎙 chấm điểm: nghe micro, tìm cao độ (YIN)
   publish/             Trang gửi lời lên LRCLIB, pow.js giải bài toán chống spam (SHA-256) trong worker
 _locales/              Mô tả extension theo ngôn ngữ (12 ngôn ngữ)
