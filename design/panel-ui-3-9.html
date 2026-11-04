@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Panel UI 3 and 9</title>
+<!-- Every screen of layouts 3 (tabs by task) and 9 (modes: watch, sing,
+     edit). ?s=3a..3e / 9a..9g shows one. -->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; background: #e9e9ee; font: 14px/1.4 Roboto, -apple-system, Arial, sans-serif; color: #0f0f0f; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 28px; }
+  figure { margin: 0; }
+  figcaption { margin: 0 0 10px; min-height: 84px; font-weight: 700; font-size: 16px; }
+  figcaption span { display: block; font-weight: 400; font-size: 12.5px; color: #555; width: 380px; }
+  .p { width: 380px; height: 760px; background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+  .muted { color: #606060; font-size: 12px; }
+  button { font: inherit; border: 0; background: rgba(0,0,0,.05); color: inherit; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+  button.on { background: #0f0f0f; color: #fff; }
+  button.pri { background: #ff2e63; color: #fff; }
+  button.ghost { background: transparent; }
+  .hd { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+  .logo { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #ff2e63, #ff8a00); color: #fff; font-size: 16px; flex: none; }
+  .ti { flex: 1; min-width: 0; }
+  .ti b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .icon { width: 32px; height: 32px; padding: 0; display: grid; place-items: center; background: transparent; font-size: 16px; }
+  .lyr { flex: 1; overflow: hidden; padding: 8px 16px; position: relative; }
+  .lyr div { padding: 5px 8px; border-radius: 8px; font-size: 15px; color: #606060; }
+  .lyr .done { color: #9a9a9a; }
+  .lyr .cur { color: #0f0f0f; font-weight: 700; font-size: 17px; background: rgba(255,46,99,.08); }
+  .lyr .cur i { font-style: normal; color: #ff2e63; }
+  .lyr::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: linear-gradient(transparent, #fff); }
+  .lyr.dark::after { background: linear-gradient(transparent, #121218); }
+  .sec { padding: 10px 14px; border-top: 1px solid rgba(0,0,0,.08); }
+  .sec h5 { margin: 0 0 8px; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: #606060; display: flex; justify-content: space-between; align-items: center; }
+  .row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 999px; background: rgba(0,0,0,.05); font-size: 12px; }
+  .chip.sel { box-shadow: inset 0 0 0 1.5px #ff2e63; font-weight: 700; }
+  .chip.dim { opacity: .5; }
+  .seg { display: flex; background: rgba(0,0,0,.06); border-radius: 10px; padding: 3px; gap: 2px; }
+  .seg button { flex: 1; border-radius: 8px; background: transparent; font-size: 12.5px; padding: 6px 4px; color: #555; }
+  .seg button.on { background: #fff; color: #0f0f0f; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+  .step { display: inline-flex; align-items: center; background: rgba(0,0,0,.05); border-radius: 999px; }
+  .step button { background: transparent; padding: 6px 10px; }
+  .step b { min-width: 34px; text-align: center; font-size: 13px; }
+  .sw { width: 34px; height: 20px; border-radius: 10px; background: rgba(0,0,0,.18); position: relative; flex: none; }
+  .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .sw.on { background: #ff2e63; }
+  .sw.on::after { left: 16px; }
+  .range { flex: 1; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #ff2e63 var(--v, 60%), rgba(0,0,0,.12) var(--v, 60%)); position: relative; }
+  .range::after { content: ''; position: absolute; top: -6px; left: calc(var(--v, 60%) - 8px); width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+  .kv { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; }
+  .kv > span:first-child { width: 78px; color: #606060; flex: none; }
+  .card { margin: 8px 12px; border-radius: 12px; background: #f6f6f8; padding: 10px 12px; }
+  .card h5 { margin: 0 0 8px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .card h5 .muted { margin-left: auto; font-weight: 400; }
+  .tabs { display: flex; gap: 2px; padding: 0 10px; border-bottom: 1px solid rgba(0,0,0,.08); }
+  .tabs div { padding: 9px 2px; font-size: 12.5px; white-space: nowrap; color: #606060; border-bottom: 2px solid transparent; text-align: center; flex: 1; }
+  .tabs div.on { color: #0f0f0f; font-weight: 700; border-color: #ff2e63; }
+  .acc { border-top: 1px solid rgba(0,0,0,.08); }
+  .acc > div:not(.body) { display: flex; align-items: center; gap: 10px; padding: 11px 14px; font-size: 13.5px; }
+  .acc > div b { font-weight: 600; }
+  .acc > div .muted { margin-left: auto; font-size: 12.5px; }
+  .acc > div:not(.body)::after { content: '›'; color: #999; font-size: 18px; }
+  .acc > div.open::after { transform: rotate(90deg); }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .tile { background: #f4f4f6; border-radius: 12px; padding: 10px 4px 8px; text-align: center; font-size: 11.5px; color: #333; }
+  .tile b { display: block; font-size: 20px; margin-bottom: 3px; font-weight: 400; }
+  .tile.on { background: rgba(255,46,99,.12); color: #c8103f; font-weight: 600; }
+  .note { margin: 6px 14px; padding: 8px 10px; border-radius: 10px; font-size: 12px; background: rgba(62,166,255,.12); }
+  .badge { font-size: 10.5px; padding: 2px 7px; border-radius: 999px; background: rgba(0,0,0,.06); color: #555; }
+</style>
+</head>
+<body>
+<style>
+  .mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .look { border-radius: 10px; overflow: hidden; background: linear-gradient(160deg, #1d3b5c, #4a2f6b 50%, #b0466b); height: 64px; position: relative; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; }
+  .look.sel { box-shadow: 0 0 0 2.5px #ff2e63; }
+  .look + small { display: block; text-align: center; font-size: 11px; margin-top: 4px; color: #333; }
+  .kt { font: 800 12px Roboto, Arial; color: #fff; }
+  .list { flex: 1; overflow: hidden; padding: 0 10px; }
+  .item { display: flex; gap: 10px; align-items: center; padding: 7px 4px; border-radius: 10px; }
+  .item .th { width: 96px; height: 54px; border-radius: 8px; flex: none; background: linear-gradient(135deg, #c7c7d1, #e6e6ec); }
+  .item b { display: block; font-size: 13px; font-weight: 600; }
+  .item.cur { background: rgba(0,0,0,.05); }
+  .bar { position: absolute; right: 4px; top: 60px; bottom: 16px; width: 6px; border-radius: 3px; background: rgba(0,0,0,.06); }
+  .bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 30%; border-radius: 3px; background: rgba(0,0,0,.28); }
+  .score { margin: 6px 12px 8px; padding: 12px 14px; border-radius: 14px; background: #101018; color: #fff; display: flex; gap: 14px; align-items: center; }
+  .score .big { font: 800 34px Roboto; color: #ffd23f; }
+  .meter { display: flex; gap: 3px; align-items: flex-end; height: 34px; }
+  .meter i { width: 5px; border-radius: 2px; background: #ff2e63; }
+  .ln2 { display: flex; align-items: center; gap: 8px; }
+  .ln2 .pin { font-size: 11px; color: #ff2e63; width: 38px; flex: none; }
+  .ta { margin: 6px 12px; border-radius: 10px; border: 1.5px solid #ff2e63; padding: 10px; font: 13px/1.6 ui-monospace, Menlo, monospace; color: #333; flex: 1; overflow: hidden; }
+  .ta span { color: #c8103f; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 18px 18px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,.18); padding: 10px 14px 14px; z-index: 3; }
+  .sheet::before { content: ''; display: block; width: 36px; height: 4px; border-radius: 2px; background: rgba(0,0,0,.18); margin: 0 auto 10px; }
+  .scrim { position: absolute; inset: 0; background: rgba(0,0,0,.25); z-index: 2; }
+  .grp { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: #606060; margin: 12px 0 6px; }
+  .tabs9 { padding: 0 14px 10px; }
+  .hint { margin: 0 14px 8px; font-size: 12px; color: #606060; }
+  h2 { width: 100%; margin: 6px 0 -6px; font-size: 22px; }
+</style>
+<div class="wrap" id="out"></div>
+<script>
+  const LYR = ['Sáng nay nắng vàng trên phố quen', 'Mình đi qua những ngày rất riêng', '<i>Hát lên cho</i> nhau nghe một câu', 'Để mai này ta còn nhớ nhau', 'Từng lời ca theo gió bay xa', 'Về nơi có những người thân ta', 'Ngày mai dù ai có đi đâu', 'Vẫn còn đây một câu hát đầu', 'Lời ca ấy vẫn còn ở đây', 'Như cơn gió qua những hàng cây'];
+  const TR = ['This morning, golden sun on a familiar street', 'We walk through days of our own', 'Sing to each other one line', 'So that someday we still remember', 'Each song line flies far with the wind', 'Back home to the people we love'];
+  const lyrics = (cur = 2, from = 0, trans = false) => `<div class="lyr">${LYR.slice(from).map((l, i) => `<div class="${i + from < cur ? 'done' : i + from === cur ? 'cur' : ''}">${l}${trans && TR[i + from] ? `<div style="padding:2px 0 0;font-size:12.5px;font-weight:400;color:#8a8a8a">${TR[i + from]}</div>` : ''}</div>`).join('')}</div>`;
+  const head = (extra = '') => `<div class="hd"><div class="logo">🎤</div><div class="ti"><b>Báu Vật Trời Cho</b><span class="muted">Bùi Công Nam</span></div>${extra}<button class="icon">☆</button><button class="icon">⋯</button></div>`;
+  const sources = (sel = 'LRCLIB') => `<div class="row">${[['📄', 'Mô tả', 1], ['💬', 'Comment', 2], ['🔁', 'Bản khác', 0], ['🌐', 'LRCLIB', 3], ['🎸', 'Hợp âm chuẩn', 1], ['🎵', 'Genius', 1], ['📝', 'Phụ đề', 0]].map(([i, n, c]) => `<span class="chip ${n === sel ? 'sel' : c ? '' : 'dim'}">${i} ${n}${c ? ' ' + c : ''}</span>`).join('')}</div>`;
+  const key = (v = '0') => `<span class="step"><button>♭</button><b>${v}</b><button>♯</button></span>`;
+  const sw = (on) => `<span class="sw ${on ? 'on' : ''}"></span>`;
+  const range = (v, label) => `<div class="range" style="--v:${v}%"></div><span class="muted" style="width:34px;text-align:right">${label}</span>`;
+  const kv = (k, ...v) => `<div class="kv"><span>${k}</span>${v.join('')}</div>`;
+  const looks = (sel) => `<div class="mini">${[['red', 'Karaoke đỏ', '#e8212b'], ['classic', 'Xanh dương', '#3346f2'], ['focus', 'Nổi bật', '#ffd23f'], ['box', 'Khung tối', '#ffd23f', 'box'], ['captions', 'Phụ đề YT', '#ffe14d', 'lines'], ['cinema', 'Điện ảnh', '#7fd4ff', 'band'], ['fade', 'Sáng dần', '#fff', 'fade'], ['big', 'Chữ lớn', '#ffe600', 'big'], ['mini', 'Gọn nhẹ', '#ffd23f', 'pill']].map(([k, n, c, sh]) => {
+    const bg = sh === 'box' ? 'background:rgba(0,0,0,.6);padding:2px 6px;border-radius:5px' : sh === 'lines' ? 'background:rgba(0,0,0,.75);padding:1px 4px' : sh === 'pill' ? 'background:rgba(0,0,0,.6);padding:2px 8px;border-radius:99px;font-size:10px' : sh === 'band' ? 'background:rgba(0,0,0,.5);padding:2px 6px;box-shadow:0 0 0 0 rgba(0,0,0,.5),-60px 0 0 rgba(0,0,0,.5),60px 0 0 rgba(0,0,0,.5);white-space:nowrap' : '';
+    const txt = sh === 'big' ? `<span class="kt" style="font-size:15px;text-transform:uppercase;-webkit-text-stroke:3px #000;paint-order:stroke"><span style="color:${c}">Hát</span> lên</span>` : `<span class="kt" style="${bg}${sh === 'fade' ? ';color:rgba(255,255,255,.45)' : ''}"><span style="color:${c}">Hát lên</span> nào</span>`;
+    return `<div><div class="look ${k === sel ? 'sel' : ''}" ${sh === 'big' ? 'style="align-items:center;padding:0"' : ''}>${txt}</div><small>${n}</small></div>`;
+  }).join('')}</div>`;
+  const tabs3 = (on) => `<div class="tabs">${['🎵 Lời', '🔊 Âm thanh', '🎨 Kiểu chữ', '⏱ Canh lời', '⋯ Thêm'].map((t, i) => `<div class="${i === on ? 'on' : ''}" ${i === 4 ? 'style="flex:.7"' : ''}>${t}</div>`).join('')}</div>`;
+  const modes = (on) => `<div class="tabs9"><div class="seg">${['👀 Xem lời', '🎤 Hát', '✏️ Chỉnh lời'].map((t, i) => `<button class="${i === on ? 'on' : ''}">${t}</button>`).join('')}</div></div>`;
+  const hist = () => `<div class="list">${[['Báu Vật Trời Cho', 'Bùi Công Nam · vừa xem', 1], ['Ngày Lành Tháng Tốt', 'Trúc Nhân · 2 giờ trước'], ['Hơn Cả Yêu', 'Đức Phúc · hôm qua · ★'], ['Chúng Ta Của Hiện Tại', 'Sơn Tùng M-TP · 2 ngày trước'], ['See Tình', 'Hoàng Thuỳ Linh · 3 ngày trước · ★'], ['Có Chàng Trai Viết Lên Cây', 'Phan Mạnh Quỳnh · 4 ngày trước'], ['Waiting For You', 'MONO · 5 ngày trước'], ['Nàng Thơ', 'Hoàng Dũng · 1 tuần trước']].map(([t, m, cur]) => `<div class="item ${cur ? 'cur' : ''}"><div class="th"></div><div style="flex:1;min-width:0"><b>${t}</b><span class="muted">${m}</span></div><span style="color:#999">☆</span></div>`).join('')}</div><div class="bar"></div>`;
+
+  const V3 = [
+    ['3a. Tab Lời', 'Chọn nguồn lời, bật karaoke trên video, đọc lời. Đây là tab mở sẵn.', () => `${head()}${tabs3(0)}
+      <div style="padding:10px 14px 4px">${sources()}</div>
+      <div class="row" style="padding:6px 14px"><button class="on">🎤 Karaoke trên video</button><button>⧉ Cửa sổ nổi</button></div>
+      ${lyrics()}`],
+    ['3b. Tab Âm thanh', 'Đổi tông, lọc giọng, chấm điểm, mỗi thứ một dòng có giải thích ngắn.', () => `${head()}${tabs3(1)}
+      <div class="sec" style="border:0">
+        <h5>Tông</h5>${kv('Nâng / hạ', key('+1'), '<span class="muted">nửa cung · Alt ↑↓</span>')}
+        <h5 style="margin-top:12px">Lọc giọng</h5>${kv('Bật', sw(1), '<span class="muted">Alt V</span>')}${kv('Mức lọc', range(70, '70%'))}
+        <div class="muted" style="margin:2px 0 6px">Giảm giọng ca sĩ, giữ trống, bass và nhạc cụ hai bên.</div>
+        <h5 style="margin-top:12px">Chấm điểm</h5>${kv('Micro', '<button class="pri">🎙 Bắt đầu hát</button>')}
+        <div class="muted">Mỗi dòng có điểm: đủ lời, đúng nốt (theo tông mới).</div>
+      </div>
+      <div class="note">💡 Tông và mức lọc được nhớ riêng cho video này.</div>`],
+    ['3c. Tab Kiểu chữ', 'Lưới xem trước 9 kiểu, bấm là đổi ngay. Bên dưới là cỡ chữ, vị trí, ghim theo kênh và nút mở 🎨 tuỳ chỉnh.', () => `${head()}${tabs3(2)}
+      <div style="padding:12px 14px 6px">${looks('fade')}</div>
+      <div class="sec">${kv('Cỡ chữ', '<button>A−</button>', range(55, '115%'), '<button>A+</button>')}${kv('Vị trí', '<div class="seg" style="flex:1"><button>⬆ Trên</button><button class="on">⬇ Dưới</button></div>')}${kv('Theo kênh', sw(0), '<span class="muted">📌 Dùng kiểu này cho kênh CGV</span>')}</div>
+      <div style="padding:6px 14px"><button style="width:100%;padding:9px">🎨 Tuỳ chỉnh màu, phông, viền, nền…</button></div>`],
+    ['3d. Tab Canh lời', 'Mọi thứ để lời chạy đúng nhịp: lệch, canh theo phụ đề, gõ nhịp, ghim mốc, sửa lời.', () => `${head()}${tabs3(3)}
+      <div class="sec" style="border:0">
+        ${kv('Độ lệch', '<span class="step"><button>−0.5s</button><b>+0.3s</b><button>+0.5s</button></span>', '<span class="muted">Shift: 0.1s</span>')}
+        ${kv('Tự canh', '<button>🎯 Theo phụ đề video</button>')}
+        ${kv('Gõ nhịp', '<button>⏱ Bấm Space mỗi dòng</button>')}
+        ${kv('Mốc 📍', '<span class="muted">2 mốc · bấm 📍 cạnh dòng sai</span>')}
+      </div>
+      <div class="lyr" style="border-top:1px solid rgba(0,0,0,.08)">${LYR.slice(0, 8).map((l, i) => `<div class="ln2 ${i === 2 ? 'cur' : ''}"><span class="pin">${i === 1 ? '📍 0:31' : i === 5 ? '📍 1:02' : ''}</span><span>${l}</span></div>`).join('')}</div>
+      <div class="row" style="padding:8px 14px;border-top:1px solid rgba(0,0,0,.08)"><button>✏️ Sửa lời</button><button>↺ Về 0</button><span style="flex:1"></span><button>☁ Gửi LRCLIB</button></div>`],
+    ['3e. Tab Thêm', 'Những thứ ít dùng hơn: song ngữ, phiên âm, bản karaoke, lịch sử, xuất file, ngôn ngữ giao diện.', () => `${head()}${tabs3(4)}
+      <div class="acc"><div><span>🌐</span><b>Song ngữ</b><span class="muted">English</span></div></div>
+      <div class="acc"><div><span>🔤</span><b>Phiên âm</b><span class="muted">Tắt</span></div></div>
+      <div class="acc"><div><span>🎬</span><b>Bản karaoke trên YouTube</b><span class="muted">6 bản</span></div></div>
+      <div class="acc"><div><span>🕘</span><b>Đã xem · Yêu thích</b><span class="muted">48 bài</span></div></div>
+      <div class="acc"><div><span>⬇</span><b>Xuất file</b><span class="muted">LRC · SRT · ASS</span></div></div>
+      <div class="acc"><div><span>🔍</span><b>Tìm lời bài khác</b><span class="muted"></span></div></div>
+      <div class="acc" style="border-bottom:1px solid rgba(0,0,0,.08)"><div><span>🌐</span><b>Ngôn ngữ giao diện</b><span class="muted">Tiếng Việt</span></div></div>
+      <div class="hint" style="margin-top:12px">⚙ Cài đặt khác (nguồn lời, phím tắt, sao lưu) ở trang cài đặt.</div>`],
+  ];
+
+  const V9 = [
+    ['9a. Xem lời', 'Chỉ có lời và một dòng nguồn. Bật song ngữ thì lời dịch hiện ngay dưới mỗi dòng. Hợp khi chỉ nghe nhạc.', () => `${head('<button class="icon">🕘</button>')}${modes(0)}
+      <div class="row" style="padding:0 14px 6px"><span class="chip sel">🌐 LRCLIB 3</span><span class="muted">· đổi nguồn ▾</span><span style="flex:1"></span><span class="chip">🌐 English ▾</span></div>
+      ${lyrics(2, 0, true)}`],
+    ['9b. Hát', 'Mọi thứ để hát: tông, lọc giọng, karaoke trên video, kiểu chữ, chấm điểm. Lời ở dưới.', () => `${head('<button class="icon">🕘</button>')}${modes(1)}
+      <div class="sec" style="border-top:0;padding-top:2px">
+        ${kv('Tông', key('+1'), '<span class="muted">nâng nửa cung</span>')}
+        ${kv('Lọc giọng', sw(1), range(70, '70%'))}
+        ${kv('Trên video', '<button class="on">🎤 Karaoke</button>', '<button>Sáng dần ▾</button>', '<button>⧉</button>')}
+        ${kv('Chấm điểm', '<button class="pri">🎙 Bắt đầu hát</button>')}
+      </div>${lyrics()}`],
+    ['9c. Hát · đang chấm điểm', 'Bấm 🎙 thì ô điểm thay chỗ các nút: điểm từng dòng, cột âm lượng micro và nốt đang hát.', () => `${head('<button class="icon">🕘</button>')}${modes(1)}
+      <div class="score"><div><div style="font-size:11px;opacity:.7">ĐIỂM</div><div class="big">86</div></div><div style="flex:1"><div style="font-size:12px;opacity:.8">Dòng vừa rồi: <b style="color:#7CFC9A">92</b> · đúng nốt 88%</div><div style="font-size:12px;opacity:.6;margin-top:2px">Đang hát: La4 · tông +1</div></div><div class="meter">${[12, 22, 30, 18, 26, 34, 20].map((h) => `<i style="height:${h}px"></i>`).join('')}</div></div>
+      <div class="row" style="padding:0 14px 6px"><button>⏹ Dừng</button><span class="muted">Tông +1 · Lọc giọng 70%</span></div>
+      <div class="lyr">${LYR.map((l, i) => `<div class="${i < 2 ? 'done' : i === 2 ? 'cur' : ''}">${l}${i < 2 ? `<span style="float:right;font-size:12px;color:#1a9b4b;font-weight:700">${[78, 92][i]}</span>` : ''}</div>`).join('')}</div>`],
+    ['9d. Chỉnh lời', 'Canh nhịp, ghim mốc 📍, sửa lời, xuất và chia sẻ. Đặt riêng một chế độ nên lúc hát không bị rối.', () => `${head('<button class="icon">🕘</button>')}${modes(2)}
+      <div class="sec" style="border-top:0;padding-top:2px">
+        ${kv('Độ lệch', '<span class="step"><button>−0.5s</button><b>+0.3s</b><button>+0.5s</button></span>')}
+        ${kv('Canh nhịp', '<button>🎯 Theo phụ đề</button>', '<button>⏱ Gõ Space</button>')}
+      </div>
+      <div class="lyr" style="border-top:1px solid rgba(0,0,0,.08)">${LYR.slice(0, 7).map((l, i) => `<div class="ln2 ${i === 2 ? 'cur' : ''}"><span class="pin">${i === 1 ? '📍 0:31' : i === 5 ? '📍 1:02' : ''}</span><span>${l}</span></div>`).join('')}</div>
+      <div class="row" style="padding:8px 14px;border-top:1px solid rgba(0,0,0,.08)"><button>✏️ Sửa lời</button><button>⬇ Xuất ▾</button><span style="flex:1"></span><button>☁ LRCLIB</button></div>`],
+    ['9e. Chỉnh lời · sửa trực tiếp', 'Bấm ✏️ thì danh sách lời thành ô sửa có mốc thời gian. Gõ Enter để chấm mốc dòng đang hát.', () => `${head('<button class="icon">🕘</button>')}${modes(2)}
+      <div class="hint">Đặt con trỏ vào một dòng rồi bấm <b>Enter</b> khi ca sĩ hát tới. Mốc được ghi ở đầu dòng.</div>
+      <div class="ta">${LYR.slice(0, 9).map((l, i) => `<div><span>${['[00:12.40]', '[00:16.85]', '[00:21.10]', '', '', '', '', '', ''][i]}</span>${l.replace(/<\/?i>/g, '')}</div>`).join('')}</div>
+      <div class="row" style="padding:8px 14px 12px"><button class="pri">💾 Lưu</button><button>Huỷ</button><span style="flex:1"></span><span class="muted">3 / 10 dòng có mốc</span></div>`],
+    ['9f. Chọn kiểu chữ (từ Hát)', 'Bấm "Sáng dần ▾" ở chế độ Hát thì ngăn kéo hiện lên với 9 kiểu xem trước. Kéo xuống để đóng.', () => `${head('<button class="icon">🕘</button>')}${modes(1)}
+      <div class="sec" style="border-top:0;padding-top:2px">${kv('Tông', key('+1'))}${kv('Lọc giọng', sw(1), range(70, '70%'))}</div>${lyrics()}
+      <div class="scrim"></div><div class="sheet"><b style="font-size:15px">Kiểu chữ trên video</b><div style="margin:10px 0">${looks('fade')}</div>${kv('Cỡ chữ', range(55, '115%'))}<div class="row" style="margin-top:8px"><button>⬇ Dưới</button><button>📌 Theo kênh</button><span style="flex:1"></span><button>🎨 Tuỳ chỉnh</button></div></div>`],
+    ['9g. Đã xem (nút 🕘 trên đầu)', 'Lịch sử và bài yêu thích mở từ nút 🕘 ở góc, chiếm cả panel, có thanh cuộn luôn hiện. Bấm ← để quay lại.', () => `<div class="hd"><button class="icon">←</button><div class="ti"><b>Đã xem</b><span class="muted">48 bài · 6 yêu thích</span></div><button class="icon">🔍</button></div>
+      <div class="row" style="padding:0 14px 8px"><button class="on">Tất cả</button><button>★ Yêu thích</button><button>🎬 Bản karaoke</button><span style="flex:1"></span><button class="ghost" style="color:#c8103f">Xoá</button></div>${hist()}`],
+  ];
+
+  const render = (title, list) => `<h2>${title}</h2>` + list.map(([n, why, html]) => `<figure><figcaption>${n}<span>${why}</span></figcaption><div class="p">${html()}</div></figure>`).join('');
+  const q = new URLSearchParams(location.search);
+  const only = q.get('s');
+  const all = { 3: V3, 9: V9 };
+  document.getElementById('out').innerHTML = only ? render('', [(only.startsWith('3') ? V3 : V9)[only.charCodeAt(1) - 97]]) : render('Phương án 3 · Tab theo chức năng', V3) + render('Phương án 9 · Chế độ Xem · Hát · Chỉnh', V9);
+</script>
+
+</body>
+</html>
