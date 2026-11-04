@@ -13,6 +13,9 @@
     BracketRight: (a, e) => a.nudge(e.shiftKey ? 0.1 : 0.5),
     Minus: (a) => a.font(-4),
     Equal: (a) => a.font(4),
+    ArrowUp: (a) => a.key(1),
+    ArrowDown: (a) => a.key(-1),
+    KeyV: (a) => a.vocal(),
   };
 
   const typing = (e) => {

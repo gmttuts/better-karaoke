@@ -158,6 +158,18 @@ try {
     await sleep(1000);
   }
 
+  // 🎚 ♯ raises the key (the video's sound goes through the pitch worklet), the label resets it.
+  const key = await ev(`
+    const sr = document.getElementById('byl-panel-host').shadowRoot;
+    const [down, up] = sr.querySelectorAll('.fx button');
+    up.click();
+    await new Promise((r) => setTimeout(r, 1500));
+    const raised = sr.querySelector('.fx .off').textContent;
+    sr.querySelector('.fx .off').click();
+    await new Promise((r) => setTimeout(r, 500));
+    return { raised, back: sr.querySelector('.fx .off').textContent, playing: !document.querySelector('video').paused };`);
+  check('🎚 Đổi tông và về tông gốc', key?.raised === '+1' && key.back === '0', JSON.stringify(key));
+
   // ⬇ Xuất → SRT downloads a file (or explains that the lyrics have no timing).
   const dl = mkdtempSync(join(tmpdir(), 'byl-dl-'));
   await send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: dl });

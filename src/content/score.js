@@ -93,7 +93,9 @@ BYL.score = (() => {
     if (i === null || i === undefined || i < 0) return;
     lastChroma = musicChroma() || lastChroma;
     const voiced = f0 > 0 && rms > 0.02;
-    (session.lines[i] ||= []).push({ voiced, fit: !voiced ? 0 : lastChroma ? match(f0, lastChroma) : null });
+    // The music is heard before 🎚 moves its key: bring the voice back to it.
+    const f = f0 * Math.pow(2, -(BYL.fx?.semis || 0) / 12);
+    (session.lines[i] ||= []).push({ voiced, fit: !voiced ? 0 : lastChroma ? match(f, lastChroma) : null });
   }
 
   function finishLine(i) {

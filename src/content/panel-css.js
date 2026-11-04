@@ -118,6 +118,8 @@ BYL.PANEL_CSS = `
   button.fav.on, .kitem button.fav.on { color: #f5b301; background: transparent; }
   /* 🌐: a see-through select over the label, so the list shows each
      language under its own name. */
+  .fx input[type=range] { width: 90px; accent-color: var(--accent, #e8212b); }
+  .fx .off.on { color: var(--accent, #e8212b); font-weight: 700; }
   .lang { position: relative; font-size: 12px; color: var(--fg2); padding: 4px 6px; border-radius: 8px; white-space: nowrap; }
   .lang:hover { background: var(--chip); }
   .lang select { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; font-size: 14px; }

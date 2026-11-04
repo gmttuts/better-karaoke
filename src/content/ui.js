@@ -184,6 +184,7 @@ BYL.ui = (() => {
     state.karaokeLoadedFor = null;
     state.lastActive = -2;
     setOverlay(state.overlayOn, false);
+    paintFx();
   }
 
   // ---------- panel ----------
@@ -252,6 +253,30 @@ BYL.ui = (() => {
     scoreBtn.title = L('Chấm điểm khi hát (cần micro, nên đeo tai nghe)');
     scoreBtn.addEventListener('click', () => BYL.score.open());
     row1.append(select, overlayBtn, pipBtn, scoreBtn);
+
+    // 🎚 key and 🎤 vocal cut of the video's sound (audiofx.js).
+    const rowK = el('div', 'row fx');
+    const keyDown = el('button', '', '♭');
+    const keyLabel = el('span', 'off', '0');
+    const keyUp = el('button', '', '♯');
+    keyDown.title = L('Hạ tông nửa cung (Alt ↓)');
+    keyUp.title = L('Nâng tông nửa cung (Alt ↑)');
+    keyLabel.title = L('Bấm để về tông gốc');
+    const vocalBtn = el('button', '', L('🎤 Lọc giọng'));
+    vocalBtn.title = L('Giảm giọng ca sĩ để bạn tự hát, như nút lọc giọng của đầu karaoke (Alt V). Tuỳ bài, thường vẫn còn nghe vang nhẹ.');
+    const vocalAmt = el('input');
+    vocalAmt.type = 'range';
+    vocalAmt.min = '30';
+    vocalAmt.max = '100';
+    vocalAmt.value = '100';
+    vocalAmt.title = L('Mức lọc giọng');
+    vocalAmt.hidden = true;
+    rowK.append(el('span', 'muted', L('🎚 Tông')), keyDown, keyLabel, keyUp, vocalBtn, vocalAmt);
+    keyDown.addEventListener('click', () => setKey(BYL.fx.semis - 1, true));
+    keyUp.addEventListener('click', () => setKey(BYL.fx.semis + 1, true));
+    keyLabel.addEventListener('click', () => setKey(0, true));
+    vocalBtn.addEventListener('click', () => setVocal(BYL.fx.vocal > 0 ? 0 : Number(vocalAmt.value) / 100));
+    vocalAmt.addEventListener('input', () => setVocal(Number(vocalAmt.value) / 100));
 
     const rowT = el('div', 'row');
     const transSel = el('select');
@@ -378,7 +403,7 @@ BYL.ui = (() => {
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
     grip.title = L('Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)');
-    lyricTab.append(findRow, status, row1, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4, exportRow);
+    lyricTab.append(findRow, status, row1, rowK, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4, exportRow);
     makeResizable(lines, grip);
 
     // Karaoke tab
@@ -412,7 +437,7 @@ BYL.ui = (() => {
 
     Object.assign(P, { wrap, songTitle, songArtist, status, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
       row2, row3, row4, favBtn, hlist, hAll, hFav, tabHistory, historyTab, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
-      tapBtn, tapbar });
+      tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt });
     editBtn.addEventListener('click', () => openEditor());
     tapBtn.addEventListener('click', () => (tapping() ? stopTap(false) : startTap()));
     transSel.addEventListener('change', () => {
@@ -840,6 +865,7 @@ BYL.ui = (() => {
     if (mine.length) setSourceStatus('custom', 'ok', mine.length);
     setOverlay(!!BYL.settings.value.overlayOnByDefault, false);
     pipTitle();
+    setKey(saved?.semis || 0, false);
   }
 
   function setSong(song, duration, channel) {
@@ -1158,6 +1184,30 @@ BYL.ui = (() => {
     const fs = Math.max(18, Math.min(72, BYL.settings.value.overlayFontSize + delta));
     BYL.settings.set({ overlayFontSize: fs });
     sizeAll();
+  }
+
+  // ---------- 🎚 key, 🎤 vocal cut ----------
+
+  const fmtKey = (n) => (n > 0 ? '+' + n : n < 0 ? '−' + -n : '0');
+  function paintFx() {
+    P.keyLabel.textContent = fmtKey(BYL.fx.semis);
+    P.keyLabel.classList.toggle('on', !!BYL.fx.semis);
+    P.vocalBtn.classList.toggle('on', BYL.fx.vocal > 0);
+    P.vocalAmt.hidden = !(BYL.fx.vocal > 0);
+  }
+  // The key is kept per video; byUser: from a button or shortcut (a click,
+  // so the sound can start), otherwise the saved key on opening a video.
+  async function setKey(n, byUser) {
+    const done = await BYL.fx.setSemis(n);
+    paintFx();
+    if (!byUser) return;
+    if (state.videoId) BYL.videoStore.patch(state.videoId, { semis: BYL.fx.semis });
+    if (!done) say(L('Không đổi được âm thanh của video này.'));
+  }
+  async function setVocal(k) {
+    const done = await BYL.fx.setVocal(k);
+    paintFx();
+    if (!done) say(L('Không đổi được âm thanh của video này.'));
   }
 
   // ---------- export ----------
@@ -1963,6 +2013,12 @@ BYL.ui = (() => {
       return L('📍 Đã ghim dòng đang hát');
     },
     font: (d) => (setFont(d), L('Cỡ chữ ') + BYL.settings.value.overlayFontSize),
+    key: (d) => (setKey(BYL.fx.semis + d, true), L('🎚 Tông {0}', fmtKey(Math.max(-6, Math.min(6, BYL.fx.semis + d))))),
+    vocal: () => {
+      const on = !(BYL.fx.vocal > 0);
+      setVocal(on ? Number(P.vocalAmt.value) / 100 : 0);
+      return on ? L('🎤 Lọc giọng: bật') : L('🎤 Lọc giọng: tắt');
+    },
   };
   // Line being sung right now (score.js), -1 before the first one.
   const lineNow = () => {

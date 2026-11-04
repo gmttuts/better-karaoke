@@ -26,7 +26,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **Tìm lời theo thứ tự ưu tiên** (chạy song song, kết quả hiện dần):
   1. 📄 **Mô tả video** và 💬 **Comment** của chính video. Comment dạng `0:15 lời…` được chuyển thành lời có thời gian.
   2. 🔁 **Bản đăng khác** của cùng bài trên YouTube (video lyric, bản re-up): đọc mô tả, và với video "Lyrics" thì đọc thêm comment.
-  3. 🌐 **LRCLIB** (lời có thời gian từng dòng, có cả nhạc Việt) 🎸 **Hợp âm chuẩn** (lời nhạc Việt, đã bỏ hợp âm) và 🎵 **Genius** (nhiều bài Việt mới cùng nhạc thế giới, có chia đoạn [Verse], [Chorus]).
+  3. 🌐 **LRCLIB** (lời có thời gian từng dòng, có cả nhạc Việt), 🎸 **Hợp âm chuẩn** (lời nhạc Việt, đã bỏ hợp âm) và 🎵 **Genius** (nhiều bài Việt mới cùng nhạc thế giới, có chia đoạn [Verse], [Chorus]).
   4. 📝 **Phụ đề YouTube**: chỉ tự chạy khi các nguồn trên không có kết quả. Nếu đã có kết quả thì bấm vào chip để tải.
 - **Chọn nguồn khác** bằng menu thả xuống, hoặc bấm vào chip nguồn (bấm tiếp để xem kết quả khác của cùng nguồn; chip lỗi bấm để thử lại). Lựa chọn và độ lệch được nhớ riêng cho từng video.
 - **🎯 Tự canh theo phụ đề**: dùng phụ đề YouTube của video (kể cả phụ đề tự động) làm nhịp. Extension so khớp chữ trong lời với chữ trong phụ đề theo thứ tự, nên phụ đề sai chính tả vẫn canh được.
@@ -49,6 +49,9 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **🔍 Tìm theo tên**: extension đoán sai tên bài hoặc ca sĩ? Gõ lại rồi bấm Tìm, mọi nguồn chạy lại theo tên mới. Tên sửa được nhớ cho video đó (hiện dấu ✎ cạnh tên ca sĩ); bấm "Dùng tên tự đoán" để bỏ.
 - **Tab "Đã xem"**: các bài đã mở, mới nhất trước, kèm số lần xem. Bấm ☆ cạnh tên bài (hoặc trong danh sách) để đánh dấu **★ yêu thích**; lọc "★ Yêu thích" để xem riêng. "Xoá lịch sử" giữ lại bài yêu thích. Lịch sử nằm trong file sao lưu.
 - **Sao chép** lời, **Mở nguồn** để xem trang gốc.
+- **🎚 Tông** (♭ ♯, Alt ↑ ↓): nâng / hạ tông bài hát từng nửa cung (tới ±6) mà không đổi tốc độ, để vừa giọng người hát. Tông được nhớ theo từng video; bấm số tông để về tông gốc. Chạy ngay trên máy (phase vocoder trong AudioWorklet, `src/audio/pitch-worklet.js`), trễ khoảng 65 ms. 🎙 Chấm điểm tự tính theo tông mới.
+- **🎤 Lọc giọng** (Alt V): giảm giọng ca sĩ để tự hát trên bài gốc khi không có bản karaoke, kéo thanh để chỉnh mức lọc. Cách làm giống nút lọc giọng của đầu karaoke: giọng thường nằm giữa hai loa, nên phần giữa ở dải tần giọng người bị bỏ, còn bass, trống và tiếng cao vẫn giữ. Tuỳ bài: thường giảm được phần lớn giọng nhưng vẫn còn vang và bè; bài thu mono hoặc có nhạc cụ đặt giữa thì kém hơn.
+  - Cả hai cần một cú bấm trên trang trước (trình duyệt chỉ cho phát âm thanh sau khi người dùng bấm). Âm thanh không bị ghi lại hay gửi đi đâu.
 - **⬇ Xuất**: lưu lời có thời gian ra file **`.lrc`** (cho trình phát nhạc) **`.srt`** (phụ đề cho VLC, CapCut, Premiere, YouTube Studio) hoặc **`.ass`** (phụ đề karaoke giữ đúng kiểu chữ 🎨 đang dùng: phông, màu, viền, khung, bố cục so le hay ở giữa, dòng dịch, chữ đổi màu từng từ). File dùng đúng thời gian bạn đã canh: độ lệch, các mốc 📍, ⏱ gõ nhịp, 🎯 canh theo phụ đề. Lời chưa có thời gian thì canh trước rồi xuất.
   - **Ghép cứng (hard sub) vào video của bạn** bằng file `.ass`: `ffmpeg -i video.mp4 -vf ass="Ca sĩ - Bài.ass" video-co-loi.mp4` (ffmpeg cần có libass), hoặc mở bằng Aegisub, VLC, mpv, CapCut. Kiểu nền *Dải điện ảnh* thành khung quanh chữ, và viền của chữ đã hát giữ màu viền thường (ASS không đổi màu viền theo karaoke).
 - **☁ Gửi lên LRCLIB**: chia sẻ lời đã canh lên thư viện mở LRCLIB để người khác (và các ứng dụng nghe nhạc khác) dùng. Mở một trang riêng để kiểm tra tên bài, ca sĩ, album, thời lượng và lời; báo nếu LRCLIB đã có bản cùng thời lượng. Chỉ gửi khi bạn tích ô xác nhận và bấm gửi (LRCLIB yêu cầu máy giải một bài toán nhỏ thay cho tài khoản, mất khoảng 10–30 giây).
@@ -104,17 +107,19 @@ src/
     export.js          Xuất .lrc / .srt / .ass, chuyển lời sang trang gửi LRCLIB
     ocr.js             🔠 Đọc chữ trên video: quét khung hình, gom các dòng chữ thành lời có thời gian
     keys.js            Phím tắt Alt + phím
+    audiofx.js         🎚 Đổi tông, 🎤 Lọc giọng (Web Audio trên âm thanh video)
     score.js           🎙 Chấm điểm: nốt nhạc của video (chroma), điểm từng dòng
     main.js            Theo dõi chuyển trang trong YouTube, chạy các nguồn, chọn kết quả tốt nhất
   i18n.js              L('…'), danh sách ngôn ngữ, chọn ngôn ngữ theo múi giờ
   lang/<mã>.js         Bản dịch giao diện (khoá là câu tiếng Việt gốc)
   options/             Trang cài đặt (cũng là popup)
   ocr/                 Trang chạy nền (offscreen) chạy Tesseract cho 🔠
+  audio/pitch-worklet.js  Bộ đổi tông (phase vocoder) chạy trong AudioWorklet
   score/               Cửa sổ 🎙 chấm điểm: nghe micro, tìm cao độ (YIN)
   publish/             Trang gửi lời lên LRCLIB, pow.js giải bài toán chống spam (SHA-256) trong worker
 _locales/              Mô tả extension theo ngôn ngữ (12 ngôn ngữ)
 scripts/               build.mjs (đóng gói + kiểm tra file), smoke.mjs (test headless)
-tests/                 Test tách tên bài, thời gian từng chữ, xuất file, bài toán LRCLIB
+tests/                 Test tách tên bài, thời gian từng chữ, xuất file, bài toán LRCLIB, đổi tông, bản dịch
 vendor/tesseract/       tesseract.js 5.1.1 + lõi WebAssembly + bộ chữ tiếng Việt (Apache 2.0), không tải từ CDN
 data/pinyin.json       Cách đọc pinyin của 21 nghìn chữ Hán (Unicode Unihan, giấy phép Unicode v3)
 fonts/                 Roboto Condensed (Apache 2.0, có bộ chữ tiếng Việt) cho kiểu Karaoke
