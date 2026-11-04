@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Karaoke switch A1</title>
+<!-- Layout A1 up close: ways to draw the 🎤 Karaoke switch at the top of
+     the panel, how it behaves, and every state of the source chips. -->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; background: #e9e9ee; font: 14px/1.4 Roboto, -apple-system, Arial, sans-serif; color: #0f0f0f; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 28px; }
+  figure { margin: 0; }
+  figcaption { margin: 0 0 10px; min-height: 84px; font-weight: 700; font-size: 16px; }
+  figcaption span { display: block; font-weight: 400; font-size: 12.5px; color: #555; width: 380px; }
+  .p { width: 380px; height: 760px; background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+  .muted { color: #606060; font-size: 12px; }
+  button { font: inherit; border: 0; background: rgba(0,0,0,.05); color: inherit; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+  button.on { background: #0f0f0f; color: #fff; }
+  button.pri { background: #ff2e63; color: #fff; }
+  button.ghost { background: transparent; }
+  .hd { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+  .logo { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #ff2e63, #ff8a00); color: #fff; font-size: 16px; flex: none; }
+  .ti { flex: 1; min-width: 0; }
+  .ti b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .icon { width: 32px; height: 32px; padding: 0; display: grid; place-items: center; background: transparent; font-size: 16px; }
+  .lyr { flex: 1; overflow: hidden; padding: 8px 16px; position: relative; }
+  .lyr div { padding: 5px 8px; border-radius: 8px; font-size: 15px; color: #606060; }
+  .lyr .done { color: #9a9a9a; }
+  .lyr .cur { color: #0f0f0f; font-weight: 700; font-size: 17px; background: rgba(255,46,99,.08); }
+  .lyr .cur i { font-style: normal; color: #ff2e63; }
+  .lyr::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: linear-gradient(transparent, #fff); }
+  .lyr.dark::after { background: linear-gradient(transparent, #121218); }
+  .sec { padding: 10px 14px; border-top: 1px solid rgba(0,0,0,.08); }
+  .sec h5 { margin: 0 0 8px; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: #606060; display: flex; justify-content: space-between; align-items: center; }
+  .row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 999px; background: rgba(0,0,0,.05); font-size: 12px; }
+  .chip.sel { box-shadow: inset 0 0 0 1.5px #ff2e63; font-weight: 700; }
+  .chip.dim { opacity: .5; }
+  .seg { display: flex; background: rgba(0,0,0,.06); border-radius: 10px; padding: 3px; gap: 2px; }
+  .seg button { flex: 1; border-radius: 8px; background: transparent; font-size: 12.5px; padding: 6px 4px; color: #555; }
+  .seg button.on { background: #fff; color: #0f0f0f; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+  .step { display: inline-flex; align-items: center; background: rgba(0,0,0,.05); border-radius: 999px; }
+  .step button { background: transparent; padding: 6px 10px; }
+  .step b { min-width: 34px; text-align: center; font-size: 13px; }
+  .sw { width: 34px; height: 20px; border-radius: 10px; background: rgba(0,0,0,.18); position: relative; flex: none; }
+  .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .sw.on { background: #ff2e63; }
+  .sw.on::after { left: 16px; }
+  .range { flex: 1; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #ff2e63 var(--v, 60%), rgba(0,0,0,.12) var(--v, 60%)); position: relative; }
+  .range::after { content: ''; position: absolute; top: -6px; left: calc(var(--v, 60%) - 8px); width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+  .kv { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; }
+  .kv > span:first-child { width: 78px; color: #606060; flex: none; }
+  .card { margin: 8px 12px; border-radius: 12px; background: #f6f6f8; padding: 10px 12px; }
+  .card h5 { margin: 0 0 8px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .card h5 .muted { margin-left: auto; font-weight: 400; }
+  .tabs { display: flex; gap: 2px; padding: 0 10px; border-bottom: 1px solid rgba(0,0,0,.08); }
+  .tabs div { padding: 9px 2px; font-size: 12.5px; white-space: nowrap; color: #606060; border-bottom: 2px solid transparent; text-align: center; flex: 1; }
+  .tabs div.on { color: #0f0f0f; font-weight: 700; border-color: #ff2e63; }
+  .acc { border-top: 1px solid rgba(0,0,0,.08); }
+  .acc > div:not(.body) { display: flex; align-items: center; gap: 10px; padding: 11px 14px; font-size: 13.5px; }
+  .acc > div b { font-weight: 600; }
+  .acc > div .muted { margin-left: auto; font-size: 12.5px; }
+  .acc > div:not(.body)::after { content: '›'; color: #999; font-size: 18px; }
+  .acc > div.open::after { transform: rotate(90deg); }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .tile { background: #f4f4f6; border-radius: 12px; padding: 10px 4px 8px; text-align: center; font-size: 11.5px; color: #333; }
+  .tile b { display: block; font-size: 20px; margin-bottom: 3px; font-weight: 400; }
+  .tile.on { background: rgba(255,46,99,.12); color: #c8103f; font-weight: 600; }
+  .note { margin: 6px 14px; padding: 8px 10px; border-radius: 10px; font-size: 12px; background: rgba(62,166,255,.12); }
+  .badge { font-size: 10.5px; padding: 2px 7px; border-radius: 999px; background: rgba(0,0,0,.06); color: #555; }
+</style>
+</head>
+<body>
+<style>
+  body { padding: 28px; }
+  .tbl { display: grid; grid-template-columns: 250px 380px 380px 380px; gap: 18px 22px; align-items: start; }
+  .tbl > .th { font-size: 13px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .06em; }
+  .lab b { display: block; font-size: 16px; margin-bottom: 4px; }
+  .lab span { font-size: 12.5px; color: #555; line-height: 1.45; }
+  .hp { width: 380px; background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 14px; overflow: hidden; }
+  .hp.dark { background: #0f0f0f; border-color: #333; color: #f1f1f1; }
+  .hp.dark .muted { color: #aaa; }
+  .hp.dark button { color: #f1f1f1; }
+  .hp .modes { padding: 0 14px 12px; }
+  .hp.dark .seg { background: rgba(255,255,255,.1); }
+  .hp.dark .seg button { color: #aaa; }
+  .hp.dark .seg button.on { background: #2a2a2a; color: #fff; }
+  .sw.sm { width: 28px; height: 16px; border-radius: 8px; }
+  .sw.sm::after { width: 12px; height: 12px; }
+  .sw.sm.on::after { left: 14px; }
+  .kp { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; font-size: 12.5px; font-weight: 700; white-space: nowrap; flex: none; }
+  .sec2 { margin-top: 34px; }
+  h2 { margin: 0 0 16px; font-size: 22px; }
+  .rec { outline: 3px solid #ff2e63; outline-offset: 6px; border-radius: 14px; }
+  .tip { position: absolute; background: rgba(28,28,28,.95); color: #fff; font-size: 11.5px; padding: 6px 9px; border-radius: 6px; white-space: nowrap; z-index: 3; line-height: 1.4; }
+</style>
+<div id="out"></div>
+<script>
+  const red = '#ff2e63';
+  // dark: colours for the dark YouTube theme.
+  const V = [
+    ['1. Viên có công tắc', 'Nút như đã vẽ ở A1: chữ "Karaoke" kèm công tắc nhỏ. Bật thì cả viên đỏ. Rõ nhất là đang bật hay tắt.',
+      (on, d) => `<span class="kp" style="padding:5px 8px 5px 10px;${on ? `background:${red};color:#fff` : d ? 'background:rgba(255,255,255,.12)' : 'background:rgba(0,0,0,.06);color:#333'}">🎤 Karaoke <span class="sw sm ${on ? 'on' : ''}" style="${on ? 'background:rgba(255,255,255,.38)' : d ? 'background:rgba(255,255,255,.25)' : ''}"></span></span>`],
+    ['2. Nút gạt Tắt · Bật', 'Hai nửa "Tắt" và "🎤 Bật" như công tắc vật lý. Nhìn là biết trạng thái, nhưng chiếm chỗ hơn một chút.',
+      (on, d) => `<span class="kp" style="padding:3px;background:${d ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.06)'}">${['Tắt', '🎤 Bật'].map((t, i) => `<span style="padding:4px 10px;border-radius:999px;${(i === 1) === !!on ? (on ? `background:${red};color:#fff` : d ? 'background:#3a3a3a;color:#fff' : 'background:#fff;color:#0f0f0f;box-shadow:0 1px 3px rgba(0,0,0,.15)') : `color:${d ? '#888' : '#777'};font-weight:500`}">${t}</span>`).join('')}</span>`],
+    ['3. Nút tròn có vòng sáng', 'Chỉ có biểu tượng 🎤 trong một nút tròn. Bật thì nền đỏ và có vòng sáng nhấp nháy theo nhịp. Gọn nhất, rê chuột vào thì hiện chữ.',
+      (on, d) => `<span class="kp" style="width:38px;height:38px;justify-content:center;font-size:18px;${on ? `background:${red};box-shadow:0 0 0 4px rgba(255,46,99,.25)` : d ? 'background:rgba(255,255,255,.12)' : 'background:rgba(0,0,0,.06)'}">🎤</span>`],
+    ['4. Nút tách đôi', 'Bên trái bật tắt karaoke, bên phải ▾ mở danh sách kiểu chữ. Gộp 2 việc hay làm nhất vào một nút.',
+      (on, d) => `<span class="kp" style="overflow:hidden;${on ? `background:${red};color:#fff` : d ? 'background:rgba(255,255,255,.12)' : 'background:rgba(0,0,0,.06);color:#333'}"><span style="padding:6px 8px 6px 11px">🎤 Karaoke</span><span style="padding:6px 9px;border-left:1px solid ${on ? 'rgba(255,255,255,.35)' : d ? 'rgba(255,255,255,.15)' : 'rgba(0,0,0,.12)'};font-weight:500">Sáng dần ▾</span></span>`],
+    ['5. Chữ trạng thái', 'Nút ghi rõ trạng thái: "Đang hiện trên video" hoặc "Hiện lời trên video". Dễ hiểu cho người mới nhưng dài nên tên bài bị rút gọn nhiều hơn.',
+      (on, d) => `<span class="kp" style="padding:6px 11px;font-weight:600;${on ? `background:rgba(255,46,99,.12);color:${d ? '#ff7a9c' : '#c8103f'};box-shadow:inset 0 0 0 1.5px ${red}` : d ? 'background:rgba(255,255,255,.12)' : 'background:rgba(0,0,0,.06);color:#333'}">${on ? '<span style="width:8px;height:8px;border-radius:50%;background:' + red + '"></span> Đang hiện trên video' : '🎤 Hiện lời trên video'}</span>`],
+  ];
+  const head = (btn, on, d, title = 'Báu Vật Trời Cho') => `<div class="hd"><div class="logo">🎤</div><div class="ti"><b>${title}</b><span class="muted">Bùi Công Nam</span></div>${btn(on, d)}<button class="icon">⋯</button></div>`;
+  const modes = (d) => `<div class="modes"><div class="seg"><button class="on">👀 Xem lời</button><button>🎤 Hát</button><button>✏️ Chỉnh lời</button></div></div>`;
+  const cell = (btn, on, d) => `<div class="hp ${d ? 'dark' : ''}">${head(btn, on, d)}${modes(d)}</div>`;
+  // Option 6 is a band of its own under the title rather than a button.
+  const band = (on, d) => `<div class="hp ${d ? 'dark' : ''}"><div class="hd"><div class="logo">🎤</div><div class="ti"><b>Báu Vật Trời Cho</b><span class="muted">Bùi Công Nam</span></div><button class="icon">☆</button><button class="icon">⋯</button></div>
+      <div style="margin:0 12px 10px;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;${on ? 'background:rgba(255,46,99,.1)' : d ? 'background:rgba(255,255,255,.08)' : 'background:rgba(0,0,0,.04)'}"><span style="font-size:13px;font-weight:700;flex:1">🎤 Lời karaoke trên video</span><span style="font-size:12px;color:${d ? '#aaa' : '#606060'}">Sáng dần ▾</span><span class="sw ${on ? 'on' : ''}" ${!on && d ? 'style="background:rgba(255,255,255,.25)"' : ''}></span></div>${modes(d)}</div>`;
+
+  let html = '<h2>Các kiểu công tắc 🎤 Karaoke trên đầu panel</h2><div class="tbl"><div></div><div class="th">Đang bật</div><div class="th">Đang tắt</div><div class="th">Giao diện tối · bật</div>';
+  for (const [n, why, btn] of V) html += `<div class="lab"><b>${n}</b><span>${why}</span></div>${cell(btn, 1, 0)}${cell(btn, 0, 0)}${cell(btn, 1, 1)}`;
+  html += `<div class="lab"><b>6. Dải riêng dưới tên bài</b><span>Một dải ngang có công tắc lớn và kiểu chữ, nằm ngay dưới tên bài. Giữ được ☆ trên đầu, nhưng tốn thêm một hàng.</span></div>${band(1, 0)}${band(0, 0)}${band(1, 1)}</div>`;
+
+  // How the recommended one behaves.
+  const b1 = V[0][2];
+  const b4 = V[3][2];
+  html += `<div class="sec2"><h2>Kiểu 1 trong các tình huống</h2><div class="tbl" style="grid-template-columns:380px 380px 380px 380px">
+    <div><div class="th" style="margin-bottom:8px">Rê chuột: chú thích</div><div style="position:relative">${cell(b1, 1, 0)}<div class="tip" style="right:40px;top:52px">Lời trên video: đang bật · bấm để tắt (Alt L)<br><span style="opacity:.7">Chuột phải: chọn kiểu chữ</span></div></div></div>
+    <div><div class="th" style="margin-bottom:8px">Tên bài dài</div><div class="hp">${head(b1, 1, 0, 'Có Chàng Trai Viết Lên Cây (Live at Hà Nội Concert 2024)')}${modes()}</div></div>
+    <div><div class="th" style="margin-bottom:8px">Panel hẹp (cửa sổ nổi 320 px)</div><div class="hp" style="width:320px"><div class="hd"><div class="logo" style="width:28px;height:28px;font-size:13px">🎤</div><div class="ti"><b style="font-size:14px">Báu Vật Trời Cho</b><span class="muted">Bùi Công Nam</span></div><span class="kp" style="width:44px;height:26px;justify-content:center;background:${red};color:#fff">🎤<span class="sw sm on" style="display:none"></span></span><button class="icon">⋯</button></div>${modes()}</div><div class="muted" style="margin-top:6px;width:320px">Chật chỗ thì chỉ còn biểu tượng 🎤, màu đỏ là đang bật.</div></div>
+    <div><div class="th" style="margin-bottom:8px">Menu ⋯ (☆, 🕘 chuyển vào đây)</div><div style="position:relative;height:330px">${cell(b1, 1, 0)}<div style="position:absolute;right:6px;top:52px;width:230px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.22);padding:6px;font-size:13px;z-index:3">${['☆ Thêm vào yêu thích', '🕘 Đã xem', '🎬 Bản karaoke trên YouTube', '⧉ Cửa sổ nổi', '🔍 Tìm lời bài khác', '🌐 Ngôn ngữ: Tiếng Việt', '⚙ Cài đặt'].map((t) => `<div style="padding:8px 10px;border-radius:8px">${t}</div>`).join('')}</div></div></div>
+  </div></div>`;
+  html += `<div class="sec2"><h2>Kiểu 4 (tách đôi) khi bấm ▾</h2><div style="position:relative;width:380px;height:440px">${cell(b4, 1, 0)}<div style="position:absolute;right:46px;top:52px;width:210px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.22);padding:6px;font-size:13px;z-index:3">${['Karaoke đỏ', 'Karaoke xanh dương', 'Nổi bật', 'Khung tối', 'Phụ đề YouTube', 'Dải điện ảnh', 'Sáng dần', 'Chữ lớn', 'Gọn nhẹ'].map((t) => `<div style="padding:6px 10px;border-radius:8px;${t === 'Sáng dần' ? 'background:rgba(255,46,99,.1);font-weight:700' : ''}">${t === 'Sáng dần' ? '✓ ' : ''}${t}</div>`).join('')}<div style="border-top:1px solid rgba(0,0,0,.08);margin-top:4px;padding:8px 10px">🎨 Tuỳ chỉnh…</div></div></div></div>`;
+
+  // ---------- the source chips ----------
+  const chip = (txt, st) => {
+    const base = 'display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;font-size:12.5px;white-space:nowrap;';
+    const look = {
+      sel: `background:rgba(255,46,99,.1);box-shadow:inset 0 0 0 1.5px ${red};font-weight:700;color:#0f0f0f`,
+      ok: 'background:rgba(0,0,0,.05);color:#0f0f0f',
+      load: 'background:rgba(0,0,0,.05);color:#606060',
+      none: 'background:transparent;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);color:#9a9a9a',
+      err: 'background:rgba(255,184,0,.16);color:#8a5a00',
+      off: 'background:transparent;color:#b0b0b0;text-decoration:line-through',
+      more: 'background:transparent;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);color:#333',
+    }[st];
+    return `<span style="${base}${look}">${txt}</span>`;
+  };
+  const spin = '<span style="width:10px;height:10px;border-radius:50%;border:2px solid #ccc;border-top-color:#ff2e63;display:inline-block"></span>';
+  const timed = '<span title="có thời gian" style="font-size:10px;padding:0 5px;border-radius:6px;background:rgba(26,155,75,.14);color:#1a7a3e;font-weight:700">⏱</span>';
+  const states = [
+    [chip(`🌐 LRCLIB 3 ${timed}`, 'sel'), 'Đang dùng', 'Viền đỏ, luôn đứng đầu hàng. Số là số kết quả, ⏱ xanh nghĩa là lời có thời gian (chạy theo nhạc). <b>Bấm lại</b> để mở danh sách kết quả.'],
+    [chip('💬 Comment 2', 'ok'), 'Có lời', 'Nền xám. Bấm là đổi sang nguồn này ngay, lời và karaoke trên video đổi theo.'],
+    [chip(`${spin} Genius`, 'load'), 'Đang tìm', 'Vòng xoay nhỏ khi nguồn còn đang tải. Có kết quả thì thẻ tự nhảy lên trước các thẻ trống.'],
+    [chip('🔁 Bản khác –', 'none'), 'Không có', 'Chỉ có viền, chữ mờ, xếp cuối hàng. Bấm thì tìm lại nguồn đó.'],
+    [chip('🎵 Genius ⚠', 'err'), 'Lỗi', 'Nền vàng. Rê chuột thì biết lý do ("quá thời gian", "bị chặn"). Bấm để thử lại.'],
+    [chip('🎸 Hợp âm chuẩn', 'off'), 'Đã tắt', 'Tắt trong cài đặt. Ẩn đi mặc định, chỉ hiện khi mở "+ Thêm".'],
+    [chip('＋ Thêm', 'more'), 'Thêm nguồn', 'Cuối hàng: dán lời của bạn, tìm theo tên bài, nhập phụ đề YouTube, đọc chữ trên video 🔠.'],
+  ];
+  html += `<div class="sec2"><h2>Chi tiết các thẻ nguồn lời</h2>
+    <div style="display:grid;grid-template-columns:200px 110px 560px;gap:12px 18px;align-items:center;background:#fff;border-radius:14px;padding:18px 20px;width:max-content">
+      <div class="th">Thẻ</div><div class="th">Trạng thái</div><div class="th">Ý nghĩa · bấm vào thì</div>
+      ${states.map(([c, n, d]) => `<div>${c}</div><b style="font-size:13px">${n}</b><div style="font-size:13px;line-height:1.45;color:#333">${d}</div>`).join('')}
+    </div>`;
+
+  // In the panel: the row, the results list, the hover card, the "+ Thêm" menu.
+  const hp = (inner, h = 440) => `<div style="position:relative;height:${h}px"><div class="hp" style="height:${h}px">${inner}</div></div>`;
+  const rowChips = (extra = '') => `<div style="display:flex;gap:6px;padding:0 14px 10px;overflow:hidden;position:relative">${[chip(`🌐 LRCLIB 3 ${timed}`, 'sel'), chip('💬 Comment 2', 'ok'), chip('📄 Mô tả 1', 'ok'), chip(`${spin} Genius`, 'load'), chip('🔁 Bản khác –', 'none'), chip('＋ Thêm', 'more')].join('')}<span style="position:absolute;right:0;top:0;bottom:10px;width:40px;background:linear-gradient(90deg,transparent,#fff)"></span>${extra}</div>`;
+  const panelTop = `${head(b1, 1, 0)}${modes()}`;
+  const lines = `<div class="lyr" style="padding-top:2px">${['Sáng nay nắng vàng trên phố quen', 'Mình đi qua những ngày rất riêng', '<i>Hát lên cho</i> nhau nghe một câu', 'Để mai này ta còn nhớ nhau', 'Từng lời ca theo gió bay xa'].map((l, i) => `<div class="${i < 2 ? 'done' : i === 2 ? 'cur' : ''}">${l}</div>`).join('')}</div>`;
+  const pop = (left, topPx, w, inner) => `<div style="position:absolute;left:${left}px;top:${topPx}px;width:${w}px;background:#fff;border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.22);padding:8px;font-size:13px;z-index:4">${inner}</div>`;
+  const results = pop(12, 160, 340, `<div style="font-size:11px;color:#606060;padding:2px 6px 6px;letter-spacing:.05em">3 KẾT QUẢ TỪ LRCLIB</div>${[
+      ['Báu Vật Trời Cho', 'Bùi Công Nam · 4:02', 1, 1],
+      ['Báu Vật Trời Cho (OST)', 'Bùi Công Nam · 3:58', 1, 0],
+      ['Bau Vat Troi Cho', 'B.C.Nam · 4:10', 0, 0],
+    ].map(([t, m, tm, cur]) => `<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;${cur ? 'background:rgba(255,46,99,.08)' : ''}"><span style="width:16px;color:${red};font-weight:700">${cur ? '✓' : ''}</span><div style="flex:1"><b style="font-weight:600">${t}</b><div class="muted">${m}</div></div>${tm ? timed : '<span class="muted" style="font-size:11px">chỉ lời</span>'}</div>`).join('')}
+      <div style="border-top:1px solid rgba(0,0,0,.08);margin-top:4px;padding:7px 8px;color:#606060;font-size:12px">Gần đúng nhất xếp trên. Kết quả đã chọn được nhớ cho video này.</div>`);
+  const hover = pop(70, 152, 250, `<b>💬 Comment · 2 kết quả</b><div class="muted" style="margin:4px 0">Lời trong bình luận ghim của kênh và một bình luận nhiều like.</div><div style="font-size:12px;color:#333">Chưa có thời gian: bấm 🎯 hoặc ⏱ ở chế độ Chỉnh lời để canh.</div>`);
+  const more = pop(150, 152, 220, ['✍️ Dán / nhập lời của bạn', '🔍 Tìm theo tên bài khác', '📝 Dùng phụ đề YouTube', '🔠 Đọc chữ có trên video', '⚙ Bật / tắt nguồn trong cài đặt'].map((t) => `<div style="padding:8px 10px;border-radius:8px">${t}</div>`).join(''));
+  html += `<div class="tbl" style="grid-template-columns:380px 380px 380px 380px;margin-top:22px">
+    <div><div class="th" style="margin-bottom:8px">Hàng thẻ trong panel</div>${hp(panelTop + rowChips() + lines)}<div class="muted" style="margin-top:6px">Cuộn ngang bằng chuột hoặc kéo; mép phải mờ là còn thẻ.</div></div>
+    <div><div class="th" style="margin-bottom:8px">Bấm lại thẻ đang dùng</div>${hp(panelTop + rowChips() + lines + results)}</div>
+    <div><div class="th" style="margin-bottom:8px">Rê chuột vào một thẻ</div>${hp(panelTop + rowChips() + lines + hover)}</div>
+    <div><div class="th" style="margin-bottom:8px">Bấm "＋ Thêm"</div>${hp(panelTop + rowChips() + lines + more)}</div>
+  </div></div>`;
+  document.getElementById('out').innerHTML = html;
+</script>
+
+</body>
+</html>
