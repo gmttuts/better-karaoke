@@ -141,6 +141,7 @@
   "Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.": "เนื้อเพลงที่ไม่มีเวลาจะซิงก์ตามคำบรรยายอัตโนมัติหากตรงกัน ถ้าไม่ตรงให้คลิกบรรทัดที่กำลังร้อง",
   "Lời người xem đăng trong comment": "เนื้อเพลงที่ผู้ชมโพสต์ในความคิดเห็น",
   "Lời nhạc Việt từ hopamchuan.com": "เนื้อเพลงเวียดนามจาก hopamchuan.com",
+  "Lời nhạc Việt và nhạc thế giới từ genius.com": "เนื้อเพลงเวียดนามและเพลงทั่วโลกจาก genius.com",
   "Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.": "เนื้อเพลงนี้ยังไม่มีเวลา จึงยังไม่มีอะไรให้ปรับค่าชดเชย ให้คลิกบรรทัดที่กำลังร้องก่อน",
   "Lời này chưa có thời gian từng dòng. Bấm \"🎯 Tự canh theo phụ đề\" hoặc \"⏱ Gõ nhịp\" trước rồi xuất.": "เนื้อเพลงนี้ยังไม่มีเวลาแต่ละบรรทัด ให้ใช้ \"🎯 ซิงก์ตามคำบรรยาย\" หรือ \"⏱ แตะจังหวะ\" ก่อน แล้วจึงส่งออก",
   "Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "เนื้อเพลงนี้ยังไม่มีเวลา และวิดีโอไม่มีคำบรรยาย ให้คลิกบรรทัดที่กำลังร้อง เนื้อเพลงจะเลื่อนตามจังหวะโดยประมาณ",

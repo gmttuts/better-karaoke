@@ -13,6 +13,7 @@ BYL.SOURCES = {
   duplicates: { get name() { return L('Bản đăng khác'); }, icon: '🔁', priority: 2, setting: 'srcDuplicates' },
   lrclib: { name: 'LRCLIB', icon: '🌐', priority: 3, setting: 'srcLrclib' },
   hopamchuan: { get name() { return L('Hợp âm chuẩn'); }, icon: '🎸', priority: 3, setting: 'srcHopamchuan' },
+  genius: { name: 'Genius', icon: '🎵', priority: 3, setting: 'srcGenius' },
   transcript: { get name() { return L('Phụ đề YouTube'); }, icon: '📝', priority: 4, setting: 'srcTranscript' },
   roman: { get name() { return L('Phiên âm'); }, icon: '🔤', priority: 9 }, // made in the panel from the lyrics shown
 };
@@ -212,6 +213,61 @@ BYL.sources = (() => {
     ];
   }
 
+  // ---------- Genius (plain text, many Vietnamese and world songs) ----------
+
+  // A Genius lyrics page -> text: the lyric boxes, line breaks kept, without
+  // the headers and ads Genius puts inside them.
+  function geniusText(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const parts = [];
+    for (const box of doc.querySelectorAll('[data-lyrics-container="true"]')) {
+      box.querySelectorAll('[data-exclude-from-selection="true"], script, style').forEach((n) => n.remove());
+      box.querySelectorAll('br').forEach((n) => n.replaceWith('\n'));
+      parts.push(box.textContent);
+    }
+    return parts.join('\n').replace(/\u00a0/g, ' ');
+  }
+
+  async function genius(ctx) {
+    const { song } = ctx;
+    const queries = [songQuery(song)];
+    if (song.artist) queries.push(song.title);
+    let hits = [];
+    for (const q of queries) {
+      const res = JSON.parse(await bg('https://genius.com/api/search/multi?q=' + encodeURIComponent(q)));
+      hits = (res.response?.sections || [])
+        .filter((x) => x.type === 'song')
+        .flatMap((x) => x.hits.map((h) => h.result))
+        // Genius' own translation pages ("Genius Vietnamese Translations") are not the song.
+        .filter((r) => r?.url && r.lyrics_state !== 'unreleased' && !/^Genius\b/i.test(r.primary_artist?.name || ''));
+      if (hits.length) break;
+    }
+    const best = hits
+      .map((r) => ({
+        r,
+        score: BYL.similarity(song.title, r.title) * 40 + (song.artist ? BYL.similarity(song.artist, r.primary_artist?.name || r.artist_names || '') * 20 : 10),
+      }))
+      .filter((x) => x.score >= 32)
+      .sort((a, b) => b.score - a.score)[0];
+    if (!best) return [];
+    // Vietnamese pages open with a [Lời bài hát "…"] title line.
+    const lines = BYL.plainLines(geniusText(await bg(best.r.url))).filter((l) => !(l.section && /^\[(lời bài hát|.*\blyrics)\b/i.test(l.text)));
+    while (lines.length && !lines[0].text) lines.shift();
+    if (lines.filter((l) => l.text && !l.section).length < 4) return [];
+    return [
+      {
+        id: 'g:' + best.r.id,
+        source: 'genius',
+        label: `${best.r.title} — ${best.r.artist_names || best.r.primary_artist?.name || ''}`,
+        detail: 'genius.com',
+        url: best.r.url,
+        synced: false,
+        lines,
+        score: Math.round(best.score),
+      },
+    ];
+  }
+
   // ---------- YouTube captions ----------
 
   const cleanCaption = (t) =>
@@ -265,5 +321,5 @@ BYL.sources = (() => {
     ];
   }
 
-  return { description, comments, duplicates, lrclib, hopamchuan, transcript };
+  return { description, comments, duplicates, lrclib, hopamchuan, genius, transcript, geniusText };
 })();

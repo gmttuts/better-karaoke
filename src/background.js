@@ -3,7 +3,7 @@
 // Content scripts on youtube.com can't read cross-origin pages, so the
 // service worker fetches the external lyric sites for them. Only the hosts
 // listed in host_permissions are allowed through.
-const ALLOWED_HOSTS = new Set(['lrclib.net', 'hopamchuan.com']);
+const ALLOWED_HOSTS = new Set(['lrclib.net', 'hopamchuan.com', 'genius.com']);
 const LRCLIB_CLIENT = `BetterYouTubeLyric/${chrome.runtime.getManifest().version} (https://github.com/gmttuts/better-youtube-lyric)`;
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {

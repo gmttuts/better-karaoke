@@ -141,6 +141,7 @@
   "Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.": "Lyrics without timing sync to the captions when they match; otherwise click the line being sung.",
   "Lời người xem đăng trong comment": "Lyrics viewers posted in the comments",
   "Lời nhạc Việt từ hopamchuan.com": "Vietnamese lyrics from hopamchuan.com",
+  "Lời nhạc Việt và nhạc thế giới từ genius.com": "Vietnamese and world song lyrics from genius.com",
   "Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.": "These lyrics have no timing yet, so there's nothing to offset. Click the line being sung first.",
   "Lời này chưa có thời gian từng dòng. Bấm \"🎯 Tự canh theo phụ đề\" hoặc \"⏱ Gõ nhịp\" trước rồi xuất.": "These lyrics have no line timing yet. Use \"🎯 Sync to captions\" or \"⏱ Tap along\" first, then export.",
   "Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "These lyrics have no timing and the video has no captions. Click the line being sung and the lyrics will scroll at an estimated pace.",

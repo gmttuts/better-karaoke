@@ -141,6 +141,7 @@
   "Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.": "没有时间轴的歌词在与字幕匹配时会自动对齐，否则请点击正在演唱的那一行。",
   "Lời người xem đăng trong comment": "观众在评论中发布的歌词",
   "Lời nhạc Việt từ hopamchuan.com": "来自 hopamchuan.com 的越南语歌词",
+  "Lời nhạc Việt và nhạc thế giới từ genius.com": "来自 genius.com 的越南及世界歌曲歌词",
   "Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.": "这份歌词还没有时间轴，所以没有可调整的偏移。请先点击正在演唱的那一行。",
   "Lời này chưa có thời gian từng dòng. Bấm \"🎯 Tự canh theo phụ đề\" hoặc \"⏱ Gõ nhịp\" trước rồi xuất.": "这份歌词还没有逐行时间轴。请先使用“🎯 按字幕对齐”或“⏱ 打拍”，然后再导出。",
   "Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "这份歌词没有时间轴，视频也没有字幕。点击正在演唱的那一行，歌词将按估算的节奏滚动。",

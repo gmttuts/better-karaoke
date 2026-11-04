@@ -23,7 +23,7 @@ Better YouTube Lyric
 
 Mở một video nhạc trên YouTube là có lời bài hát ở cột bên phải, dòng đang hát được tô sáng và tự cuộn.
 
-• Tự tìm lời ở nhiều nơi: mô tả video, comment, các bản đăng lại cùng bài, thư viện mở LRCLIB, Hợp âm chuẩn, phụ đề YouTube.
+• Tự tìm lời ở nhiều nơi: mô tả video, comment, các bản đăng lại cùng bài, thư viện mở LRCLIB, Hợp âm chuẩn, Genius, phụ đề YouTube.
 • 🎤 Karaoke trên video: chữ đổi màu theo nhịp hát, cả khi toàn màn hình và trên YouTube Shorts. Tô theo từng chữ khi có thời gian từng chữ.
 • 🎨 7 kiểu chữ có sẵn, 5 kiểu nền, chỉnh màu, viền, phông, lề… lưu thành preset, ghim 📌 kiểu riêng cho từng kênh.
 • 🎯 Tự canh lời theo phụ đề của video, ⏱ gõ nhịp bằng phím Space, 📍 ghim dòng đang hát để sửa lệch từng đoạn.
@@ -40,7 +40,7 @@ Không quảng cáo, không thu thập dữ liệu. Mã nguồn mở: https://gi
 
 Open a music video on YouTube and the lyrics appear in the right column, with the line being sung highlighted and scrolling along.
 
-• Finds lyrics in many places: the video description, comments, other uploads of the song, the open LRCLIB library, Hợp âm chuẩn, YouTube captions.
+• Finds lyrics in many places: the video description, comments, other uploads of the song, the open LRCLIB library, Hợp âm chuẩn, Genius, YouTube captions.
 • 🎤 Karaoke on the video: words change colour as they are sung, in full screen and on YouTube Shorts too. Word-by-word when the timing allows.
 • 🎨 7 built-in styles, 5 background shapes, colours, outline, font, padding… saved as presets, or pinned 📌 per channel.
 • 🎯 Sync the lyrics to the video's captions, ⏱ tap along with Space, 📍 pin the line being sung to fix one part of the song.
@@ -65,11 +65,12 @@ Show song lyrics for the YouTube video being watched, in a side panel and as kar
 - **Host `https://www.youtube.com/*` (content scripts)**: the panel and the karaoke overlay are drawn on YouTube watch and Shorts pages, and read the video's description, comments and captions there.
 - **Host `https://lrclib.net/*`**: searches the open LRCLIB lyrics library by song title and artist, and (only when the user confirms on the publish page) sends lyrics the user timed.
 - **Host `https://hopamchuan.com/*`**: searches Vietnamese lyrics by song title and artist. Can be turned off in the settings.
+- **Host `https://genius.com/*`**: searches song lyrics (Vietnamese and international) by song title and artist. Can be turned off in the settings.
 - **offscreen**: runs the on-device text recognition (Tesseract, WebAssembly) for "🔠 Read text in the video" in an offscreen document; nothing is sent anywhere.
 - **Remote code**: none. All code ships in the package; data/pinyin.json is a static reading table.
 
 ## Dữ liệu người dùng · Data usage (form)
-- Collects: **Website content** only in the sense that song titles taken from the YouTube page are sent to lrclib.net / hopamchuan.com to search for lyrics. No personally identifiable information, health, financial, authentication, personal communications, location, web history or user activity is collected.
+- Collects: **Website content** only in the sense that song titles taken from the YouTube page are sent to lrclib.net / hopamchuan.com / genius.com to search for lyrics. No personally identifiable information, health, financial, authentication, personal communications, location, web history or user activity is collected.
 - Not sold to third parties; not used for purposes unrelated to the single purpose; not used for credit-worthiness or lending.
 
 ## Chính sách quyền riêng tư · Privacy policy URL

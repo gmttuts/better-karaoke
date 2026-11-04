@@ -141,6 +141,7 @@
   "Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.": "Text ohne Timing wird an die Untertitel angepasst, wenn sie passen; sonst auf die gesungene Zeile klicken.",
   "Lời người xem đăng trong comment": "Von Zuschauern in Kommentaren geposteter Text",
   "Lời nhạc Việt từ hopamchuan.com": "Vietnamesische Songtexte von hopamchuan.com",
+  "Lời nhạc Việt và nhạc thế giới từ genius.com": "Songtexte aus Vietnam und der ganzen Welt von genius.com",
   "Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.": "Dieser Text hat noch kein Timing, daher gibt es nichts zu verschieben. Zuerst auf die gesungene Zeile klicken.",
   "Lời này chưa có thời gian từng dòng. Bấm \"🎯 Tự canh theo phụ đề\" hoặc \"⏱ Gõ nhịp\" trước rồi xuất.": "Dieser Text hat noch kein zeilenweises Timing. Erst „🎯 Mit Untertiteln“ oder „⏱ Mittippen“ nutzen, dann exportieren.",
   "Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "Dieser Text hat kein Timing und das Video keine Untertitel. Auf die gesungene Zeile klicken, dann scrollt der Text in geschätztem Tempo.",

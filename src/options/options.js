@@ -10,6 +10,7 @@ const DEFAULTS = {
   srcDuplicates: true,
   srcLrclib: true,
   srcHopamchuan: true,
+  srcGenius: true,
   srcTranscript: true,
   preferSynced: false,
   overlayOnByDefault: false,

@@ -10,7 +10,7 @@ Better YouTube Lyric **không thu thập, không bán và không gửi dữ li�
 
 **Dữ liệu gửi đi để tìm lời** (chỉ khi bạn mở video trên YouTube):
 - **YouTube** (`www.youtube.com`): đọc thông tin video, mô tả, comment, phụ đề và kết quả tìm kiếm qua cùng giao diện mà trang YouTube dùng. Các yêu cầu này **không kèm cookie đăng nhập** của bạn.
-- **LRCLIB** (`lrclib.net`) và **Hợp âm chuẩn** (`hopamchuan.com`): gửi tên bài, tên ca sĩ (và thời lượng video) để tìm lời. Tắt được từng nguồn trong cài đặt.
+- **LRCLIB** (`lrclib.net`), **Hợp âm chuẩn** (`hopamchuan.com`) và **Genius** (`genius.com`): gửi tên bài, tên ca sĩ (và thời lượng video) để tìm lời. Tắt được từng nguồn trong cài đặt.
 
 **Gửi lời lên LRCLIB** (chỉ khi bạn bấm "☁ Gửi lên LRCLIB", kiểm tra lại, tích ô xác nhận và bấm gửi): tên bài, ca sĩ, album, thời lượng và lời bạn đã canh được đăng **công khai** lên LRCLIB theo [điều khoản của LRCLIB](https://lrclib.net). Không gửi kèm thông tin nào về bạn.
 
@@ -28,7 +28,7 @@ Better YouTube Lyric **does not collect, sell or send your personal data to its 
 
 **Sent to look up lyrics** (only when you open a video on YouTube):
 - **YouTube** (`www.youtube.com`): video details, description, comments, captions and search results, through the same interface the YouTube page uses. These requests **do not carry your sign-in cookies**.
-- **LRCLIB** (`lrclib.net`) and **Hợp âm chuẩn** (`hopamchuan.com`): the song title, artist (and video length) to search for lyrics. Each source can be turned off in the settings.
+- **LRCLIB** (`lrclib.net`), **Hợp âm chuẩn** (`hopamchuan.com`) and **Genius** (`genius.com`): the song title, artist (and video length) to search for lyrics. Each source can be turned off in the settings.
 
 **Sending lyrics to LRCLIB** (only when you click "☁ Send to LRCLIB", review the page, tick the confirmation box and press send): the title, artist, album, length and the lyrics you timed are published **publicly** on LRCLIB under [LRCLIB's terms](https://lrclib.net). Nothing about you is sent with them.
 

@@ -26,7 +26,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **Tìm lời theo thứ tự ưu tiên** (chạy song song, kết quả hiện dần):
   1. 📄 **Mô tả video** và 💬 **Comment** của chính video. Comment dạng `0:15 lời…` được chuyển thành lời có thời gian.
   2. 🔁 **Bản đăng khác** của cùng bài trên YouTube (video lyric, bản re-up): đọc mô tả, và với video "Lyrics" thì đọc thêm comment.
-  3. 🌐 **LRCLIB** (lời có thời gian từng dòng, có cả nhạc Việt) và 🎸 **Hợp âm chuẩn** (lời nhạc Việt, đã bỏ hợp âm).
+  3. 🌐 **LRCLIB** (lời có thời gian từng dòng, có cả nhạc Việt) 🎸 **Hợp âm chuẩn** (lời nhạc Việt, đã bỏ hợp âm) và 🎵 **Genius** (nhiều bài Việt mới cùng nhạc thế giới, có chia đoạn [Verse], [Chorus]).
   4. 📝 **Phụ đề YouTube**: chỉ tự chạy khi các nguồn trên không có kết quả. Nếu đã có kết quả thì bấm vào chip để tải.
 - **Chọn nguồn khác** bằng menu thả xuống, hoặc bấm vào chip nguồn (bấm tiếp để xem kết quả khác của cùng nguồn; chip lỗi bấm để thử lại). Lựa chọn và độ lệch được nhớ riêng cho từng video.
 - **🎯 Tự canh theo phụ đề**: dùng phụ đề YouTube của video (kể cả phụ đề tự động) làm nhịp. Extension so khớp chữ trong lời với chữ trong phụ đề theo thứ tự, nên phụ đề sai chính tả vẫn canh được.
@@ -86,7 +86,7 @@ Bấm biểu tượng extension để **tắt hẳn extension** (công tắc "B�
 
 ```
 src/
-  background.js        Service worker: tải lrclib.net, hopamchuan.com cho content script (chỉ 2 host này)
+  background.js        Service worker: tải lrclib.net, hopamchuan.com, genius.com cho content script (chỉ 3 host này)
   bridge.js            Chạy trong page world: đọc ytcfg, dữ liệu player, giữ bản sao phụ đề mà player tải về
   content/
     util.js            Cài đặt, bộ nhớ theo video, tách tên bài/ca sĩ, nhận diện đoạn lời trong văn bản, đọc LRC
@@ -142,7 +142,8 @@ Better YouTube Lyric lấy ý tưởng overlay và LRCLIB, rồi thêm phần nh
 
 ## Giới hạn
 
-- Hợp âm chuẩn là đọc HTML trang web. Nếu trang đổi giao diện thì nguồn này có thể hỏng (các nguồn khác vẫn chạy). Tắt được trong cài đặt.
+- Hợp âm chuẩn và Genius là đọc HTML trang web. Nếu trang đổi giao diện thì nguồn này có thể hỏng (các nguồn khác vẫn chạy). Tắt được trong cài đặt.
+- Genius chặn Chrome chạy ẩn (headless) bằng Cloudflare, nên `npm test` không kiểm tra được nguồn này; trên Chrome thường thì chạy bình thường.
 - Lời trong comment phụ thuộc thứ tự "comment hàng đầu" của YouTube, mỗi lần tải có thể khác nhau. Tăng "Số trang comment quét" nếu hay bị sót.
 - Lời từ LRCLIB được canh theo bản audio. Với MV có đoạn mở đầu dài, cần chỉnh "Lệch".
 - Tô theo từng chữ chỉ có khi phụ đề là phụ đề tự động (ghi giờ từng chữ) hoặc lời là LRC mở rộng; phụ đề do kênh tải lên chỉ ghi giờ từng dòng.

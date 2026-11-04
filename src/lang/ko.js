@@ -141,6 +141,7 @@
   "Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.": "타이밍 없는 가사는 자막과 일치하면 자동으로 싱크됩니다. 아니면 지금 부르는 줄을 클릭하세요.",
   "Lời người xem đăng trong comment": "시청자가 댓글에 올린 가사",
   "Lời nhạc Việt từ hopamchuan.com": "hopamchuan.com의 베트남어 가사",
+  "Lời nhạc Việt và nhạc thế giới từ genius.com": "genius.com의 베트남 및 세계 노래 가사",
   "Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.": "이 가사에는 아직 타이밍이 없어 조정할 오프셋이 없습니다. 먼저 지금 부르는 줄을 클릭하세요.",
   "Lời này chưa có thời gian từng dòng. Bấm \"🎯 Tự canh theo phụ đề\" hoặc \"⏱ Gõ nhịp\" trước rồi xuất.": "이 가사에는 아직 줄별 타이밍이 없습니다. 먼저 \"🎯 자막으로 싱크\" 또는 \"⏱ 탭으로 맞추기\"를 사용한 뒤 내보내세요.",
   "Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "이 가사에는 타이밍이 없고 영상에도 자막이 없습니다. 지금 부르는 줄을 클릭하면 추정 속도로 가사가 자동 스크롤됩니다.",

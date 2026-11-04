@@ -141,6 +141,7 @@
   "Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.": "Les paroles sans synchro se calent sur les sous-titres s'ils correspondent ; sinon, cliquez sur la ligne chantée.",
   "Lời người xem đăng trong comment": "Paroles postées par des spectateurs dans les commentaires",
   "Lời nhạc Việt từ hopamchuan.com": "Paroles vietnamiennes de hopamchuan.com",
+  "Lời nhạc Việt và nhạc thế giới từ genius.com": "Paroles de chansons vietnamiennes et du monde entier depuis genius.com",
   "Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.": "Ces paroles ne sont pas encore synchronisées, il n'y a donc rien à décaler. Cliquez d'abord sur la ligne chantée.",
   "Lời này chưa có thời gian từng dòng. Bấm \"🎯 Tự canh theo phụ đề\" hoặc \"⏱ Gõ nhịp\" trước rồi xuất.": "Ces paroles n'ont pas encore de synchro ligne par ligne. Utilisez d'abord « 🎯 Synchro auto » ou « ⏱ Synchro manuelle », puis exportez.",
   "Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "Ces paroles ne sont pas synchronisées et la vidéo n'a pas de sous-titres. Cliquez sur la ligne chantée : les paroles défileront à un rythme estimé.",

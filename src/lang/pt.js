@@ -141,6 +141,7 @@
   "Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.": "A letra sem tempos é sincronizada com as legendas se coincidirem; senão, clique na linha que está sendo cantada.",
   "Lời người xem đăng trong comment": "Letras que espectadores postaram nos comentários",
   "Lời nhạc Việt từ hopamchuan.com": "Letras de músicas vietnamitas do hopamchuan.com",
+  "Lời nhạc Việt và nhạc thế giới từ genius.com": "Letras de músicas vietnamitas e do mundo do genius.com",
   "Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.": "Esta letra ainda não tem tempos, então não há o que deslocar. Clique primeiro na linha que está sendo cantada.",
   "Lời này chưa có thời gian từng dòng. Bấm \"🎯 Tự canh theo phụ đề\" hoặc \"⏱ Gõ nhịp\" trước rồi xuất.": "Esta letra ainda não tem tempo por linha. Use antes \"🎯 Sincronizar com legendas\" ou \"⏱ Marcar ritmo\" e depois exporte.",
   "Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "Esta letra não tem tempos e o vídeo não tem legendas. Clique na linha que está sendo cantada e a letra vai rolar em um ritmo estimado.",

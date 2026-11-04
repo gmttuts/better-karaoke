@@ -141,6 +141,7 @@
   "Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.": "Lirik tanpa waktu akan disinkronkan ke teks jika cocok; jika tidak, klik baris yang sedang dinyanyikan.",
   "Lời người xem đăng trong comment": "Lirik yang diposting penonton di komentar",
   "Lời nhạc Việt từ hopamchuan.com": "Lirik lagu Vietnam dari hopamchuan.com",
+  "Lời nhạc Việt và nhạc thế giới từ genius.com": "Lirik lagu Vietnam dan dunia dari genius.com",
   "Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.": "Lirik ini belum bertanda waktu, jadi belum ada yang bisa di-offset. Klik baris yang sedang dinyanyikan dulu.",
   "Lời này chưa có thời gian từng dòng. Bấm \"🎯 Tự canh theo phụ đề\" hoặc \"⏱ Gõ nhịp\" trước rồi xuất.": "Lirik ini belum memiliki waktu per baris. Gunakan \"🎯 Sinkron ke teks\" atau \"⏱ Ketuk waktu\" dulu, lalu ekspor.",
   "Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "Lirik ini belum bertanda waktu dan video tidak memiliki teks. Klik baris yang sedang dinyanyikan, lalu lirik akan bergulir dengan kecepatan perkiraan.",

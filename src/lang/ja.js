@@ -141,6 +141,7 @@
   "Lời không có thời gian sẽ tự canh theo phụ đề nếu khớp, không thì bấm vào dòng đang hát.": "タイミングのない歌詞は、字幕と一致すれば自動で合わせます。一致しない場合は今歌っている行をクリックしてください。",
   "Lời người xem đăng trong comment": "視聴者がコメントに投稿した歌詞",
   "Lời nhạc Việt từ hopamchuan.com": "hopamchuan.com のベトナム語歌詞",
+  "Lời nhạc Việt và nhạc thế giới từ genius.com": "genius.com のベトナムと世界の歌詞",
   "Lời này chưa có thời gian nên chưa có gì để chỉnh lệch. Bấm vào dòng đang hát trước đã.": "この歌詞にはまだタイミングがないため、調整するオフセットがありません。先に今歌っている行をクリックしてください。",
   "Lời này chưa có thời gian từng dòng. Bấm \"🎯 Tự canh theo phụ đề\" hoặc \"⏱ Gõ nhịp\" trước rồi xuất.": "この歌詞にはまだ行ごとのタイミングがありません。先に「🎯 字幕に合わせる」または「⏱ タップ」を使ってから書き出してください。",
   "Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "この歌詞にはタイミングがなく、動画にも字幕がありません。今歌っている行をクリックすると、推定ペースでスクロールします。",
