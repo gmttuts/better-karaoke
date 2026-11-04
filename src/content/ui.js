@@ -316,15 +316,18 @@ BYL.ui = (() => {
     lrcBtn.title = L('Lời có thời gian cho trình phát nhạc (foobar, VLC, Poweramp…)');
     const srtBtn = el('button', '', '⬇ File SRT');
     srtBtn.title = L('Phụ đề cho video (VLC, CapCut, Premiere, tải lên YouTube Studio…)');
+    const assBtn = el('button', '', '⬇ File ASS');
+    assBtn.title = L('Phụ đề karaoke giữ đúng kiểu chữ 🎨 (màu, viền, khung, chữ chạy). Dùng với VLC, CapCut, Aegisub hoặc ffmpeg để ghép cứng vào video của bạn.');
     const pubBtn = el('button', '', L('☁ Gửi lên LRCLIB'));
     pubBtn.title = L('Chia sẻ lời có thời gian lên thư viện mở LRCLIB để người khác dùng. Sẽ hỏi lại trước khi gửi.');
-    exportRow.append(el('span', 'muted', L('Xuất lời')), lrcBtn, srtBtn, pubBtn);
+    exportRow.append(el('span', 'muted', L('Xuất lời')), lrcBtn, srtBtn, assBtn, pubBtn);
     exportBtn.addEventListener('click', () => {
       exportRow.hidden = !exportRow.hidden;
       exportBtn.classList.toggle('on', !exportRow.hidden);
     });
     lrcBtn.addEventListener('click', () => exportFile('lrc'));
     srtBtn.addEventListener('click', () => exportFile('srt'));
+    assBtn.addEventListener('click', () => exportFile('ass'));
     pubBtn.addEventListener('click', publishLrclib);
 
     const tapbar = el('div', 'tapbar');
@@ -1133,10 +1136,28 @@ BYL.ui = (() => {
     const lines = timedLines();
     if (!lines) return say(noTiming());
     const meta = { title: state.song?.title, artist: state.song?.artist, duration: state.duration };
-    const text = kind === 'srt' ? BYL.exporter.toSrt(lines, state.duration) : BYL.exporter.toLrc(lines, meta);
-    BYL.exporter.download(text, BYL.exporter.fileName(meta, kind), kind === 'srt');
+    const text =
+      kind === 'srt' ? BYL.exporter.toSrt(lines, state.duration) : kind === 'ass' ? assFile(lines, meta) : BYL.exporter.toLrc(lines, meta);
+    BYL.exporter.download(text, BYL.exporter.fileName(meta, kind), kind !== 'lrc');
+    if (kind === 'ass') return say(L('⬇ Đã lưu file .ass với kiểu chữ đang dùng. Ghép cứng vào video của bạn: ffmpeg -i video.mp4 -vf ass="{0}" video-co-loi.mp4', BYL.exporter.fileName(meta, 'ass')));
     const fixed = state.offset || state.warps[state.current.id]?.length;
     say(L('⬇ Đã lưu file .{0}', kind) + (fixed ? L(', đã tính cả độ lệch và các mốc 📍.') : '.'));
+  }
+
+  // The look, size, position and translation the overlay shows right now.
+  function assFile(lines, meta) {
+    const v = video();
+    return BYL.exporter.toAss(lines, {
+      ...meta,
+      look: currentLook(),
+      width: v?.videoWidth,
+      height: v?.videoHeight,
+      fontSize: BYL.settings.value.overlayFontSize,
+      shorts: BYL.isShorts(),
+      top: BYL.settings.value.overlayPosition === 'top',
+      // timedLines() keeps the panel's line order, so the indexes match.
+      trans: lines.map((l, i) => transFor(i)),
+    });
   }
 
   async function publishLrclib() {

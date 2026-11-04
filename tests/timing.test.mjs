@@ -1,12 +1,12 @@
 // Unit tests for word timing (enhanced LRC, caption alignment) and the
-// .lrc / .srt export.   node tests/timing.test.mjs
+// .lrc / .srt / .ass export.   node tests/timing.test.mjs
 import { readFileSync } from 'fs';
 import vm from 'vm';
 
 const ctx = { globalThis: {}, console, DOMParser: class {}, URL, Blob: class {}, document: {} };
 ctx.globalThis = ctx;
 vm.createContext(ctx);
-for (const f of ['util.js', 'align.js', 'export.js']) vm.runInContext(readFileSync(new URL('../src/content/' + f, import.meta.url), 'utf8'), ctx);
+for (const f of ['../i18n.js', 'util.js', 'align.js', 'looks.js', 'export.js']) vm.runInContext(readFileSync(new URL('../src/content/' + f, import.meta.url), 'utf8'), ctx);
 const { BYL } = ctx;
 
 let fail = 0;
@@ -69,6 +69,43 @@ const eq = (name, got, want) => {
   eq('lrc', BYL.exporter.toLrc(lines, { title: 'Bài', artist: 'Ca sĩ', duration: 33 }), '[ti:Bài]\n[ar:Ca sĩ]\n[length:0:33]\n[re:Better YouTube Lyric]\n\n[00:01.50] Dòng một\n[00:04.00]\n[00:05.25] Dòng hai\n[00:30.00] Cuối\n');
   eq('file name', BYL.exporter.fileName({ title: 'A/B: "C"', artist: 'D' }, 'srt'), 'D - A B C.srt');
   eq('srt stamp hours', BYL.exporter.srtStamp(3725.4), '01:02:05,400');
+}
+
+// .ass
+{
+  const ass = (lines, opts) => BYL.exporter.toAss(lines, { duration: 40, ...opts });
+  const events = (text) => text.split('\n').filter((l) => l.startsWith('Dialogue:'));
+  eq('ass stamp', BYL.exporter.assStamp(3725.456), '1:02:05.46');
+  eq('ass colour', BYL.exporter.assColor('#e8212b', 60), '&H662B21E8');
+  const lines = [
+    { t: 1.5, text: 'Em ơi', wd: [0, 0.5] },
+    { t: 4, text: '' },
+    { t: 5.25, text: 'Hà Nội {phố}' },
+    { t: 30, text: 'Cuối' },
+  ];
+  const red = ass(lines, { look: BYL.look.compose('red'), width: 1280, height: 720 });
+  eq('ass play res (short side 1080)', red.match(/PlayResX: (\d+)\nPlayResY: (\d+)/).slice(1), ['1920', '1080']);
+  eq('ass style from look', red.match(/Style: Left,([^,]+),(\d+),([^,]+),([^,]+),([^,]+)/).slice(1), ['Roboto', '59', '&H002B21E8', '&H00FFFFFF', '&H00101010']);
+  const ev = events(red);
+  eq('ass stagger: one event per sung line', ev.length, 3);
+  eq('ass stagger: shows early in its row, word times', ev[0], 'Dialogue: 1,0:00:00.00,0:00:04.00,Left,,384,384,182,,{\\k150}{\\kf50}Em {\\kf150}ơi');
+  eq('ass stagger: next row, even sweep, braces kept out', ev[1], 'Dialogue: 1,0:00:01.50,0:00:15.25,Right,,384,384,108,,{\\k375}{\\kf162}Hà {\\kf215}Nội {\\kf323}(phố)');
+  const box = ass(lines, { look: BYL.look.compose('box'), trans: ['Hey you', '', '', ''] });
+  eq('ass box: opaque box style', /Style: LyricBox,Roboto,\d+,[^,]+,[^,]+,&H610E0A0A,&H610E0A0A,-1,0,0,0,100,100,0,0,3,/.test(box), true);
+  eq(
+    'ass center2: translation and next line under the sung one',
+    events(box)[1],
+    'Dialogue: 1,0:00:01.50,0:00:04.00,Lyric,,0,0,140,,{\\kf50}Em {\\kf150}ơi\\N{\\r\\fs20\\1c&HFFFFFF&\\2c&HFFFFFF&}Hey you\\N{\\r\\fs28\\1c&HFFFFFF&\\2c&HFFFFFF&}Hà Nội (phố)'
+  );
+  eq(
+    'ass box: one box per line on the layer below, text hidden',
+    events(box)[0],
+    'Dialogue: 0,0:00:01.50,0:00:04.00,LyricBox,,0,0,140,,{\\1a&HFF&}Em ơi\\N{\\r\\1a&HFF&\\fs20\\1c&HFFFFFF&\\2c&HFFFFFF&}Hey you\\N{\\r\\1a&HFF&\\fs28\\1c&HFFFFFF&\\2c&HFFFFFF&}Hà Nội (phố)'
+  );
+  eq('ass box: text style has no outline of its own', /Style: Lyric,Roboto,\d+,[^,]+,[^,]+,[^,]+,[^,]+,-1,0,0,0,100,100,0,0,1,0,0,/.test(box), true);
+  const line = ass(lines, { look: { ...BYL.look.compose('mini'), wipe: 'line' }, top: true });
+  eq('ass single + whole line, top', events(line).slice(-2), ['Dialogue: 0,0:00:30.00,0:00:40.00,LyricBox,,0,0,97,,{\\1a&HFF&}Cuối', 'Dialogue: 1,0:00:30.00,0:00:40.00,Lyric,,0,0,97,,{\\k0}Cuối']);
+  eq('ass top: aligned to the top', /Style: Lyric,[^\n]*,8,40,40,0,1/.test(line), true);
 }
 
 if (fail) process.exit(1);

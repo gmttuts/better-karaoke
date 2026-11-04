@@ -49,7 +49,8 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **🔍 Tìm theo tên**: extension đoán sai tên bài hoặc ca sĩ? Gõ lại rồi bấm Tìm, mọi nguồn chạy lại theo tên mới. Tên sửa được nhớ cho video đó (hiện dấu ✎ cạnh tên ca sĩ); bấm "Dùng tên tự đoán" để bỏ.
 - **Tab "Đã xem"**: các bài đã mở, mới nhất trước, kèm số lần xem. Bấm ☆ cạnh tên bài (hoặc trong danh sách) để đánh dấu **★ yêu thích**; lọc "★ Yêu thích" để xem riêng. "Xoá lịch sử" giữ lại bài yêu thích. Lịch sử nằm trong file sao lưu.
 - **Sao chép** lời, **Mở nguồn** để xem trang gốc.
-- **⬇ Xuất**: lưu lời có thời gian ra file **`.lrc`** (cho trình phát nhạc) hoặc **`.srt`** (phụ đề cho VLC, CapCut, Premiere, YouTube Studio). File dùng đúng thời gian bạn đã canh: độ lệch, các mốc 📍, ⏱ gõ nhịp, 🎯 canh theo phụ đề. Lời chưa có thời gian thì canh trước rồi xuất.
+- **⬇ Xuất**: lưu lời có thời gian ra file **`.lrc`** (cho trình phát nhạc) **`.srt`** (phụ đề cho VLC, CapCut, Premiere, YouTube Studio) hoặc **`.ass`** (phụ đề karaoke giữ đúng kiểu chữ 🎨 đang dùng: phông, màu, viền, khung, bố cục so le hay ở giữa, dòng dịch, chữ đổi màu từng từ). File dùng đúng thời gian bạn đã canh: độ lệch, các mốc 📍, ⏱ gõ nhịp, 🎯 canh theo phụ đề. Lời chưa có thời gian thì canh trước rồi xuất.
+  - **Ghép cứng (hard sub) vào video của bạn** bằng file `.ass`: `ffmpeg -i video.mp4 -vf ass="Ca sĩ - Bài.ass" video-co-loi.mp4` (ffmpeg cần có libass), hoặc mở bằng Aegisub, VLC, mpv, CapCut. Kiểu nền *Dải điện ảnh* thành khung quanh chữ, và viền của chữ đã hát giữ màu viền thường (ASS không đổi màu viền theo karaoke).
 - **☁ Gửi lên LRCLIB**: chia sẻ lời đã canh lên thư viện mở LRCLIB để người khác (và các ứng dụng nghe nhạc khác) dùng. Mở một trang riêng để kiểm tra tên bài, ca sĩ, album, thời lượng và lời; báo nếu LRCLIB đã có bản cùng thời lượng. Chỉ gửi khi bạn tích ô xác nhận và bấm gửi (LRCLIB yêu cầu máy giải một bài toán nhỏ thay cho tài khoản, mất khoảng 10–30 giây).
 - **Phím tắt** (Alt, trên Mac là Option): **Alt L** bật/tắt lời trên video, **Alt P** cửa sổ nổi, **Alt K** ghim 📍 dòng đang hát, **Alt [ / Alt ]** lời sớm/muộn 0,5s (thêm Shift: 0,1s), **Alt − / Alt =** chữ nhỏ/to. Không dùng khi đang gõ trong ô nhập.
 - **Mở lại video là có lời ngay**: kết quả tìm được lưu 7 ngày (1 ngày nếu không tìm thấy gì, vì comment và trang lời còn được bổ sung). Bấm **↻ Tìm lại** để tìm lại từ đầu ở mọi nguồn. Kết quả lưu không nằm trong file sao lưu.
@@ -75,7 +76,7 @@ npm test             # build rồi chạy thử headless (tắt tiếng) trên m
 npm run build:store  # thêm bản zip bỏ trường "key" để nộp Chrome Web Store
 ```
 
-`build` dừng lại nếu thiếu file mà `manifest.json` cần (icon, script, trang cài đặt, font). `test` chạy các bộ test (tách tên bài, thời gian từng chữ, xuất LRC/SRT, bài toán của LRCLIB), rồi mở video `6HQWus2DOsI` (đổi bằng `VIDEO=<id>`) và kiểm tra: panel, bảng 🎨, nút 🎤 Karaoke, tên bài, phím tắt, 📌, xuất SRT, trang gửi LRCLIB (không gửi thật) và lỗi JavaScript. Video có lời LRCLIB như `VIDEO=JGwWNGJdvx8` kiểm tra được cả file SRT.
+`build` dừng lại nếu thiếu file mà `manifest.json` cần (icon, script, trang cài đặt, font). `test` chạy các bộ test (tách tên bài, thời gian từng chữ, xuất LRC/SRT/ASS, bài toán của LRCLIB), rồi mở video `6HQWus2DOsI` (đổi bằng `VIDEO=<id>`) và kiểm tra: panel, bảng 🎨, nút 🎤 Karaoke, tên bài, phím tắt, 📌, xuất SRT, trang gửi LRCLIB (không gửi thật) và lỗi JavaScript. Video có lời LRCLIB như `VIDEO=JGwWNGJdvx8` kiểm tra được cả file SRT và ASS.
 
 **Ngôn ngữ giao diện**: tiếng Việt hoặc tiếng Anh, chọn trong cửa sổ cài đặt ("Ngôn ngữ / Language"). Mặc định *Tự động*: tiếng Việt khi Chrome hoặc danh sách ngôn ngữ ưa thích của trình duyệt có tiếng Việt, còn lại là tiếng Anh. Đổi ngôn ngữ xong thì tải lại tab YouTube.
 
@@ -100,7 +101,7 @@ src/
     ui-tap.js          ⏱ Gõ nhịp
     ui-tabs.js         Tab "Bản Karaoke" và "Đã xem" (lịch sử, ★ yêu thích)
     history.js         Lưu lịch sử bài đã xem và bài yêu thích
-    export.js          Xuất .lrc / .srt, chuyển lời sang trang gửi LRCLIB
+    export.js          Xuất .lrc / .srt / .ass, chuyển lời sang trang gửi LRCLIB
     ocr.js             🔠 Đọc chữ trên video: quét khung hình, gom các dòng chữ thành lời có thời gian
     keys.js            Phím tắt Alt + phím
     score.js           🎙 Chấm điểm: nốt nhạc của video (chroma), điểm từng dòng

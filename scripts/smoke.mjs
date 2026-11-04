@@ -154,6 +154,16 @@ try {
   const srt = files.find((f) => f.endsWith('.srt'));
   const srtText = srt ? (await import('fs')).readFileSync(join(dl, srt), 'utf8') : '';
   check('Xuất SRT', ex?.shown && (srt ? /^\ufeff1\n\d\d:\d\d:\d\d,\d{3} --> /.test(srtText) : /chưa có thời gian/.test(ex?.note)), srt || ex?.note);
+  if (srt) {
+    // .ass with the overlay's look and karaoke sweep.
+    await ev(`
+      const sr = document.getElementById('byl-panel-host').shadowRoot;
+      [...sr.querySelectorAll('button')].find((b) => b.textContent.trim() === '⬇ File ASS').click();
+      await new Promise((r) => setTimeout(r, 1500));`);
+    const ass = (await import('fs')).readdirSync(dl).find((f) => f.endsWith('.ass'));
+    const assText = ass ? (await import('fs')).readFileSync(join(dl, ass), 'utf8') : '';
+    check('Xuất ASS', /^\ufeff\[Script Info\][\s\S]*Style: Lyric,[\s\S]*Dialogue: 1,\d:\d\d:\d\d\.\d\d,/.test(assText) && /\\k/.test(assText), ass || 'no file');
+  }
   rmSync(dl, { recursive: true, force: true });
 
   // ☁ opens the publish page with the lyrics filled in (nothing is sent).

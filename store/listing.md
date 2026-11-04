@@ -14,8 +14,8 @@ Bản nộp: `npm run build:store` → `dist/better-youtube-lyric-<version>-stor
 Better YouTube Lyric
 
 ## Mô tả ngắn (≤ 132 ký tự)
-**vi:** Tìm lời bài hát ngay trên YouTube, hát karaoke trên video, song ngữ, phiên âm, xuất LRC/SRT.
-**en:** Lyrics right on YouTube: karaoke on the video, translations, romanization, LRC/SRT export.
+**vi:** Tìm lời bài hát ngay trên YouTube, hát karaoke trên video, song ngữ, phiên âm, xuất LRC/SRT/ASS.
+**en:** Lyrics right on YouTube: karaoke on the video, translations, romanization, LRC/SRT/ASS export.
 
 ## Mô tả chi tiết · Description
 
@@ -27,7 +27,7 @@ Mở một video nhạc trên YouTube là có lời bài hát ở cột bên ph�
 • 🎤 Karaoke trên video: chữ đổi màu theo nhịp hát, cả khi toàn màn hình và trên YouTube Shorts. Tô theo từng chữ khi có thời gian từng chữ.
 • 🎨 7 kiểu chữ có sẵn, 5 kiểu nền, chỉnh màu, viền, phông, lề… lưu thành preset, ghim 📌 kiểu riêng cho từng kênh.
 • 🎯 Tự canh lời theo phụ đề của video, ⏱ gõ nhịp bằng phím Space, 📍 ghim dòng đang hát để sửa lệch từng đoạn.
-• ⬇ Xuất file LRC / SRT với đúng thời gian bạn đã canh; ☁ chia sẻ lên LRCLIB (chỉ khi bạn xác nhận).
+• ⬇ Xuất file LRC / SRT / ASS (phụ đề karaoke đúng kiểu chữ, ghép cứng được vào video của bạn) với đúng thời gian bạn đã canh; ☁ chia sẻ lên LRCLIB (chỉ khi bạn xác nhận).
 • 🌐 Song ngữ: hiện lời dịch dưới mỗi dòng. 🔤 Phiên âm Latin cho lời Hàn, Nhật, Trung.
 • 🎙 Chấm điểm karaoke: hát vào micro, mỗi dòng có điểm (đủ lời, đúng nốt).
 • ⧉ Cửa sổ lời nổi luôn nằm trên cùng, kể cả khi chuyển tab.
@@ -44,7 +44,7 @@ Open a music video on YouTube and the lyrics appear in the right column, with th
 • 🎤 Karaoke on the video: words change colour as they are sung, in full screen and on YouTube Shorts too. Word-by-word when the timing allows.
 • 🎨 7 built-in styles, 5 background shapes, colours, outline, font, padding… saved as presets, or pinned 📌 per channel.
 • 🎯 Sync the lyrics to the video's captions, ⏱ tap along with Space, 📍 pin the line being sung to fix one part of the song.
-• ⬇ Export LRC / SRT files with your timing; ☁ share them on LRCLIB (only after you confirm).
+• ⬇ Export LRC / SRT / ASS files (styled karaoke subtitles you can burn into your own video) with your timing; ☁ share them on LRCLIB (only after you confirm).
 • 🌐 Show a translation under each line. 🔤 Latin spelling for Korean, Japanese and Chinese lyrics.
 • 🎙 Karaoke scoring: sing into your microphone and get a mark for every line (in time, in tune).
 • ⧉ A floating, always-on-top lyrics window that keeps going when you switch tabs.

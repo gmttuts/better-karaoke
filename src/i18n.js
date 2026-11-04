@@ -189,6 +189,8 @@ BYL.EN = {
   "Phải": "Right",
   "Phụ đề YouTube": "YouTube captions",
   "Phụ đề cho video (VLC, CapCut, Premiere, tải lên YouTube Studio…)": "Subtitles for videos (VLC, CapCut, Premiere, YouTube Studio…)",
+  "Phụ đề karaoke giữ đúng kiểu chữ 🎨 (màu, viền, khung, chữ chạy). Dùng với VLC, CapCut, Aegisub hoặc ffmpeg để ghép cứng vào video của bạn.": "Karaoke subtitles in your 🎨 style (colours, outline, box, word sweep). Use with VLC, CapCut, Aegisub or ffmpeg to burn them into your own video.",
+  "⬇ Đã lưu file .ass với kiểu chữ đang dùng. Ghép cứng vào video của bạn: ffmpeg -i video.mp4 -vf ass=\"{0}\" video-co-loi.mp4": "⬇ Saved the .ass file in the current style. To burn it into your own video: ffmpeg -i video.mp4 -vf ass=\"{0}\" video-with-lyrics.mp4",
   "Phụ đề của video không khớp với lời này. Chỉnh \"Lệch\" bằng tay, hoặc bấm 📍 ở dòng đang hát.": "The video's captions don't match these lyrics. Adjust \"Offset\" by hand, or click 📍 on the line being sung.",
   "Phụ đề không khớp với lời này. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.": "The captions don't match these lyrics. Click the line being sung and they will scroll at an estimated pace.",
   "Phụ đề tự động ({0})": "Auto captions ({0})",
