@@ -715,11 +715,14 @@ BYL.ui = (() => {
     section(L('Chữ'));
     row(L('Phông'), pick('font', FONTS));
     row(L('Độ đậm'), pick('weight', [['400', L('Thường')], ['600', L('Vừa')], ['700', L('Đậm')], ['800', L('Rất đậm')], ['900', L('Đen')]]));
-    row(L('Cỡ chữ'), range('scale', 50, 160));
+    row(L('Cỡ chữ'), range('scale', 50, 220));
+    row(L('Giãn chữ'), range('tracking', -5, 30, ''), flag('upper', L('In hoa')));
     row(L('Hiệu ứng'), seg('wipe', [['word', L('Chạy từng chữ')], ['line', L('Sáng cả dòng')]]));
 
     section(L('Màu'));
     row(L('Chưa hát'), color('text', L('Màu chữ chưa hát')), flag('textGrad', L('Ánh bạc')));
+    // 0 leaves only the outline: hollow words that fill in as they are sung.
+    row(L('Độ rõ'), range('dim', 0, 100)).title = L('Độ rõ của chữ chưa hát (0: chỉ còn viền)');
     // Gradient: switch on to fade the sung colour into a second one.
     const sung2 = color('sung2', L('Màu thứ hai của dải chuyển màu'));
     sung2.hidden = !look.sung2;
@@ -732,8 +735,19 @@ BYL.ui = (() => {
       }),
       sung2
     );
+    const mark = color('mark', L('Màu tô nền chữ đã hát'));
+    if (!look.mark) mark.value = '#ffe14d';
+    mark.hidden = !look.mark;
+    row(
+      L('Tô nền'),
+      toggle(!!look.mark, L('Bút dạ quang'), (on) => {
+        mark.hidden = !on;
+        editLook({ mark: on ? mark.value : '' }, true);
+      }),
+      mark
+    );
     row(L('Viền'), color('stroke', L('Màu viền')), color('sstroke', L('Màu viền khi đã hát')), range('strokeW', 0, 30, ''));
-    row(L('Bóng'), flag('shadow', L('Đổ bóng')));
+    row(L('Bóng'), flag('shadow', L('Đổ bóng')), flag('glow', L('Phát sáng')));
 
     section(L('Nền'));
     // A new shape starts from its own padding.
@@ -741,7 +755,10 @@ BYL.ui = (() => {
       editLook(Object.fromEntries(PAD_KEYS.map((k) => [k, undefined])), true);
       buildStudio();
     };
-    row(L('Kiểu'), seg('shape', [['none', L('Không')], ['box', L('Khung')], ['pill', L('Viên')], ['band', L('Dải ngang')], ['lines', L('Từng dòng')]], reshape));
+    // Six shapes don't fit as segmented buttons: a list.
+    const shapeSel = pick('shape', [['none', 'Không'], ['box', 'Khung'], ['pill', 'Viên'], ['band', 'Dải ngang'], ['lines', 'Từng dòng'], ['fade', 'Phủ mờ']]);
+    shapeSel.addEventListener('change', reshape);
+    row(L('Kiểu'), shapeSel);
     if (look.shape !== 'none') {
       row(L('Màu nền'), color('bg', L('Màu nền')), range('bgAlpha', 0, 100));
       // Padding sliders follow the shape's default until the user moves them.

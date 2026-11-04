@@ -97,8 +97,11 @@ BYL.exporter = (() => {
 
   // lines: as for toSrt, plus wd. opts: { look, title, duration, width, height,
   // fontSize (px at a 1280 px wide player, 560 for Shorts), shorts, top, trans: [text by line index] }
+  // Approximations: the 🖍 marker and the glow have no ASS equivalent, the
+  // sung words keep their colour only; the shade (Phủ mờ) is a soft-edged band.
   function toAss(lines, opts = {}) {
     const look = { ...BYL.look.BASE_LOOK, ...(opts.look || {}) };
+    if (look.upper) lines = lines.map((l) => ({ ...l, text: String(l.text).toLocaleUpperCase() }));
     const vw = opts.width || 1920;
     const vh = opts.height || 1080;
     // Shorter side 1080, so sizes and outlines don't depend on the stream quality.
@@ -108,7 +111,7 @@ BYL.exporter = (() => {
     const fs = Math.round(((opts.fontSize || 34) * look.scale) / 100 * (W / (opts.shorts ? 560 : 1280)));
     const nextFs = Math.round((fs * (look.nextScale ?? 100)) / 100);
     const transFs = Math.round((fs * (look.nextScale ?? 100) * 0.7) / 100);
-    const boxed = look.shape && look.shape !== 'none';
+    const boxed = look.shape && look.shape !== 'none' && look.shape !== 'fade';
     const outline = boxed ? Math.max(4, Math.round(fs * 0.3)) : Math.round((fs * (look.strokeW || 0)) / 200 * 10) / 10;
     const shadow = look.shadow && !boxed ? Math.max(1, Math.round(fs * 0.06)) : 0;
     // A box drawn with the karaoke text would get one box per word, and the
@@ -120,14 +123,14 @@ BYL.exporter = (() => {
         assFont(look.font), size, primary, secondary,
         box ? assColor(look.bg, look.bgAlpha ?? 60) : assColor(look.stroke),
         box ? assColor(look.bg, look.bgAlpha ?? 60) : assColor('#000000', 55),
-        look.weight >= 600 ? -1 : 0, 0, 0, 0, 100, 100, 0, 0,
+        look.weight >= 600 ? -1 : 0, 0, 0, 0, 100, 100, Math.round(size * ((look.tracking ?? 1) - 1)) / 100, 0,
         box ? 3 : 1, box ? outline : boxed ? 0 : outline, box ? 0 : shadow, align, 40, 40, 0, 1,
       ].join(',');
     const styles = (...a) => (boxed ? [style(...a), style(...a, true)] : [style(...a)]);
     const top = !!opts.top;
     const mv = Math.round((H * (look.margin ?? 10)) / 100);
     const sungC = assColor(look.sung);
-    const textC = assColor(look.text);
+    const textC = assColor(look.text, look.dim ?? 100);
     const A = top ? { c: 8, l: 7, r: 9 } : { c: 2, l: 1, r: 3 };
 
     const timed = lines.filter((l) => typeof l.t === 'number');
@@ -175,6 +178,16 @@ BYL.exporter = (() => {
         if (look.layout !== 'single' && next && next.t - l.t < 12) body += `\\N${fixed(look.text, nextFs)}${assText(next.text)}`;
         dlg(l.t, endOf(l), 'Lyric', body, `0,0,${mv}`);
       });
+    }
+
+    if (look.shape === 'fade' && sungLines.length) {
+      // A shade under the lyrics for the whole song, blurred at its inner edge.
+      const rows = fs * 1.25 + (look.layout === 'single' ? 0 : nextFs * 1.25 * (look.layout === 'stagger' ? 0.8 : 1)) + (hasTrans ? transFs * 1.3 : 0);
+      const h = Math.round(mv + rows + fs * 1.6);
+      const blur = Math.round(fs * 0.8);
+      const y0 = top ? -blur : H - h;
+      const at = `${assStamp(Math.max(0, sungLines[0].t - 3))},${assStamp(endOf(sungLines[sungLines.length - 1]))}`;
+      ev.unshift(`Dialogue: 0,${at},Lyric,,0,0,0,,{\\an7\\pos(0,${y0})\\bord0\\shad0\\blur${blur}\\1c${tagColor(look.bg)}\\1a&H${Math.round(255 * (1 - (look.bgAlpha ?? 60) / 100)).toString(16).toUpperCase().padStart(2, '0')}&\\p1}m 0 0 l ${W} 0 ${W} ${h + blur} 0 ${h + blur}{\\p0}`);
     }
 
     return [

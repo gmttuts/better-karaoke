@@ -106,6 +106,11 @@ const eq = (name, got, want) => {
   const line = ass(lines, { look: { ...BYL.look.compose('mini'), wipe: 'line' }, top: true });
   eq('ass single + whole line, top', events(line).slice(-2), ['Dialogue: 0,0:00:30.00,0:00:40.00,LyricBox,,0,0,97,,{\\1a&HFF&}Cuối', 'Dialogue: 1,0:00:30.00,0:00:40.00,Lyric,,0,0,97,,{\\k0}Cuối']);
   eq('ass top: aligned to the top', /Style: Lyric,[^\n]*,8,40,40,0,1/.test(line), true);
+  const fade = ass(lines, { look: BYL.look.compose('fade') });
+  eq('ass fade: unsung words dimmed', /Style: Lyric,Roboto,\d+,&H00FFFFFF,&H8CFFFFFF,/.test(fade), true);
+  eq('ass fade: no box style, a soft shade under the song', [/LyricBox/.test(fade), /Dialogue: 0,[^\n]*\\blur\d+\\1c&H000000&\\1a&H66&\\p1\}m 0 0 l 1920 0 1920 \d+ 0 \d+\{\\p0\}/.test(fade)], [false, true]);
+  const big = ass(lines, { look: { ...BYL.look.compose('big'), tracking: 6 } });
+  eq('ass big: capitals, condensed font, letter spacing', [/\{\\kf\d+\}HÀ /.test(big), /Style: Lyric,Roboto Condensed,(\d+),[^\n]*,100,100,([\d.]+),/.exec(big).slice(1).map(Number).every((n, i, a) => i === 0 || Math.abs(n - a[0] * 0.05) < 0.02)], [true, true]);
 }
 
 if (fail) process.exit(1);

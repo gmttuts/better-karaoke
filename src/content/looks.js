@@ -5,15 +5,21 @@
 BYL.look = (() => {
   // A look is a plain object of CSS knobs. The built-in styles are just looks;
   // the 🎨 editor changes the knobs and can save the result as a preset.
-  // strokeW is in 1/100 em, bgAlpha / nextScale / scale / margin in percent.
+  // strokeW / tracking are in 1/100 em, dim / bgAlpha / nextScale / scale /
+  // margin in percent.
   const KARAOKE_FONT = '"BYL Condensed", "Arial Narrow"';
   const BASE_LOOK = {
     font: '', // Roboto, like YouTube
     weight: 800,
     text: '#ffffff',
     textGrad: true, // white fading to silver, like karaoke discs
+    dim: 100, // opacity of the words not sung yet (0: outline only)
+    upper: false,
+    tracking: 1,
     sung: '#e8212b',
     sung2: '',
+    mark: '', // highlighter behind the sung words
+    glow: false, // the sung words light up in their colours
     stroke: '#101010',
     sstroke: '#ffffff',
     strokeW: 20,
@@ -48,6 +54,14 @@ BYL.look = (() => {
       get name() { return L('Dải điện ảnh'); },
       look: { weight: 600, textGrad: false, sung: '#7fd4ff', strokeW: 0, shape: 'band', bg: '#000000', bgAlpha: 50, layout: 'center2', nextScale: 60, scale: 90, margin: 6 },
     },
+    fade: {
+      get name() { return L('Sáng dần'); },
+      look: { textGrad: false, dim: 45, sung: '#ffffff', strokeW: 0, shadow: false, shape: 'fade', bg: '#000000', bgAlpha: 60, layout: 'center2', nextScale: 75, scale: 115, margin: 12 },
+    },
+    big: {
+      get name() { return L('Chữ lớn'); },
+      look: { font: KARAOKE_FONT, weight: 900, textGrad: false, upper: true, stroke: '#000000', sstroke: '#000000', strokeW: 14, sung: '#ffe600', layout: 'single', scale: 175, margin: 36 },
+    },
     mini: {
       get name() { return L('Gọn nhẹ'); },
       look: { weight: 600, textGrad: false, sung: '#ffd23f', strokeW: 0, shadow: false, shape: 'pill', layout: 'single', scale: 62, margin: 9 },
@@ -56,7 +70,7 @@ BYL.look = (() => {
   // Padding inside the box / pill, in 1/100 em (top, right, bottom, left).
   // Left unset, each shape keeps its own default.
   const PAD_KEYS = ['padT', 'padR', 'padB', 'padL'];
-  const SHAPE_PAD = { box: [35, 90, 45, 90], pill: [20, 80, 20, 80], band: [30, 0, 35, 0], lines: [6, 30, 10, 30], none: [0, 0, 0, 0] };
+  const SHAPE_PAD = { box: [35, 90, 45, 90], pill: [20, 80, 20, 80], band: [30, 0, 35, 0], lines: [6, 30, 10, 30], fade: [0, 0, 0, 0], none: [0, 0, 0, 0] };
   const padOf = (look, k) => look[k] ?? (SHAPE_PAD[look.shape] || SHAPE_PAD.none)[PAD_KEYS.indexOf(k)];
   // Labels go through L() where they're shown.
   const FONTS = [
@@ -113,7 +127,7 @@ BYL.look = (() => {
     .ov { display: flex; flex-direction: column; align-items: center; max-width: 90%; text-align: center; }
     :host([data-pip]) .ov { max-width: 94%; }
     .ov:empty { display: none; }
-    .l { line-height: 1.22; letter-spacing: .01em; font-weight: var(--wt, 800); color: var(--text, #fff);
+    .l { line-height: 1.22; letter-spacing: var(--ls, .01em); font-weight: var(--wt, 800); color: var(--text, #fff);
       paint-order: stroke fill; -webkit-text-stroke: var(--sw, 0) var(--stroke, #000); filter: var(--shadow, none); }
     .w { position: relative; display: inline-block; white-space: pre; }
     /* Silver sheen sits on its own layer over the outlined text: on the text
@@ -134,6 +148,16 @@ BYL.look = (() => {
     .hint { font-size: .45em; color: #fff; opacity: .85; -webkit-text-stroke: 0; filter: none; text-shadow: 0 1px 3px #000; font-weight: 500; font-family: Roboto, Arial, sans-serif; }
 
     :host([data-shape=box]) .ov { background: var(--bg); backdrop-filter: blur(6px); padding: var(--pad); border-radius: .45em; }
+    /* Phủ mờ: a shade rising from the bottom of the video (from the top when
+       the lyrics are on top), the words float on it without a box. */
+    :host([data-shape=fade])::before { content: ''; position: absolute; left: -100vmax; right: -100vmax; top: -1.8em; bottom: -100vmax; z-index: -1;
+      background: linear-gradient(transparent, var(--bg) 1.8em); }
+    :host([data-shape=fade][data-pos=top])::before { top: -100vmax; bottom: -1.8em; background: linear-gradient(var(--bg) calc(100% - 1.8em), transparent); }
+    :host([data-upper]) .l { text-transform: uppercase; }
+    :host([data-glow]) .w .f { filter: drop-shadow(0 0 .05em #fff) drop-shadow(0 0 .14em var(--sung)) drop-shadow(0 0 .4em var(--sung2)); }
+    /* Bút dạ quang: the sung part gets a marker behind it, swept with the words. */
+    :host([data-mark]) .w .f { background: var(--mark); -webkit-background-clip: border-box; background-clip: border-box; color: var(--sung);
+      border-radius: .08em; box-shadow: 0 0 0 .04em var(--mark); }
     :host([data-shape=pill]) .ov { background: var(--bg); padding: var(--pad); border-radius: 999px; }
     /* Dải ngang: a band across the whole video, like film subtitles. The
        shadow spreads sideways and the player clips it at its edges. */
@@ -161,7 +185,9 @@ BYL.look = (() => {
     const s = host.style;
     s.setProperty('--font', look.font || 'Roboto');
     s.setProperty('--wt', look.weight);
-    s.setProperty('--text', look.text);
+    s.setProperty('--text', rgba(look.text, look.dim ?? 100));
+    s.setProperty('--ls', (look.tracking ?? 1) / 100 + 'em');
+    s.setProperty('--mark', look.mark || 'transparent');
     s.setProperty('--sung', look.sung);
     s.setProperty('--sung2', look.sung2 || look.sung);
     s.setProperty('--stroke', look.stroke);
@@ -178,6 +204,9 @@ BYL.look = (() => {
     host.dataset.shape = look.shape;
     host.toggleAttribute('data-tgrad', !!look.textGrad);
     host.toggleAttribute('data-grad', !!look.sung2 && look.sung2 !== look.sung);
+    host.toggleAttribute('data-upper', !!look.upper);
+    host.toggleAttribute('data-glow', !!look.glow);
+    host.toggleAttribute('data-mark', !!look.mark);
     host.dataset.pos = BYL.settings.value.overlayPosition === 'top' ? 'top' : 'bottom';
   }
 
