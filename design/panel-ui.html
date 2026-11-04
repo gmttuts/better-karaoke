@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Panel UI options</title>
+<!-- 10 layouts for the lyrics panel, to choose from. Static mockups, same
+     content in each. ?v=1..10 shows one; no parameter shows all of them. -->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; background: #e9e9ee; font: 14px/1.4 Roboto, -apple-system, Arial, sans-serif; color: #0f0f0f; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 28px; }
+  figure { margin: 0; }
+  figcaption { margin: 0 0 10px; min-height: 84px; font-weight: 700; font-size: 16px; }
+  figcaption span { display: block; font-weight: 400; font-size: 12.5px; color: #555; width: 380px; }
+  .p { width: 380px; height: 760px; background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+  .muted { color: #606060; font-size: 12px; }
+  button { font: inherit; border: 0; background: rgba(0,0,0,.05); color: inherit; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+  button.on { background: #0f0f0f; color: #fff; }
+  button.pri { background: #ff2e63; color: #fff; }
+  button.ghost { background: transparent; }
+  .hd { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+  .logo { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #ff2e63, #ff8a00); color: #fff; font-size: 16px; flex: none; }
+  .ti { flex: 1; min-width: 0; }
+  .ti b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .icon { width: 32px; height: 32px; padding: 0; display: grid; place-items: center; background: transparent; font-size: 16px; }
+  .lyr { flex: 1; overflow: hidden; padding: 8px 16px; position: relative; }
+  .lyr div { padding: 5px 8px; border-radius: 8px; font-size: 15px; color: #606060; }
+  .lyr .done { color: #9a9a9a; }
+  .lyr .cur { color: #0f0f0f; font-weight: 700; font-size: 17px; background: rgba(255,46,99,.08); }
+  .lyr .cur i { font-style: normal; color: #ff2e63; }
+  .lyr::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: linear-gradient(transparent, #fff); }
+  .lyr.dark::after { background: linear-gradient(transparent, #121218); }
+  .sec { padding: 10px 14px; border-top: 1px solid rgba(0,0,0,.08); }
+  .sec h5 { margin: 0 0 8px; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: #606060; display: flex; justify-content: space-between; align-items: center; }
+  .row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 999px; background: rgba(0,0,0,.05); font-size: 12px; }
+  .chip.sel { box-shadow: inset 0 0 0 1.5px #ff2e63; font-weight: 700; }
+  .chip.dim { opacity: .5; }
+  .seg { display: flex; background: rgba(0,0,0,.06); border-radius: 10px; padding: 3px; gap: 2px; }
+  .seg button { flex: 1; border-radius: 8px; background: transparent; font-size: 12.5px; padding: 6px 4px; color: #555; }
+  .seg button.on { background: #fff; color: #0f0f0f; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+  .step { display: inline-flex; align-items: center; background: rgba(0,0,0,.05); border-radius: 999px; }
+  .step button { background: transparent; padding: 6px 10px; }
+  .step b { min-width: 34px; text-align: center; font-size: 13px; }
+  .sw { width: 34px; height: 20px; border-radius: 10px; background: rgba(0,0,0,.18); position: relative; flex: none; }
+  .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .sw.on { background: #ff2e63; }
+  .sw.on::after { left: 16px; }
+  .range { flex: 1; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #ff2e63 var(--v, 60%), rgba(0,0,0,.12) var(--v, 60%)); position: relative; }
+  .range::after { content: ''; position: absolute; top: -6px; left: calc(var(--v, 60%) - 8px); width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+  .kv { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; }
+  .kv > span:first-child { width: 78px; color: #606060; flex: none; }
+  .card { margin: 8px 12px; border-radius: 12px; background: #f6f6f8; padding: 10px 12px; }
+  .card h5 { margin: 0 0 8px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .card h5 .muted { margin-left: auto; font-weight: 400; }
+  .tabs { display: flex; gap: 2px; padding: 0 10px; border-bottom: 1px solid rgba(0,0,0,.08); }
+  .tabs div { padding: 9px 2px; font-size: 12.5px; white-space: nowrap; color: #606060; border-bottom: 2px solid transparent; text-align: center; flex: 1; }
+  .tabs div.on { color: #0f0f0f; font-weight: 700; border-color: #ff2e63; }
+  .acc { border-top: 1px solid rgba(0,0,0,.08); }
+  .acc > div:not(.body) { display: flex; align-items: center; gap: 10px; padding: 11px 14px; font-size: 13.5px; }
+  .acc > div b { font-weight: 600; }
+  .acc > div .muted { margin-left: auto; font-size: 12.5px; }
+  .acc > div:not(.body)::after { content: '›'; color: #999; font-size: 18px; }
+  .acc > div.open::after { transform: rotate(90deg); }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .tile { background: #f4f4f6; border-radius: 12px; padding: 10px 4px 8px; text-align: center; font-size: 11.5px; color: #333; }
+  .tile b { display: block; font-size: 20px; margin-bottom: 3px; font-weight: 400; }
+  .tile.on { background: rgba(255,46,99,.12); color: #c8103f; font-weight: 600; }
+  .note { margin: 6px 14px; padding: 8px 10px; border-radius: 10px; font-size: 12px; background: rgba(62,166,255,.12); }
+  .badge { font-size: 10.5px; padding: 2px 7px; border-radius: 999px; background: rgba(0,0,0,.06); color: #555; }
+</style>
+</head>
+<body>
+<div class="wrap" id="out"></div>
+<script>
+  const LYR = ['Sáng nay nắng vàng trên phố quen', 'Mình đi qua những ngày rất riêng', '<i>Hát lên cho</i> nhau nghe một câu', 'Để mai này ta còn nhớ nhau', 'Từng lời ca theo gió bay xa', 'Về nơi có những người thân ta', 'Ngày mai dù ai có đi đâu', 'Vẫn còn đây một câu hát đầu', 'Lời ca ấy vẫn còn ở đây', 'Như cơn gió qua những hàng cây'];
+  const lyrics = (cur = 2, from = 0) => `<div class="lyr">${LYR.slice(from).map((l, i) => `<div class="${i + from < cur ? 'done' : i + from === cur ? 'cur' : ''}">${l}</div>`).join('')}</div>`;
+  const head = (extra = '') => `<div class="hd"><div class="logo">🎤</div><div class="ti"><b>Báu Vật Trời Cho</b><span class="muted">Bùi Công Nam</span></div>${extra}<button class="icon">☆</button><button class="icon">⋯</button></div>`;
+  const sources = (sel = 'LRCLIB') => `<div class="row">${[['📄', 'Mô tả', 1], ['💬', 'Comment', 2], ['🔁', 'Bản khác', 0], ['🌐', 'LRCLIB', 3], ['🎸', 'Hợp âm chuẩn', 1], ['🎵', 'Genius', 1], ['📝', 'Phụ đề', 0]].map(([i, n, c]) => `<span class="chip ${n === sel ? 'sel' : c ? '' : 'dim'}">${i} ${n}${c ? ' ' + c : ''}</span>`).join('')}</div>`;
+  const key = (v = '0') => `<span class="step"><button>♭</button><b>${v}</b><button>♯</button></span>`;
+
+  const V = [
+    {
+      name: '1. Thẻ chia nhóm',
+      why: 'Mỗi nhóm chức năng là một thẻ có tiêu đề: Nguồn lời, Âm thanh, Hiển thị. Lời bài hát nằm trong thẻ riêng phía dưới.',
+      html: () => `${head()}
+        <div class="card"><h5>📚 Nguồn lời <span class="muted">LRCLIB · có thời gian</span></h5>${sources()}</div>
+        <div class="card"><h5>🔊 Âm thanh</h5><div class="row">${key()}<span class="muted">Tông</span><span style="flex:1"></span><span class="sw on"></span><span>🎤 Lọc giọng</span></div></div>
+        <div class="card"><h5>🎨 Hiển thị</h5><div class="row"><button class="on">🎤 Karaoke</button><button>⧉ Cửa sổ nổi</button><button>Nổi bật ▾</button><button>🎨</button></div></div>
+        <div class="card" style="flex:1;display:flex;flex-direction:column;padding:6px 4px;background:#fff;border:1px solid rgba(0,0,0,.08)"><h5 style="padding:4px 8px 0">🎵 Lời bài hát <span class="muted">Lệch 0.0s · ⏱ 🎯 ✏️</span></h5>${lyrics()}</div>`,
+    },
+    {
+      name: '2. Lời là chính, công cụ ở đáy',
+      why: 'Lời bài hát chiếm gần hết panel. Một thanh 5 nút ở đáy, bấm vào thì mở ngăn kéo tương ứng (ảnh đang mở ngăn Âm thanh).',
+      html: () => `${head()}<div class="row" style="padding:0 14px 8px"><span class="chip sel">🌐 LRCLIB 3</span><span class="muted">· có thời gian · đổi nguồn ▾</span></div>
+        ${lyrics(2)}
+        <div style="margin:0 10px;border-radius:14px 14px 0 0;box-shadow:0 -6px 20px rgba(0,0,0,.12);padding:12px 14px;background:#fff">
+          <h5 style="margin:0 0 10px;font-size:13px">🔊 Âm thanh</h5>
+          <div class="kv"><span>Tông</span>${key('+1')}</div>
+          <div class="kv"><span>Lọc giọng</span><span class="sw on"></span><div class="range" style="--v:70%"></div><span class="muted">70%</span></div>
+          <div class="kv"><span>Chấm điểm</span><button>🎙 Bắt đầu hát</button></div>
+        </div>
+        <div style="display:flex;justify-content:space-around;padding:8px 6px 10px;border-top:1px solid rgba(0,0,0,.08)">${[['📚', 'Nguồn'], ['🔊', 'Âm thanh', 1], ['🎨', 'Kiểu chữ'], ['⏱', 'Canh lời'], ['⬇', 'Xuất']].map(([i, n, on]) => `<div style="text-align:center;font-size:11px;color:${on ? '#ff2e63' : '#555'};font-weight:${on ? 700 : 400}"><div style="font-size:19px">${i}</div>${n}</div>`).join('')}</div>`,
+    },
+    {
+      name: '3. Tab theo chức năng',
+      why: 'Thanh tab trên cùng: Lời · Âm thanh · Kiểu chữ · Canh lời · Thêm. Mỗi tab chỉ một việc, không trộn lẫn.',
+      html: () => `${head()}<div class="tabs"><div class="on">🎵 Lời</div><div>🔊 Âm thanh</div><div>🎨 Kiểu chữ</div><div>⏱ Canh lời</div><div style="flex:.4">⋯</div></div>
+        <div style="padding:10px 14px 4px">${sources()}</div>
+        <div class="row" style="padding:6px 14px"><button class="on">🎤 Karaoke trên video</button><button>⧉ Nổi</button><span style="flex:1"></span><span class="badge">Song ngữ: Tắt</span></div>
+        ${lyrics()}`,
+    },
+    {
+      name: '4. Thanh biểu tượng dọc',
+      why: 'Cột biểu tượng dọc bên trái giống VS Code hay Discord. Bên phải là nội dung của mục đang chọn, lời luôn nằm ở dưới.',
+      html: () => `${head()}<div style="flex:1;display:flex;min-height:0;border-top:1px solid rgba(0,0,0,.08)">
+          <div style="width:56px;background:#f6f6f8;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0">${['🎵', '📚', '🔊', '🎨', '⏱', '⬇', '🕘'].map((i, n) => `<div style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:18px;${n === 2 ? 'background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15)' : ''}">${i}</div>`).join('')}<div style="flex:1"></div><div style="font-size:18px">⚙</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+            <div class="sec" style="border:0"><h5>Âm thanh</h5><div class="kv"><span>Tông</span>${key('-2')}</div><div class="kv"><span>Lọc giọng</span><span class="sw on"></span><div class="range" style="--v:80%"></div></div></div>
+            <div class="lyr" style="border-top:1px solid rgba(0,0,0,.08)">${LYR.slice(1, 9).map((l, i) => `<div class="${i === 1 ? 'cur' : ''}" style="font-size:${i === 1 ? 16 : 14}px">${l}</div>`).join('')}</div>
+          </div></div>`,
+    },
+    {
+      name: '5. Danh sách gập mở',
+      why: 'Mỗi nhóm là một dòng tóm tắt giá trị hiện tại, ví dụ "Tông +1 · Lọc giọng bật". Bấm vào thì mở ra chỉnh, nhìn gọn mà vẫn biết đang bật gì.',
+      html: () => `${head()}
+        <div class="acc"><div><span>📚</span><b>Nguồn lời</b><span class="muted">LRCLIB · 3 kết quả</span></div></div>
+        <div class="acc"><div class="open"><span>🔊</span><b>Âm thanh</b><span class="muted">Tông +1 · Lọc giọng</span></div>
+          <div class="body" style="padding:0 14px 12px 40px"><div class="kv"><span>Tông</span>${key('+1')}</div><div class="kv"><span>Lọc giọng</span><span class="sw on"></span><div class="range" style="--v:70%"></div></div></div></div>
+        <div class="acc"><div><span>🎨</span><b>Hiển thị</b><span class="muted">Karaoke · Nổi bật</span></div></div>
+        <div class="acc"><div><span>⏱</span><b>Canh lời</b><span class="muted">Lệch 0.0s</span></div></div>
+        <div class="acc" style="border-bottom:1px solid rgba(0,0,0,.08)"><div><span>🌐</span><b>Song ngữ · phiên âm</b><span class="muted">Tắt</span></div></div>
+        ${lyrics()}`,
+    },
+    {
+      name: '6. Đang hát (sân khấu)',
+      why: 'Dòng đang hát hiện to trên một thẻ màu như màn hình karaoke, bên dưới có sẵn các nút hát nhanh. Cài đặt khác vào ⚙.',
+      html: () => `${head('<button class="icon">⚙</button>')}
+        <div style="margin:4px 12px 10px;border-radius:16px;padding:18px 16px 14px;color:#fff;background:linear-gradient(135deg,#2a1b4a,#7a1d4f 60%,#c2410c)">
+          <div style="font-size:11px;opacity:.75;letter-spacing:.08em">ĐANG HÁT · 1:12</div>
+          <div style="font-size:21px;font-weight:800;margin:6px 0 4px"><span style="color:#ffd23f">Hát lên cho</span> nhau nghe một câu</div>
+          <div style="opacity:.7;font-size:14px">Để mai này ta còn nhớ nhau</div>
+          <div style="height:3px;border-radius:2px;background:rgba(255,255,255,.25);margin-top:14px"><div style="width:35%;height:100%;background:#ffd23f;border-radius:2px"></div></div>
+        </div>
+        <div class="grid4" style="padding:0 12px 10px">${[['🎤', 'Karaoke', 1], ['🎚', 'Tông +1', 1], ['🔇', 'Lọc giọng', 1], ['🎙', 'Chấm điểm']].map(([i, n, on]) => `<div class="tile ${on ? 'on' : ''}"><b>${i}</b>${n}</div>`).join('')}</div>
+        <div class="row" style="padding:0 14px 6px"><span class="muted">Lời từ</span><span class="chip sel">🌐 LRCLIB</span><span class="muted">· đổi ▾</span></div>
+        ${lyrics(3, 3)}`,
+    },
+    {
+      name: '7. Một hàng tóm tắt',
+      why: 'Mỗi thiết lập là một nút nhỏ có mũi tên, bấm vào mở menu chọn ngay tại chỗ. Toàn bộ điều khiển nằm gọn trong 2 hàng.',
+      html: () => `${head()}
+        <div class="row" style="padding:0 14px 6px">${['🌐 LRCLIB ▾', '🎚 Tông +1 ▾', '🔇 Lọc 70% ▾', '🎨 Nổi bật ▾', '⏱ 0.0s ▾', '🌐 Song ngữ ▾'].map((t, i) => `<button style="font-size:12.5px;${i === 1 ? 'background:#0f0f0f;color:#fff' : ''}">${t}</button>`).join('')}</div>
+        <div style="position:absolute;left:96px;top:118px;width:200px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.2);padding:6px;z-index:2">${['-2', '-1', '0 (gốc)', '+1', '+2'].map((v) => `<div style="padding:7px 10px;border-radius:8px;font-size:13px;${v === '+1' ? 'background:rgba(255,46,99,.1);font-weight:700' : ''}">${v === '+1' ? '✓ ' : ''}Tông ${v}</div>`).join('')}</div>
+        <div class="row" style="padding:2px 14px 8px"><button class="on">🎤 Karaoke</button><button>⧉ Cửa sổ nổi</button><button>🎙 Chấm điểm</button></div>
+        ${lyrics()}`,
+    },
+    {
+      name: '8. Bàn trộn âm (tối)',
+      why: 'Giao diện tối như ứng dụng nhạc, có thanh trượt lớn cho Tông, Lọc giọng, Độ lệch và Cỡ chữ. Hợp với lúc hát buổi tối.',
+      dark: true,
+      html: () => `<div style="background:#121218;color:#eee;height:100%;display:flex;flex-direction:column">
+        <div class="hd"><div class="logo">🎤</div><div class="ti"><b>Báu Vật Trời Cho</b><span class="muted" style="color:#999">Bùi Công Nam · LRCLIB</span></div><button class="icon" style="color:#eee">☆</button></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:6px 14px 14px">${[['TÔNG', '+1', 58], ['LỌC GIỌNG', '70%', 70], ['LỆCH', '0.0s', 50], ['CỠ CHỮ', '115%', 64]].map(([n, v, h]) => `<div style="background:#1d1d26;border-radius:12px;padding:10px 6px;text-align:center"><div style="font-size:10px;color:#999;letter-spacing:.06em">${n}</div><div style="height:90px;width:8px;margin:10px auto;border-radius:4px;background:#2c2c38;position:relative"><div style="position:absolute;bottom:0;left:0;right:0;height:${h}%;border-radius:4px;background:linear-gradient(#ff8a00,#ff2e63)"></div><div style="position:absolute;bottom:calc(${h}% - 9px);left:-5px;width:18px;height:18px;border-radius:50%;background:#fff"></div></div><b style="font-size:13px">${v}</b></div>`).join('')}</div>
+        <div class="row" style="padding:0 14px 10px"><button style="background:#ff2e63;color:#fff">🎤 Karaoke</button><button style="background:#262632;color:#ddd">⧉ Nổi</button><button style="background:#262632;color:#ddd">🎙 Chấm điểm</button><button style="background:#262632;color:#ddd">🎨</button></div>
+        <div class="lyr dark" style="border-top:1px solid #262632">${LYR.map((l, i) => `<div style="color:${i < 2 ? '#666' : i === 2 ? '#fff' : '#aaa'};${i === 2 ? 'font-weight:800;font-size:18px;background:rgba(255,46,99,.15)' : ''}">${i === 2 ? '<span style="color:#ff4f7e">Hát lên cho</span> nhau nghe một câu' : l}</div>`).join('')}</div></div>`,
+    },
+    {
+      name: '9. Chế độ: Xem · Hát · Chỉnh',
+      why: 'Chọn chế độ trước, panel chỉ hiện những gì cần cho việc đó. Xem: chỉ có lời. Hát: tông, lọc giọng, chấm điểm. Chỉnh: canh lời, sửa, xuất file.',
+      html: () => `${head()}<div style="padding:0 14px 10px"><div class="seg"><button>👀 Xem lời</button><button class="on">🎤 Hát</button><button>✏️ Chỉnh lời</button></div></div>
+        <div class="sec" style="border-top:0;padding-top:2px">
+          <div class="kv"><span>Tông</span>${key('+1')}<span class="muted">nâng nửa cung</span></div>
+          <div class="kv"><span>Lọc giọng</span><span class="sw on"></span><div class="range" style="--v:70%"></div><span class="muted">70%</span></div>
+          <div class="kv"><span>Trên video</span><button class="on">🎤 Karaoke</button><button>Chữ lớn ▾</button></div>
+          <div class="kv"><span>Chấm điểm</span><button class="pri">🎙 Bắt đầu hát</button></div>
+        </div>
+        ${lyrics()}`,
+    },
+    {
+      name: '10. Tìm kiếm + ô lối tắt',
+      why: 'Ô tìm ở trên cùng dùng chung cho tìm bài khác lẫn tìm lệnh ("tông", "xuất"...). Bên dưới là 8 ô lối tắt to, dễ bấm, rồi đến lời.',
+      html: () => `${head()}<div style="padding:0 14px 10px"><div style="display:flex;align-items:center;gap:8px;background:#f2f2f4;border-radius:12px;padding:9px 12px;color:#888">🔍 Tìm bài khác hoặc lệnh: "tông", "xuất"…</div></div>
+        <div class="grid4" style="padding:0 14px 10px">${[['🎤', 'Karaoke', 1], ['🎚', 'Tông +1', 1], ['🔇', 'Lọc giọng'], ['🎙', 'Chấm điểm'], ['🎨', 'Kiểu chữ'], ['⏱', 'Canh lời'], ['🌐', 'Song ngữ'], ['⬇', 'Xuất file']].map(([i, n, on]) => `<div class="tile ${on ? 'on' : ''}"><b>${i}</b>${n}</div>`).join('')}</div>
+        <div class="row" style="padding:0 14px 4px"><span class="muted">Lời:</span><span class="chip sel">🌐 LRCLIB 3</span><span class="chip">💬 Comment 2</span><span class="chip">🎵 Genius 1</span><span class="muted">+4</span></div>
+        ${lyrics()}`,
+    },
+  ];
+
+  const pick = new URLSearchParams(location.search).get('v');
+  const list = pick ? [V[pick - 1]] : V;
+  document.getElementById('out').innerHTML = list.map((v) => `<figure><figcaption>${v.name}<span>${v.why}</span></figcaption><div class="p">${v.html()}</div></figure>`).join('');
+</script>
+</body>
+</html>

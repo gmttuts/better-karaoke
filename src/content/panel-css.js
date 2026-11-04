@@ -101,6 +101,12 @@ BYL.PANEL_CSS = `
   .empty { padding: 16px 12px; color: var(--fg2); font-size: 13px; line-height: 1.5; }
   a { color: inherit; }
   .klist { padding: 0 8px 8px; max-height: min(60vh, 560px); overflow-y: auto; }
+  /* Lists show their scrollbar (macOS hides it until you scroll, so a long
+     list looked like it ended), and stop at their end instead of scrolling the page. */
+  .klist, .lines { overscroll-behavior: contain; }
+  .klist::-webkit-scrollbar, .lines::-webkit-scrollbar { width: 8px; }
+  .klist::-webkit-scrollbar-thumb, .lines::-webkit-scrollbar-thumb { border-radius: 4px; background: var(--line); }
+  .klist::-webkit-scrollbar-thumb:hover, .lines::-webkit-scrollbar-thumb:hover { background: var(--fg2); }
   .kitem { display: flex; gap: 8px; padding: 6px 4px; border-radius: 8px; text-decoration: none; color: inherit; }
   .kitem:hover { background: var(--line); }
   .kitem img { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex: none; background: var(--line); }

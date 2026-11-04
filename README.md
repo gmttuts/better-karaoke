@@ -52,7 +52,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **Tab "Đã xem"**: các bài đã mở, mới nhất trước, kèm số lần xem. Bấm ☆ cạnh tên bài (hoặc trong danh sách) để đánh dấu **★ yêu thích**; lọc "★ Yêu thích" để xem riêng. "Xoá lịch sử" giữ lại bài yêu thích. Lịch sử nằm trong file sao lưu.
 - **Sao chép** lời, **Mở nguồn** để xem trang gốc.
 - **🎚 Tông** (♭ ♯, Alt ↑ ↓): nâng / hạ tông bài hát từng nửa cung (tới ±6) mà không đổi tốc độ, để vừa giọng người hát. Tông được nhớ theo từng video; bấm số tông để về tông gốc. Chạy ngay trên máy (phase vocoder trong AudioWorklet, `src/audio/pitch-worklet.js`), trễ khoảng 65 ms. 🎙 Chấm điểm tự tính theo tông mới.
-- **🎤 Lọc giọng** (Alt V): giảm giọng ca sĩ để tự hát trên bài gốc khi không có bản karaoke, kéo thanh để chỉnh mức lọc. Cách làm giống nút lọc giọng của đầu karaoke: giọng thường nằm giữa hai loa, nên phần giữa ở dải tần giọng người bị bỏ, còn bass, trống và tiếng cao vẫn giữ. Tuỳ bài: thường giảm được phần lớn giọng nhưng vẫn còn vang và bè; bài thu mono hoặc có nhạc cụ đặt giữa thì kém hơn.
+- **🎤 Lọc giọng** (Alt V): giảm giọng ca sĩ để tự hát trên bài gốc khi không có bản karaoke, kéo thanh để chỉnh mức lọc. Âm thanh được chia theo từng dải tần, và chỉ phần vừa nằm giữa hai loa, vừa ở dải giọng người, vừa ngân dài như nốt hát mới bị giảm. Trống, bass, nhạc cụ lệch hai bên và tiếng cao vẫn giữ, nên bài không bị "rỗng". Tuỳ bài: thường giảm được phần lớn giọng nhưng vẫn còn vang và bè; bài thu mono hoặc có nhạc cụ ngân dài đặt giữa (piano, pad) thì kém hơn.
   - Cả hai cần một cú bấm trên trang trước (trình duyệt chỉ cho phát âm thanh sau khi người dùng bấm). Âm thanh không bị ghi lại hay gửi đi đâu.
 - **⬇ Xuất**: lưu lời có thời gian ra file **`.lrc`** (cho trình phát nhạc) **`.srt`** (phụ đề cho VLC, CapCut, Premiere, YouTube Studio) hoặc **`.ass`** (phụ đề karaoke giữ đúng kiểu chữ 🎨 đang dùng: phông, màu, viền, khung, bố cục so le hay ở giữa, dòng dịch, chữ đổi màu từng từ). File dùng đúng thời gian bạn đã canh: độ lệch, các mốc 📍, ⏱ gõ nhịp, 🎯 canh theo phụ đề. Lời chưa có thời gian thì canh trước rồi xuất.
   - **Ghép cứng (hard sub) vào video của bạn** bằng file `.ass`: `ffmpeg -i video.mp4 -vf ass="Ca sĩ - Bài.ass" video-co-loi.mp4` (ffmpeg cần có libass), hoặc mở bằng Aegisub, VLC, mpv, CapCut. Kiểu nền *Dải điện ảnh* thành khung quanh chữ, và viền của chữ đã hát giữ màu viền thường (ASS không đổi màu viền theo karaoke).
@@ -110,6 +110,7 @@ src/
     ocr.js             🔠 Đọc chữ trên video: quét khung hình, gom các dòng chữ thành lời có thời gian
     keys.js            Phím tắt Alt + phím
     audiofx.js         🎚 Đổi tông, 🎤 Lọc giọng (Web Audio trên âm thanh video)
+  audio/vocal-worklet.js  Bộ lọc giọng theo dải tần (giữa · dải giọng · ngân dài)
     score.js           🎙 Chấm điểm: nốt nhạc của video (chroma), điểm từng dòng
     main.js            Theo dõi chuyển trang trong YouTube, chạy các nguồn, chọn kết quả tốt nhất
   i18n.js              L('…'), danh sách ngôn ngữ, chọn ngôn ngữ theo múi giờ

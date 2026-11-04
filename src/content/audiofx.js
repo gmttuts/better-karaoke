@@ -7,12 +7,9 @@
 // of them is turned on (it needs a click: a browser only starts audio after
 // one), and stays there; with both off it goes straight to the speakers.
 //
-// Lọc giọng works like the "vocal cut" of karaoke machines: the singer is
-// mixed in the middle (same in both speakers), the band spread to the sides.
-// Splitting the sound into middle (L+R) and sides (L−R) and keeping only the
-// lows and highs of the middle drops most of the voice and keeps the bass,
-// the kick and the cymbals:
-//   L' = side + (1−k)·mid + k·(low(mid) + high(mid)),  R' = −side + the same.
+// Lọc giọng (src/audio/vocal-worklet.js) turns down only what is in the
+// middle of the stereo picture, in the range of a voice and held like a sung
+// note, so the drums, the bass and the instruments on the sides stay.
 BYL.fx = (() => {
   const want = { semis: 0, vocal: 0 }; // vocal: 0..1
   let ctx = null;
@@ -25,61 +22,27 @@ BYL.fx = (() => {
 
   async function context() {
     ctx ||= new AudioContext({ latencyHint: 'playback' });
-    ready ||= ctx.audioWorklet.addModule(chrome.runtime.getURL('src/audio/pitch-worklet.js')).then(() => ctx);
+    const add = (f) => ctx.audioWorklet.addModule(chrome.runtime.getURL('src/audio/' + f));
+    ready ||= Promise.all([add('pitch-worklet.js'), add('vocal-worklet.js')]).then(() => ctx);
     // resume() never settles when the browser won't start sound yet.
     await Promise.race([ctx.resume(), new Promise((r) => setTimeout(r, 1500))]);
     return ready;
   }
 
   function build(v) {
-    const g = (n = 1) => {
-      const node = ctx.createGain();
-      node.gain.value = n;
-      return node;
-    };
-    const filter = (type, f) => new BiquadFilterNode(ctx, { type, frequency: f, Q: 0.707 });
     const src = ctx.createMediaElementSource(v);
-    const vin = g();
-    vin.channelCount = 2;
-    vin.channelCountMode = 'explicit';
-    vin.channelInterpretation = 'speakers';
-    const split = ctx.createChannelSplitter(2);
-    const merge = ctx.createChannelMerger(2);
-    const mid = g(0.5);
-    const sideL = g(0.5);
-    const sideR = g(-0.5);
-    const side = g();
-    const invert = g(-1);
-    const keep = g(1); // (1−k)·mid
-    const ends = g(0); // k·(low + high)
-    const midOut = g();
-    vin.connect(split);
-    split.connect(mid, 0);
-    split.connect(mid, 1);
-    split.connect(sideL, 0);
-    split.connect(sideR, 1);
-    sideL.connect(side);
-    sideR.connect(side);
-    mid.connect(keep).connect(midOut);
-    mid.connect(filter('lowpass', 140)).connect(ends);
-    mid.connect(filter('highpass', 7500)).connect(ends);
-    ends.connect(midOut);
-    midOut.connect(merge, 0, 0);
-    midOut.connect(merge, 0, 1);
-    side.connect(merge, 0, 0);
-    side.connect(invert).connect(merge, 0, 1);
+    const stereo = { outputChannelCount: [2], channelCount: 2, channelCountMode: 'explicit', channelInterpretation: 'speakers' };
+    const vocal = new AudioWorkletNode(ctx, 'byl-vocal', stereo);
     const pitch = new AudioWorkletNode(ctx, 'byl-pitch', { outputChannelCount: [2] });
-    return { src, vin, out: merge, keep, ends, pitch };
+    return { src, vocal, pitch };
   }
 
   function route(n) {
-    for (const node of [n.src, n.out, n.pitch]) node.disconnect();
+    for (const node of [n.src, n.vocal, n.pitch]) node.disconnect();
     let at = n.src;
     if (want.vocal > 0) {
-      n.keep.gain.value = 1 - want.vocal;
-      n.ends.gain.value = want.vocal;
-      at.connect(n.vin);
-      at = n.out;
+      n.vocal.port.postMessage({ amount: want.vocal });
+      at = at.connect(n.vocal);
     }
     if (want.semis) {
       n.pitch.port.postMessage({ ratio: Math.pow(2, want.semis / 12) });
