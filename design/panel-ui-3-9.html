@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Panel UI 3 and 9</title>
 <!-- Every screen of layouts 3 (tabs by task) and 9 (modes: watch, sing,
-     edit). ?s=3a..3e / 9a..9g shows one. -->
+     edit). ?s=3a..3e / 9a..9g / ka..kd shows one. -->
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; padding: 24px; background: #e9e9ee; font: 14px/1.4 Roboto, -apple-system, Arial, sans-serif; color: #0f0f0f; }
@@ -191,11 +191,35 @@
       <div class="row" style="padding:0 14px 8px"><button class="on">Tất cả</button><button>★ Yêu thích</button><button>🎬 Bản karaoke</button><span style="flex:1"></span><button class="ghost" style="color:#c8103f">Xoá</button></div>${hist()}`],
   ];
 
+
+  // The 🎤 Karaoke switch kept outside the modes, always one click away.
+  const kbtn = (on) => `<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 8px 5px 10px;border-radius:999px;font-size:12.5px;font-weight:700;${on ? 'background:#ff2e63;color:#fff' : 'background:rgba(0,0,0,.06);color:#333'}">🎤 Karaoke <span class="sw ${on ? 'on' : ''}" style="width:28px;height:16px;${on ? 'background:rgba(255,255,255,.35)' : ''}"></span></span>`;
+  const headK = (on) => `<div class="hd"><div class="logo">🎤</div><div class="ti"><b>Báu Vật Trời Cho</b><span class="muted">Bùi Công Nam</span></div>${kbtn(on)}<button class="icon">⋯</button></div>`;
+  const VK = [
+    ['A1. Công tắc trên đầu panel (bật)', 'Nút 🎤 Karaoke có công tắc nằm cạnh tên bài, chế độ nào cũng thấy. Bật thì nút đỏ, tắt thì nút xám. ☆ và 🕘 chuyển vào menu ⋯.', () => `${headK(1)}${modes(0)}
+      <div class="row" style="padding:0 14px 6px"><span class="chip sel">🌐 LRCLIB 3</span><span class="muted">· đổi nguồn ▾</span></div>${lyrics()}`],
+    ['A2. Công tắc trên đầu panel (tắt)', 'Đang ở chế độ Hát và đang tắt karaoke. Dòng "Trên video" chỉ còn chỗ chọn kiểu chữ, vì nút bật tắt đã nằm trên đầu.', () => `${headK(0)}${modes(1)}
+      <div class="sec" style="border-top:0;padding-top:2px">${kv('Tông', key('+1'))}${kv('Lọc giọng', sw(1), range(70, '70%'))}${kv('Kiểu chữ', '<button>Sáng dần ▾</button>', '<button>A−</button>', '<button>A+</button>')}${kv('Chấm điểm', '<button class="pri">🎙 Bắt đầu hát</button>')}</div>${lyrics()}`],
+    ['B. Thanh điều khiển cố định ở đáy', 'Một thanh nhỏ luôn nằm ở đáy panel: bật tắt karaoke, đổi kiểu chữ, cỡ chữ, đưa lời lên trên hay xuống dưới. Lời cuộn phía trên thanh.', () => `${head('<button class="icon">🕘</button>')}${modes(0)}
+      <div class="row" style="padding:0 14px 6px"><span class="chip sel">🌐 LRCLIB 3</span><span class="muted">· đổi nguồn ▾</span></div>${lyrics()}
+      <div style="display:flex;align-items:center;gap:6px;padding:10px 12px;border-top:1px solid rgba(0,0,0,.08);background:#fafafa">${kbtn(1)}<button style="font-size:12px">Sáng dần ▾</button><button class="icon" style="width:28px">A−</button><button class="icon" style="width:28px">A+</button><button class="icon" style="width:28px">⬇</button></div>`],
+    ['C. Nút ngay trên thanh điều khiển của YouTube', 'Thêm biểu tượng 🎤 cạnh nút phụ đề CC của trình phát. Bật tắt được cả khi xem toàn màn hình hay đã ẩn panel. Phím tắt Alt L vẫn dùng được.', () => `<div style="padding:14px"><div style="position:relative;height:214px;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,#1d3b5c,#4a2f6b 50%,#b0466b)">
+        <div style="position:absolute;left:0;right:0;bottom:92px;text-align:center;font:800 17px Roboto;color:#fff;text-shadow:0 2px 4px #000"><span style="color:#ffd23f">Hát lên cho</span> nhau nghe một câu</div>
+        <div style="position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(transparent,rgba(0,0,0,.7))"></div>
+        <div style="position:absolute;left:10px;right:10px;bottom:34px;height:3px;background:rgba(255,255,255,.3);border-radius:2px"><div style="width:38%;height:100%;background:#f00"></div></div>
+        <div style="position:absolute;left:10px;right:10px;bottom:6px;display:flex;align-items:center;gap:12px;color:#fff;font-size:14px">▶ ⏭ 🔊 <span style="font-size:11px;opacity:.9">1:12 / 3:58</span><span style="flex:1"></span><span style="background:rgba(255,46,99,.95);border-radius:6px;padding:1px 5px;box-shadow:0 0 0 2px #fff">🎤</span><span style="font:700 10px Roboto;border:1.5px solid #fff;border-radius:3px;padding:0 3px">CC</span>⚙ ▭ ⛶</div>
+        <div style="position:absolute;right:68px;bottom:44px;background:rgba(28,28,28,.92);color:#fff;font-size:11.5px;padding:5px 8px;border-radius:4px;white-space:nowrap">Lời karaoke trên video (Alt L)</div></div>
+      <div style="margin-top:14px;font-size:13px;line-height:1.5;color:#333">
+        <b>Nút trên trình phát</b><br>• Đỏ là đang bật, trắng là đang tắt.<br>• Có cả trên YouTube Shorts và khi xem toàn màn hình.<br>• Chuột phải vào nút (hoặc giữ lâu) thì hiện danh sách kiểu chữ.</div>
+      <div style="margin-top:14px;font-size:13px;color:#333"><b>Kết hợp với A</b>: panel vẫn có công tắc trên đầu, hai nút luôn đồng bộ với nhau.</div>
+      <div style="margin-top:14px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,.08)">${headK(1)}</div></div>`],
+  ];
+
   const render = (title, list) => `<h2>${title}</h2>` + list.map(([n, why, html]) => `<figure><figcaption>${n}<span>${why}</span></figcaption><div class="p">${html()}</div></figure>`).join('');
   const q = new URLSearchParams(location.search);
   const only = q.get('s');
   const all = { 3: V3, 9: V9 };
-  document.getElementById('out').innerHTML = only ? render('', [(only.startsWith('3') ? V3 : V9)[only.charCodeAt(1) - 97]]) : render('Phương án 3 · Tab theo chức năng', V3) + render('Phương án 9 · Chế độ Xem · Hát · Chỉnh', V9);
+  document.getElementById('out').innerHTML = only ? render('', [({ 3: V3, 9: V9, k: VK })[only[0]][only.charCodeAt(1) - 97]]) : render('Phương án 3 · Tab theo chức năng', V3) + render('Phương án 9 · Chế độ Xem · Hát · Chỉnh', V9) + render('Nút 🎤 Karaoke luôn ở ngoài', VK);
 </script>
 
 </body>
