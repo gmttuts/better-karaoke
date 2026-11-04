@@ -124,7 +124,7 @@ file.addEventListener('change', async () => {
     return say(L('File này không phải JSON hợp lệ.'), true);
   }
   if (data?.app !== 'better-youtube-lyric' || typeof data.local !== 'object' || typeof data.settings !== 'object') {
-    return say(L('File này không phải bản sao lưu của Better YouTube Lyric.'), true);
+    return say(L('File này không phải bản sao lưu của Better Lyric for YouTube.'), true);
   }
   try {
     const counts = await importBackup(data);

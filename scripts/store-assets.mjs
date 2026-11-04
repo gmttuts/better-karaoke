@@ -1,8 +1,10 @@
-// Renders the Chrome Web Store images from store/assets.html in headless
-// Chrome: store/screenshot-{1,2,3}.png (1280×800) and store/promo-440x280.png.
+// Renders the Chrome Web Store images in headless Chrome:
+//   store/{vi,en}/1-hero.png … (1280×800) from store/mockups.html, around the
+//   real screenshots in store/shots/; store/vi/5-studio.png from store/assets.html;
+//   store/promo-440x280.png and store/{vi,en}/marquee-1400x560.png.
 //   node scripts/store-assets.mjs
 import { spawn } from 'child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { dirname, join } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
@@ -36,9 +38,15 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 try {
   const { result: { targetId } } = await send('Target.createTarget', { url: 'about:blank' });
   const { result: { sessionId } } = await send('Target.attachToTarget', { targetId, flatten: true });
-  for (const [scene, w, hgt, name] of [['1', 1280, 800, 'screenshot-1'], ['2', 1280, 800, 'screenshot-2'], ['3', 1280, 800, 'screenshot-3'], ['promo', 440, 280, 'promo-440x280']]) {
+  const shots = [];
+  for (const lang of ['vi', 'en'])
+    for (const [i, scene] of ['hero', 'styles', 'karaoke', 'sound'].entries())
+      shots.push(['mockups', `scene=${scene}&lang=${lang}`, 1280, 800, `${lang}/${i + 1}-${scene}`]);
+  shots.push(['assets', 'scene=2', 1280, 800, 'vi/5-studio'], ['mockups', 'scene=promo', 440, 280, 'promo-440x280'], ['mockups', 'scene=marquee&lang=vi', 1400, 560, 'vi/marquee-1400x560'], ['mockups', 'scene=marquee&lang=en', 1400, 560, 'en/marquee-1400x560']);
+  for (const lang of ['vi', 'en']) mkdirSync(join(root, 'store', lang), { recursive: true });
+  for (const [page, query, w, hgt, name] of shots) {
     await send('Emulation.setDeviceMetricsOverride', { width: w, height: hgt, deviceScaleFactor: 1, mobile: false }, sessionId);
-    await send('Page.navigate', { url: pathToFileURL(join(root, 'store', 'assets.html')).href + '?scene=' + scene }, sessionId);
+    await send('Page.navigate', { url: pathToFileURL(join(root, 'store', page + '.html')).href + '?' + query }, sessionId);
     await sleep(1200);
     const shot = await send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: w, height: hgt, scale: 1 } }, sessionId);
     writeFileSync(join(root, 'store', name + '.png'), Buffer.from(shot.result.data, 'base64'));

@@ -1,4 +1,4 @@
-# Better YouTube Lyric
+# Better Lyric for YouTube
 
 Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài hát cho video đang xem, chạy lời theo nhạc, hiện chữ to trên video, và tìm nhanh bản karaoke của bài, tất cả trong cùng một khung hình.
 
@@ -143,7 +143,7 @@ fonts/                 Roboto Condensed (Apache 2.0, có bộ chữ tiếng Vi�
 | Singify | Widget nổi, cửa sổ luôn ở trên, tự căn theo CC | Phụ thuộc phụ đề |
 | LyricYT, LyricScroll | Nhẹ, có chế độ karaoke | Ít nguồn, ít người dùng |
 
-Better YouTube Lyric lấy ý tưởng overlay và LRCLIB, rồi thêm phần những extension trên chưa có: lời từ comment, từ bản đăng lại trên YouTube, nguồn nhạc Việt, và tìm bản karaoke ngay trong panel.
+Better Lyric for YouTube lấy ý tưởng overlay và LRCLIB, rồi thêm phần những extension trên chưa có: lời từ comment, từ bản đăng lại trên YouTube, nguồn nhạc Việt, và tìm bản karaoke ngay trong panel.
 
 ## Giới hạn
 

@@ -231,7 +231,7 @@ BYL.ui = (() => {
     lang.addEventListener('click', (e) => e.stopPropagation());
     langSel.addEventListener('change', () => BYL.settings.set({ uiLang: langSel.value }));
     header.append(el('span', 'logo', '🎤'), song, lang, favBtn, el('span', 'chev', '▾'));
-    header.title = 'Better YouTube Lyric v' + chrome.runtime.getManifest().version;
+    header.title = 'Better Lyric for YouTube v' + chrome.runtime.getManifest().version;
 
     const body = el('div', 'body');
     const nav = el('nav');

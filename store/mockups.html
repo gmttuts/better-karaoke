@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Store mockups</title>
+<!-- Chrome Web Store images built around real screenshots of the extension on
+     YouTube (store/shots/*.png). Rendered by scripts/store-assets.mjs:
+     ?scene=hero|styles|karaoke|sound|promo|marquee&lang=vi|en -->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Roboto, -apple-system, 'Segoe UI', Arial, sans-serif; color: #fff; background: #0f0f14; overflow: hidden; }
+  .stage { width: 1280px; height: 800px; position: relative; padding: 44px 56px;
+    background: radial-gradient(1200px 600px at 10% 0%, #2a1b4a 0%, transparent 60%), radial-gradient(900px 500px at 100% 100%, #3b0f2a 0%, transparent 60%), #0f0f14; }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: #c9c9d6; margin-bottom: 14px; }
+  .brand img { width: 28px; height: 28px; }
+  h1 { margin: 0 0 8px; font-size: 42px; font-weight: 800; letter-spacing: -.01em; line-height: 1.1; }
+  h1 em { font-style: normal; background: linear-gradient(90deg, #ff2e63, #ffb800); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { margin: 0 0 26px; font-size: 19px; color: #c9c9d6; }
+  .frame { border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.12); background: #000; }
+  .frame img { display: block; width: 100%; }
+  .crop { position: relative; overflow: hidden; }
+  .crop img { position: absolute; display: block; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 22px; }
+  .tile .crop { border-radius: 12px; box-shadow: 0 14px 40px rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.12); }
+  .tile b { display: block; margin-top: 9px; font-size: 17px; font-weight: 600; color: #e6e6ef; }
+  .cards { display: flex; flex-direction: column; gap: 16px; }
+  .card { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13); border-radius: 14px; padding: 16px 18px; }
+  .card b { display: block; font-size: 20px; margin-bottom: 4px; }
+  .card span { font-size: 15.5px; color: #c9c9d6; line-height: 1.4; }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .chips span { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); padding: 7px 14px; border-radius: 999px; font-size: 15px; }
+  .kara { font-weight: 800; color: #fff; -webkit-text-stroke: 0; text-shadow: 0 2px 6px rgba(0,0,0,.6); }
+  .kara i { font-style: normal; color: #ff2e63; }
+</style>
+</head>
+<body>
+<script>
+  const q = new URLSearchParams(location.search);
+  const scene = q.get('scene') || 'hero';
+  const lang = q.get('lang') === 'en' ? 'en' : 'vi';
+  const T = {
+    vi: {
+      heroH: 'Lời bài hát <em>ngay trên YouTube</em>',
+      heroS: 'Mở video nhạc là có lời: dòng đang hát sáng lên và tự cuộn, karaoke chạy ngay trên video.',
+      heroC: [['🔎 Tự tìm lời', 'Mô tả, comment, LRCLIB, Hợp âm chuẩn, Genius, phụ đề'], ['🎤 Karaoke trên video', 'Chữ đổi màu theo nhịp hát'], ['🎯 Canh lời dễ', 'Theo phụ đề, gõ nhịp Space, ghim 📍'], ['🌐 12 ngôn ngữ', 'Đổi ngay trên panel']],
+      stylesH: '7 kiểu <em>phụ đề karaoke</em>',
+      stylesS: 'Chọn một kiểu có sẵn, hoặc tự chỉnh màu, phông, viền, nền rồi lưu thành preset. Ghim 📌 riêng cho từng kênh.',
+      karaH: 'Hát theo <em>từng chữ</em> trên video',
+      karaS: 'Chữ đổi màu đúng lúc ca sĩ hát, cả khi xem toàn màn hình, chế độ rạp và YouTube Shorts.',
+      karaC: ['Toàn màn hình', 'Shorts', 'Cửa sổ nổi ⧉', 'Song ngữ 🌐', 'Phiên âm Hàn · Nhật · Trung 🔤'],
+      soundH: 'Hát trên <em>bài gốc</em>',
+      soundS: 'Không cần bản karaoke: đổi tông và lọc giọng ca sĩ ngay trong trình duyệt.',
+      soundC: [['🎚 Đổi tông', 'Nâng, hạ nửa cung mà không đổi tốc độ. Nhớ riêng cho từng video.'], ['🎤 Lọc giọng', 'Bớt giọng ca sĩ, giữ lại tiếng đàn, trống và bass.'], ['🎙 Chấm điểm', 'Hát vào micro, mỗi dòng có điểm: đủ lời, đúng nốt.'], ['⬇ Xuất LRC · SRT · ASS', 'Phụ đề karaoke đúng kiểu chữ, ghép cứng vào video của bạn.']],
+      tag: 'Lời bài hát & karaoke ngay trên YouTube',
+      names: { red: 'Karaoke đỏ', classic: 'Karaoke xanh dương', focus: 'Nổi bật', box: 'Khung tối', captions: 'Phụ đề YouTube', cinema: 'Dải điện ảnh', mini: 'Gọn nhẹ' },
+    },
+    en: {
+      heroH: 'Song lyrics <em>right on YouTube</em>',
+      heroS: 'Open a music video and the lyrics are there: the sung line lights up and scrolls, with karaoke on the video.',
+      heroC: [['🔎 Finds lyrics', 'Description, comments, LRCLIB, Genius, captions'], ['🎤 Karaoke on video', 'Words light up as they are sung'], ['🎯 Easy timing', 'Sync to captions, tap with Space, pin 📍'], ['🌐 12 languages', 'Switch from the panel']],
+      stylesH: '7 <em>karaoke subtitle</em> styles',
+      stylesS: 'Pick a built-in style, or tune colours, font, outline and background and save it as a preset. Pin 📌 one per channel.',
+      karaH: 'Sing along <em>word by word</em>',
+      karaS: 'Words change colour right as they are sung, in full screen, theater mode and on YouTube Shorts.',
+      karaC: ['Full screen', 'Shorts', 'Floating window ⧉', 'Translations 🌐', 'Korean · Japanese · Chinese romanization 🔤'],
+      soundH: 'Sing over <em>the original</em>',
+      soundS: 'No karaoke version needed: change the key and cut the vocals right in your browser.',
+      soundC: [['🎚 Change the key', 'Semitones up or down at the same speed, remembered per video.'], ['🎤 Vocal cut', 'Turns the singer down, keeps the band, drums and bass.'], ['🎙 Scoring', 'Sing into your mic and get a mark for every line.'], ['⬇ Export LRC · SRT · ASS', 'Styled karaoke subtitles to burn into your own video.']],
+      tag: 'Song lyrics & karaoke right on YouTube',
+      names: { red: 'Karaoke red', classic: 'Karaoke blue', focus: 'Spotlight', box: 'Dark box', captions: 'YouTube captions', cinema: 'Cinema band', mini: 'Compact' },
+    },
+  }[lang];
+
+  const el = (html) => {
+    const d = document.createElement('div');
+    d.innerHTML = html.trim();
+    return d.firstChild;
+  };
+  const brand = '<div class="brand"><img src="../icons/icon128.png">Better Lyric for YouTube</div>';
+  // A window onto part of a 1280×800 screenshot: (x, y, w, h) of the source shown at `scale`.
+  const crop = (src, x, y, w, h, scale) =>
+    `<div class="crop" style="width:${w * scale}px;height:${h * scale}px"><img src="shots/${src}.png" style="width:${1280 * scale}px;left:${-x * scale}px;top:${-y * scale}px"></div>`;
+  // The 4:3 video in the theater-mode screenshots.
+  const VIDEO = [212, 56, 840, 630];
+
+  let html;
+  if (scene === 'hero') {
+    html = `<div class="stage">${brand}<h1>${T.heroH}</h1><p class="sub">${T.heroS}</p>
+      <div style="display:flex;gap:26px;align-items:flex-start">
+        <div class="frame" style="width:900px">${crop('panel-' + lang, 0, 0, 1280, 800, 900 / 1280)}</div>
+        <div class="cards" style="flex:1">${T.heroC.map(([b, s]) => `<div class="card" style="padding:13px 15px"><b style="font-size:17px">${b}</b><span style="font-size:14px">${s}</span></div>`).join('')}</div>
+      </div></div>`;
+  } else if (scene === 'styles') {
+    const keys = ['red', 'focus', 'box', 'captions', 'cinema', 'mini'];
+    html = `<div class="stage">${brand}<h1>${T.stylesH}</h1><p class="sub" style="margin-bottom:22px">${T.stylesS}</p>
+      <div class="grid">${keys.map((k) => `<div class="tile">${crop('style-' + k, 212, 100, 840, 586, 374 / 840)}<b>${T.names[k]}</b></div>`).join('')}</div></div>`;
+  } else if (scene === 'karaoke') {
+    html = `<div class="stage">${brand}<h1>${T.karaH}</h1><p class="sub">${T.karaS}</p>
+      <div class="frame" style="width:${1264 * 0.84}px;margin:0 auto">${crop('style-classic', 0, 56, 1264, 630, 0.84)}</div>
+      <div class="chips" style="justify-content:center">${T.karaC.map((c) => `<span>${c}</span>`).join('')}</div></div>`;
+  } else if (scene === 'sound') {
+    html = `<div class="stage">${brand}<h1>${T.soundH}</h1><p class="sub">${T.soundS}</p>
+      <div style="display:flex;gap:40px;align-items:flex-start">
+        <div class="cards" style="width:560px">${T.soundC.map(([b, s]) => `<div class="card"><b>${b}</b><span>${s}</span></div>`).join('')}</div>
+        <div class="frame" style="background:#fff">${crop('panel-' + lang, 906, 68, 342, 590, 1.0)}</div>
+      </div></div>`;
+  } else if (scene === 'promo') {
+    html = `<div class="stage" style="width:440px;height:280px;padding:26px 28px;display:flex;flex-direction:column;justify-content:space-between;
+        background:linear-gradient(rgba(10,10,16,.7),rgba(10,10,16,.1) 45%,rgba(10,10,16,.85)),url(shots/style-red.png) -260px -40px / 960px auto">
+      <div class="brand" style="color:#fff;font-size:21px;margin:0"><img src="../icons/icon128.png" style="width:44px;height:44px">Better Lyric for YouTube</div>
+      <div><div class="kara" style="font-size:27px;line-height:1.15"><i>Lyrics &amp; karaoke</i> on YouTube</div></div></div>`;
+  } else if (scene === 'marquee') {
+    html = `<div class="stage" style="width:1400px;height:560px;padding:0;display:flex">
+      <div style="width:560px;padding:70px 56px;display:flex;flex-direction:column;justify-content:center">
+        <div class="brand" style="color:#fff;font-size:30px;margin-bottom:22px"><img src="../icons/icon128.png" style="width:64px;height:64px">Better Lyric for YouTube</div>
+        <h1 style="font-size:40px">${T.tag.replace('&', '&amp;')}</h1>
+        <p class="sub" style="margin:10px 0 0">LRC · SRT · ASS · 🎚 · 🎤 · 🌐</p></div>
+      <div style="flex:1;padding:48px 48px 48px 0;display:flex;align-items:center"><div class="frame">${crop('style-focus', 0, 56, 1264, 630, 792 / 1264)}</div></div></div>`;
+  }
+  document.body.append(el(html));
+</script>
+</body>
+</html>

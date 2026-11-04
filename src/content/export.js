@@ -18,7 +18,7 @@ BYL.exporter = (() => {
     if (meta.title) head.push(`[ti:${meta.title}]`);
     if (meta.artist) head.push(`[ar:${meta.artist}]`);
     if (meta.duration) head.push(`[length:${BYL.fmtTime(meta.duration)}]`);
-    head.push('[re:Better YouTube Lyric]');
+    head.push('[re:Better Lyric for YouTube]');
     // Blank lines become empty stamps so players clear the previous line.
     const body = lines.filter((l) => typeof l.t === 'number' && !l.section).map((l) => `${BYL.lrcStamp(l.t)} ${l.text}`.trimEnd());
     return [...head, '', ...body].join('\n') + '\n';
@@ -179,7 +179,7 @@ BYL.exporter = (() => {
 
     return [
       '[Script Info]',
-      `Title: ${assText(opts.title || 'Better YouTube Lyric')}`,
+      `Title: ${assText(opts.title || 'Better Lyric for YouTube')}`,
       'ScriptType: v4.00+',
       `PlayResX: ${W}`,
       `PlayResY: ${H}`,

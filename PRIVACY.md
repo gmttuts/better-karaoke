@@ -1,10 +1,10 @@
 # Chính sách quyền riêng tư · Privacy policy
 
-*Better YouTube Lyric — cập nhật / updated 2026-11-03*
+*Better Lyric for YouTube — cập nhật / updated 2026-11-03*
 
 ## Tiếng Việt
 
-Better YouTube Lyric **không thu thập, không bán và không gửi dữ liệu cá nhân của bạn cho nhà phát triển**. Extension không có máy chủ riêng, không có quảng cáo, không có công cụ thống kê.
+Better Lyric for YouTube **không thu thập, không bán và không gửi dữ liệu cá nhân của bạn cho nhà phát triển**. Extension không có máy chủ riêng, không có quảng cáo, không có công cụ thống kê.
 
 **Dữ liệu lưu trên máy bạn** (trong bộ nhớ của trình duyệt, `chrome.storage`): cài đặt, kiểu chữ và preset, lời bạn đã sửa, độ lệch và các mốc 📍 cho từng video, kết quả tìm lời đã lưu (7 ngày), lịch sử bài đã xem và bài yêu thích. Các tuỳ chọn trong cửa sổ cài đặt được Chrome đồng bộ qua tài khoản Chrome của bạn nếu bạn bật đồng bộ; phần còn lại chỉ nằm trên máy này. Gỡ extension là xoá hết. Bạn có thể tự xuất / nhập file sao lưu.
 
@@ -22,7 +22,7 @@ Better YouTube Lyric **không thu thập, không bán và không gửi dữ li�
 
 ## English
 
-Better YouTube Lyric **does not collect, sell or send your personal data to its developer**. It has no server of its own, no ads and no analytics.
+Better Lyric for YouTube **does not collect, sell or send your personal data to its developer**. It has no server of its own, no ads and no analytics.
 
 **Stored on your device** (browser storage, `chrome.storage`): settings, styles and presets, lyrics you edited, offsets and 📍 sync points per video, cached lyric search results (7 days), watch history and favourites. The popup's options are synced by Chrome through your Chrome account if you have sync on; everything else stays on this device. Removing the extension deletes it all. You can export / import a backup file yourself.
 

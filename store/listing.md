@@ -1,9 +1,17 @@
 # Chrome Web Store listing
 
-Ảnh: `screenshot-1.png`, `screenshot-2.png`, `screenshot-3.png` (1280×800) và
-`promo-440x280.png`, tạo lại bằng `node scripts/store-assets.mjs` (nguồn:
-`assets.html`, ảnh panel `p-*.png` chụp từ extension với lời tự viết, nền
-video là hình vẽ, không dùng nội dung có bản quyền).
+Ảnh (tạo lại bằng `node scripts/store-assets.mjs`):
+- Ảnh chụp 1280×800, tải lên theo ngôn ngữ của trang: `vi/1-hero.png` …
+  `vi/5-studio.png` (tiếng Việt), `en/1-hero.png` … `en/4-sound.png` (English).
+  Nguồn: `mockups.html` dựng quanh ảnh chụp thật trên YouTube ở `shots/`
+  (panel, 7 kiểu chữ ở chế độ rạp); `5-studio` từ `assets.html`.
+- Ô quảng cáo nhỏ 440×280 (bắt buộc): `promo-440x280.png`.
+- Ảnh marquee 1400×560 (tuỳ chọn): `vi/marquee-1400x560.png`, `en/marquee-1400x560.png`.
+- Icon 128×128: `../icons/icon128.png`.
+
+Ảnh chụp thật có khung hình và lời của video Rick Astley trên YouTube. Nếu
+bị nhắc về bản quyền, chụp lại `shots/` bằng một video có quyền dùng hoặc
+quay lại bộ ảnh vẽ trong `assets.html`.
 
 Bản nộp: `npm run build:store` → `dist/better-youtube-lyric-<version>-store.zip`
 (đã bỏ trường `key`).
@@ -11,7 +19,9 @@ Bản nộp: `npm run build:store` → `dist/better-youtube-lyric-<version>-stor
 ---
 
 ## Tên · Name
-Better YouTube Lyric
+Better Lyric for YouTube
+
+(Không mở đầu bằng "YouTube" để không bị hiểu là sản phẩm của YouTube; tên cũ "Better YouTube Lyric" dễ bị từ chối vì nhãn hiệu.)
 
 ## Mô tả ngắn (≤ 132 ký tự)
 **vi:** Tìm lời bài hát ngay trên YouTube, hát karaoke trên video, song ngữ, phiên âm, xuất LRC/SRT/ASS.
@@ -68,12 +78,26 @@ Show song lyrics for the YouTube video being watched, in a side panel and as kar
 - **Host `https://lrclib.net/*`**: searches the open LRCLIB lyrics library by song title and artist, and (only when the user confirms on the publish page) sends lyrics the user timed.
 - **Host `https://hopamchuan.com/*`**: searches Vietnamese lyrics by song title and artist. Can be turned off in the settings.
 - **Host `https://genius.com/*`**: searches song lyrics (Vietnamese and international) by song title and artist. Can be turned off in the settings.
+- **Content script on `https://www.youtube.com/*` loads `src/audio/pitch-worklet.js`** (web accessible resource): the 🎚 key change runs as an AudioWorklet on the video's own sound, on the device.
 - **offscreen**: runs the on-device text recognition (Tesseract, WebAssembly) for "🔠 Read text in the video" in an offscreen document; nothing is sent anywhere.
 - **Remote code**: none. All code ships in the package; data/pinyin.json is a static reading table.
 
+## Remote code · Mã từ xa
+No, I am not using remote code.
+
 ## Dữ liệu người dùng · Data usage (form)
+Tick only **Website content**, then tick all three certifications.
 - Collects: **Website content** only in the sense that song titles taken from the YouTube page are sent to lrclib.net / hopamchuan.com / genius.com to search for lyrics. No personally identifiable information, health, financial, authentication, personal communications, location, web history or user activity is collected.
 - Not sold to third parties; not used for purposes unrelated to the single purpose; not used for credit-worthiness or lending.
 
 ## Chính sách quyền riêng tư · Privacy policy URL
 https://github.com/gmttuts/better-youtube-lyric/blob/main/PRIVACY.md
+
+## Ghi chú cho người duyệt · Notes for the reviewer (tuỳ chọn)
+Open any music video on youtube.com (e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ): the lyrics panel appears at the top of the right column; click "🎤 Karaoke" to show them on the video. Microphone access is asked only when the user presses 🎙 (karaoke scoring) and the audio never leaves the device.
+
+## Trước khi bấm gửi · Before you submit
+1. Push repo lên GitHub để link chính sách quyền riêng tư ở trên mở được.
+2. `npm run build:store` → tải file zip trong `dist/` lên.
+3. Điền tab Store listing (mô tả, danh mục, ảnh), tab Privacy (mục đích duy nhất, lý do từng quyền, remote code, dữ liệu, link chính sách), tab Distribution (miễn phí, mọi quốc gia).
+4. Khai báo non-trader trong tài khoản (miễn phí, không kinh doanh).
