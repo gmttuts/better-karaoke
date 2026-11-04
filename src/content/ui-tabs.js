@@ -56,7 +56,7 @@ BYL.uiParts.tabs = ({ P, el, state }) => {
 
   function paintFav(on) {
     P.favBtn.classList.toggle('on', on);
-    P.favBtn.textContent = on ? '★' : '☆';
+    P.favBtn.textContent = on ? '★ ' + L('Bỏ khỏi bài yêu thích') : '☆ ' + L('Thêm vào bài yêu thích');
     P.favBtn.title = on ? L('Bỏ khỏi bài yêu thích') : L('Thêm vào bài yêu thích (xem ở tab "Đã xem")');
   }
 

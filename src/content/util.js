@@ -25,6 +25,7 @@ BYL.DEFAULTS = {
   overlayPresets: [], // [{ name, look }] saved by the user
   channelStyles: {}, // channel name -> { style, look } pinned with 📌
   panelCollapsed: false,
+  panelMode: 'view', // 👀 Xem lời · 🎤 Hát · ✏️ Chỉnh lời
   linesHeight: 0, // lyric list height set by dragging its bottom edge (0 = auto)
 };
 

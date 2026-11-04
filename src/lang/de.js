@@ -367,4 +367,11 @@
   "Màu tô nền chữ đã hát": "Markerfarbe hinter den gesungenen Wörtern",
   "Phát sáng": "Leuchten",
   "Phủ mờ": "Verlauf",
+  "Lời": "Text",
+  "👀 Xem lời": "👀 Text",
+  "🎤 Hát": "🎤 Singen",
+  "✏️ Chỉnh lời": "✏️ Bearbeiten",
+  "Quay lại": "Zurück",
+  "Thêm": "Mehr",
+  "Chấm điểm": "Bewertung",
 };

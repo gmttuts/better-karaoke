@@ -367,4 +367,11 @@
   "Màu tô nền chữ đã hát": "Highlighter colour behind the sung words",
   "Phát sáng": "Glow",
   "Phủ mờ": "Shade",
+  "Lời": "Lyrics",
+  "👀 Xem lời": "👀 Lyrics",
+  "🎤 Hát": "🎤 Sing",
+  "✏️ Chỉnh lời": "✏️ Edit",
+  "Quay lại": "Back",
+  "Thêm": "More",
+  "Chấm điểm": "Score",
 };

@@ -216,13 +216,14 @@ BYL.ui = (() => {
     favBtn.title = L('Thêm vào bài yêu thích (xem ở tab "Đã xem")');
     favBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      menu.hidden = true;
       if (!state.videoId) return;
       const on = !favBtn.classList.contains('on');
       paintFav(on);
       BYL.history.setFav(state.videoId, on);
     });
     // 🌐 Interface language, changed on the spot (main.js rebuilds the panel).
-    const lang = el('span', 'lang', '🌐 ' + BYL.lang.toUpperCase());
+    const lang = el('span', 'lang', `🌐 ${BYL.LANGS.find(([c]) => c === BYL.lang)?.[1] || ''} · ${BYL.lang.toUpperCase()}`);
     const langSel = el('select');
     langSel.title = 'Language';
     langSel.append(new Option('Auto (GMT+7 → Tiếng Việt, other → English)', 'auto'), ...BYL.LANGS.map(([c, n]) => new Option(n, c)));
@@ -230,32 +231,52 @@ BYL.ui = (() => {
     lang.append(langSel);
     lang.addEventListener('click', (e) => e.stopPropagation());
     langSel.addEventListener('change', () => BYL.settings.set({ uiLang: langSel.value }));
-    header.append(el('span', 'logo', '🎤'), song, lang, favBtn, el('span', 'chev', '▾'));
+    // 🎤 Karaoke on the video: one switch at the top, whatever the mode.
+    const overlayBtn = el('button', 'ksw');
+    overlayBtn.append(el('span', 'kt', '🎤 Karaoke'), el('span', 'sw'));
+    overlayBtn.title = L('Hiện lời chữ to trên video (dùng được cả khi toàn màn hình)') + ' (Alt L)';
+    const menuBtn = el('button', 'more', '⋯');
+    menuBtn.title = L('Thêm');
+    header.append(el('span', 'logo', '🎤'), song, overlayBtn, menuBtn, el('span', 'chev', '▾'));
     header.title = 'Better Karaoke v' + chrome.runtime.getManifest().version;
 
     const body = el('div', 'body');
+    // Xem lời / Hát / Chỉnh lời: each mode shows only the rows for it
+    // (data-m on the row); the lyrics, chips and notes are in all of them.
     const nav = el('nav');
-    const tabLyric = el('button', 'on', L('Lời bài hát'));
-    const tabKaraoke = el('button', '', L('Bản Karaoke'));
-    const tabHistory = el('button', '', L('Đã xem'));
-    nav.append(tabLyric, tabKaraoke, tabHistory);
+    const MODES = [
+      ['view', L('👀 Xem lời')],
+      ['sing', L('🎤 Hát')],
+      ['edit', L('✏️ Chỉnh lời')],
+    ];
+    const modeBtns = MODES.map(([m, t]) => {
+      const b = el('button', '', t);
+      b.dataset.mode = m;
+      b.addEventListener('click', () => setMode(m, true));
+      return b;
+    });
+    nav.append(...modeBtns);
 
     // Lyric tab
     const lyricTab = el('div');
     const status = el('div', 'status');
+    // Which of the found lyrics is shown (all results of all sources).
     const row1 = el('div', 'row');
-    const select = el('select');
-    const overlayBtn = el('button', '', '🎤 Karaoke');
-    overlayBtn.title = L('Hiện lời chữ to trên video (dùng được cả khi toàn màn hình)');
+    row1.dataset.m = 'edit';
+    const select = el('select', 'src');
+    row1.append(el('span', 'muted', L('Lời')), select);
     const pipBtn = el('button', '', L('⧉ Cửa sổ nổi'));
     pipBtn.title = L('Mở lời trong một cửa sổ nhỏ luôn nằm trên cùng, kéo đi đâu cũng được (kể cả khi chuyển tab)');
-    const scoreBtn = el('button', '', '🎙');
+    const rowS = el('div', 'row');
+    rowS.dataset.m = 'sing';
+    const scoreBtn = el('button', '', '🎙 ' + L('Chấm điểm'));
     scoreBtn.title = L('Chấm điểm khi hát (cần micro, nên đeo tai nghe)');
     scoreBtn.addEventListener('click', () => BYL.score.open());
-    row1.append(select, overlayBtn, pipBtn, scoreBtn);
+    rowS.append(scoreBtn);
 
     // 🎚 key and 🎤 vocal cut of the video's sound (audiofx.js).
     const rowK = el('div', 'row fx');
+    rowK.dataset.m = 'sing';
     const keyDown = el('button', '', '♭');
     const keyLabel = el('span', 'off', '0');
     const keyUp = el('button', '', '♯');
@@ -279,6 +300,7 @@ BYL.ui = (() => {
     vocalAmt.addEventListener('input', () => setVocal(Number(vocalAmt.value) / 100));
 
     const rowT = el('div', 'row');
+    rowT.dataset.m = 'view';
     const transSel = el('select');
     transSel.title = L('Hiện thêm một bản lời khác (thường là lời dịch) dưới mỗi dòng');
     const swapBtn = el('button', '', '⇅');
@@ -286,6 +308,7 @@ BYL.ui = (() => {
     rowT.append(el('span', 'muted', L('🌐 Song ngữ')), transSel, swapBtn);
 
     const row2 = el('div', 'row');
+    row2.dataset.m = 'edit';
     const syncBtn = el('button', 'sync', L('🎯 Tự canh theo phụ đề'));
     syncBtn.title = L('Khớp lời với phụ đề YouTube của video để lời tự chạy đúng nhịp');
     const minus = el('button', '', '−0.5s');
@@ -300,6 +323,7 @@ BYL.ui = (() => {
     row2.append(syncBtn, offWrap);
 
     const row3 = el('div', 'row');
+    row3.dataset.m = 'sing';
     const lookSel = el('select', 'look');
     lookSel.title = L('Kiểu chữ trên video và cửa sổ nổi');
     const fontDown = el('button', '', 'A−');
@@ -313,9 +337,11 @@ BYL.ui = (() => {
     row3.append(el('span', 'muted', L('Kiểu chữ')), lookSel, fontDown, fontUp, posBtn, studioBtn, chanBtn);
 
     const studio = el('div', 'studio');
+    studio.dataset.m = 'sing';
     studio.hidden = true;
 
     const row4 = el('div', 'row links');
+    row4.dataset.m = 'edit';
     const copy = el('button', '', L('Sao chép'));
     const open = el('a', 'muted', L('Mở nguồn ↗'));
     open.target = '_blank';
@@ -331,7 +357,7 @@ BYL.ui = (() => {
     findBtn.title = L('Tên bài hoặc ca sĩ bị đoán sai? Tự gõ lại rồi tìm');
     const exportBtn = el('button', '', L('⬇ Xuất'));
     exportBtn.title = L('Lưu lời ra file .lrc / .srt (giữ thời gian bạn đã canh), hoặc gửi lên LRCLIB');
-    row4.append(editBtn, tapBtn, findBtn, copy, exportBtn, againBtn, open);
+    row4.append(editBtn, tapBtn, copy, exportBtn, againBtn, open);
 
     // Manual search: the title/artist typed here replace the guess from the
     // video title, are remembered for this video, and every source runs again.
@@ -373,6 +399,7 @@ BYL.ui = (() => {
     });
 
     const exportRow = el('div', 'row exports');
+    exportRow.dataset.m = 'edit';
     exportRow.hidden = true;
     const lrcBtn = el('button', '', '⬇ File LRC');
     lrcBtn.title = L('Lời có thời gian cho trình phát nhạc (foobar, VLC, Poweramp…)');
@@ -403,15 +430,23 @@ BYL.ui = (() => {
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
     grip.title = L('Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)');
-    lyricTab.append(findRow, status, row1, rowK, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4, exportRow);
+    lyricTab.append(findRow, status, row1, rowK, rowS, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4, exportRow);
     makeResizable(lines, grip);
 
     // Karaoke tab
+    // Pages opened from ⋯, over the lyrics, with a way back.
+    const pageHead = (title) => {
+      const h = el('div', 'row page');
+      const back = el('button', '', '← ' + L('Quay lại'));
+      back.addEventListener('click', () => showPage(null));
+      h.append(back, el('b', '', title));
+      return h;
+    };
     const karaokeTab = el('div');
     karaokeTab.hidden = true;
     const kchips = el('div', 'row');
     const klist = el('div', 'klist');
-    karaokeTab.append(kchips, klist);
+    karaokeTab.append(pageHead('🎬 ' + L('Bản Karaoke')), kchips, klist);
 
     // History tab
     const historyTab = el('div');
@@ -423,7 +458,7 @@ BYL.ui = (() => {
     hClear.title = L('Xoá các bài đã xem, giữ lại bài yêu thích');
     hFilter.append(hAll, hFav, hClear);
     const hlist = el('div', 'klist');
-    historyTab.append(hFilter, hlist);
+    historyTab.append(pageHead('🕘 ' + L('Đã xem')), hFilter, hlist);
     hAll.addEventListener('click', () => ((state.favOnly = false), renderHistory()));
     hFav.addEventListener('click', () => ((state.favOnly = true), renderHistory()));
     hClear.addEventListener('click', async () => {
@@ -431,12 +466,38 @@ BYL.ui = (() => {
       renderHistory();
     });
 
+    const menu = el('div', 'menu');
+    menu.hidden = true;
+    const item = (text, fn) => {
+      const b = el('button', '', text);
+      b.addEventListener('click', () => ((menu.hidden = true), fn()));
+      return b;
+    };
+    findBtn.addEventListener('click', () => (menu.hidden = true));
+    pipBtn.addEventListener('click', () => (menu.hidden = true));
+    menu.append(
+      favBtn,
+      item('🕘 ' + L('Đã xem'), () => showPage('history')),
+      item('🎬 ' + L('Bản Karaoke'), () => showPage('karaoke')),
+      pipBtn,
+      findBtn,
+      lang
+    );
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu.hidden = !menu.hidden;
+    });
+    menu.addEventListener('click', (e) => e.stopPropagation());
+    root.addEventListener('click', (e) => {
+      if (!menu.hidden && !e.composedPath().includes(menu)) menu.hidden = true;
+    });
+
     body.append(nav, lyricTab, karaokeTab, historyTab);
-    wrap.append(header, body);
+    wrap.append(header, menu, body);
     root.append(wrap);
 
     Object.assign(P, { wrap, songTitle, songArtist, status, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
-      row2, row3, row4, favBtn, hlist, hAll, hFav, tabHistory, historyTab, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
+      row2, row3, row4, favBtn, hlist, hAll, hFav, historyTab, nav, modeBtns, lyricTab, karaokeTab, menu, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
       tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt });
     editBtn.addEventListener('click', () => openEditor());
     tapBtn.addEventListener('click', () => (tapping() ? stopTap(false) : startTap()));
@@ -452,25 +513,15 @@ BYL.ui = (() => {
       wrap.classList.toggle('collapsed');
       BYL.settings.set({ panelCollapsed: wrap.classList.contains('collapsed') });
     });
-    const tabs = [
-      [tabLyric, lyricTab],
-      [tabKaraoke, karaokeTab, loadKaraoke],
-      [tabHistory, historyTab, renderHistory],
-    ];
-    for (const [btn, pane, onShow] of tabs) {
-      btn.addEventListener('click', () => {
-        for (const [b, p] of tabs) {
-          b.classList.toggle('on', b === btn);
-          p.hidden = p !== pane;
-        }
-        onShow?.();
-      });
-    }
+    setMode(BYL.settings.value.panelMode, false);
     select.addEventListener('change', () => {
       const c = state.candidates.find((x) => x.id === select.value);
       if (c) choose(c, true);
     });
-    overlayBtn.addEventListener('click', () => setOverlay(!state.overlayOn, true));
+    overlayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOverlay(!state.overlayOn, true);
+    });
     pipBtn.addEventListener('click', togglePip);
     minus.addEventListener('click', (e) => nudge(e.shiftKey ? -0.1 : -0.5));
     plus.addEventListener('click', (e) => nudge(e.shiftKey ? 0.1 : 0.5));
@@ -519,6 +570,11 @@ BYL.ui = (() => {
       setTimeout(() => (copy.textContent = L('Sao chép')), 1500);
     });
     lines.addEventListener('wheel', () => (state.userScrollUntil = Date.now() + 4000), { passive: true });
+    status.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX) || status.scrollWidth <= status.clientWidth) return;
+      e.preventDefault();
+      status.scrollLeft += e.deltaY;
+    });
     lines.addEventListener('touchmove', () => (state.userScrollUntil = Date.now() + 4000), { passive: true });
     lines.addEventListener('click', (e) => {
       const ln = e.target.closest('.ln');
@@ -921,6 +977,7 @@ BYL.ui = (() => {
       } else if (status === 'error') say(L('{0} {1}: lỗi khi tải. Bấm chip để thử lại.', s.icon, s.name));
       else say(key === 'transcript' ? L('Video này không có phụ đề, hoặc YouTube không cho tải phụ đề lúc này.') : L('{0} không có lời cho bài này.', s.name));
     }
+    orderChips();
     chip.title =
       {
         loading: L('Đang tìm…'),
@@ -930,6 +987,16 @@ BYL.ui = (() => {
         idle: L('Bấm để tải (dùng khi các nguồn khác không đúng)'),
       }[status];
     maybeAutoPick();
+  }
+
+  // The chip in use first, then sources with lyrics, the empty ones last.
+  function orderChips() {
+    const rank = (c) => (c.classList.contains('cur') ? 0 : { ok: 1, loading: 2, idle: 3, error: 3, none: 4 }[[...c.classList].find((x) => x !== 'chip' && x !== 'cur')] ?? 3);
+    for (const c of P.status.children) c.style.order = rank(c);
+    // A newly chosen source comes into view at the start of the line.
+    const cur = state.current?.source || '';
+    if (P.status.dataset.cur !== cur) P.status.scrollLeft = 0;
+    P.status.dataset.cur = cur;
   }
 
   // Source chips: show that source's lyrics; clicking again cycles through
@@ -952,6 +1019,7 @@ BYL.ui = (() => {
 
   function markChips() {
     for (const chip of P.status.children) chip.classList.toggle('cur', state.current?.source === chip.dataset.k);
+    orderChips();
   }
 
   const rank = (c) => [
@@ -1623,6 +1691,23 @@ BYL.ui = (() => {
       }
     }
     O.host.style.setProperty('--lift', Math.round(lift) + 'px');
+  }
+
+  function setMode(mode, byUser) {
+    if (!['view', 'sing', 'edit'].includes(mode)) mode = 'view';
+    P.wrap.dataset.mode = mode;
+    for (const b of P.modeBtns) b.classList.toggle('on', b.dataset.mode === mode);
+    showPage(null);
+    if (byUser) BYL.settings.set({ panelMode: mode });
+  }
+
+  // 🕘 Đã xem / 🎬 Bản Karaoke take the place of the lyrics until ← Quay lại.
+  function showPage(page) {
+    P.lyricTab.hidden = P.nav.hidden = !!page;
+    P.historyTab.hidden = page !== 'history';
+    P.karaokeTab.hidden = page !== 'karaoke';
+    if (page === 'history') renderHistory();
+    if (page === 'karaoke') loadKaraoke();
   }
 
   function setOverlay(on, byUser) {

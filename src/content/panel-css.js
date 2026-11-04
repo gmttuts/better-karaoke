@@ -14,7 +14,7 @@ BYL.PANEL_CSS = `
   .byl { --base: #fff; --fg: #0f0f0f; --fg2: #606060; --chip: rgba(0,0,0,.05); --line: rgba(0,0,0,.1); --raised: #fff;
     --accent: #ff2e63; --accent2: #ffb800;
     color: var(--fg); background: var(--base); border: 1px solid var(--line); border-radius: 12px;
-    overflow: hidden; font-size: 14px; }
+    overflow: hidden; font-size: 14px; position: relative; }
   header { display: flex; align-items: center; gap: 10px; padding: 12px; cursor: pointer; user-select: none; }
   .logo { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px;
     background: linear-gradient(135deg, #ff2e63, #ff8a3d); }
@@ -25,6 +25,7 @@ BYL.PANEL_CSS = `
   .byl.collapsed .chev { transform: rotate(-90deg); }
   .byl.collapsed .body { display: none; }
   nav { display: flex; gap: 2px; margin: 0 12px 10px; padding: 3px; border-radius: 10px; background: var(--chip); }
+  nav[hidden] { display: none; }
   nav button { flex: 1; background: transparent; color: var(--fg2); border-radius: 8px; }
   nav button:hover { background: transparent; color: var(--fg); }
   nav button.on { background: var(--raised); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
@@ -35,13 +36,18 @@ BYL.PANEL_CSS = `
   :host-context(html[dark]) .byl { --base: #0f0f0f; --fg: #f1f1f1; --fg2: #aaa; --chip: rgba(255,255,255,.1); --line: rgba(255,255,255,.2);
     --raised: #3f3f3f; color-scheme: dark; }
   :host-context(html[dark]) select option, :host-context(html[dark]) select optgroup { color: #f1f1f1; background: #272727; }
-  .status { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 12px 8px; }
+  /* Sources on one line that scrolls sideways (wheel too): the one in use
+     first, then those with lyrics, the empty ones last (order from ui.js). */
+  .status { display: flex; gap: 4px; padding: 0 12px 8px; overflow-x: auto; scrollbar-width: none; overscroll-behavior: contain;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+  .status::-webkit-scrollbar { display: none; }
+  .status .chip { flex: none; white-space: nowrap; }
   .chip { font: inherit; font-size: 12px; font-weight: 400; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--fg2);
     border: 1px solid transparent; cursor: pointer; }
   .chip:hover { border-color: var(--line); background: var(--line); }
   .chip.ok { color: var(--fg); }
   .chip.cur { border-color: var(--accent); color: var(--fg); font-weight: 600; }
-  .chip.none { opacity: .6; }
+  .chip.none { opacity: .6; background: transparent; border-color: var(--line); }
   .chip.idle { border: 1px dashed var(--fg2); }
   .chip.loading { cursor: progress; }
   .chip.loading::after { content: ' …'; }
@@ -135,6 +141,35 @@ BYL.PANEL_CSS = `
   .fx .off.on { color: var(--accent, #e8212b); font-weight: 700; }
   .lang { position: relative; font-size: 12px; color: var(--fg2); padding: 4px 6px; border-radius: 8px; white-space: nowrap; }
   .lang:hover { background: var(--chip); }
+
+  /* 🎤 Karaoke switch at the top: red while the lyrics are on the video. */
+  .ksw { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px 5px 10px; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+  .ksw .sw { position: relative; width: 28px; height: 16px; border-radius: 8px; background: rgba(0,0,0,.2); transition: background .15s; }
+  .ksw .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: left .15s; }
+  .ksw.on, .ksw.on:hover { background: var(--accent); color: #fff; }
+  .ksw.on .sw { background: rgba(255,255,255,.38); }
+  .ksw.on .sw::after { left: 14px; }
+  :host-context(html[dark]) .ksw .sw { background: rgba(255,255,255,.25); }
+  :host([data-float]) .ksw .kt { display: none; }
+  button.more { flex: none; width: 32px; height: 32px; padding: 0; background: transparent; font-size: 18px; line-height: 1; color: var(--fg2); }
+  button.more:hover { background: var(--chip); }
+
+  /* ⋯ menu */
+  .menu { position: absolute; right: 10px; top: 52px; z-index: 5; min-width: 230px; padding: 6px; border-radius: 12px; background: var(--raised);
+    box-shadow: 0 8px 30px rgba(0,0,0,.22); display: flex; flex-direction: column; }
+  .menu[hidden] { display: none; }
+  .menu > button, .menu > .lang { display: block; width: 100%; text-align: left; padding: 8px 10px; border-radius: 8px; background: transparent;
+    font-size: 13px; font-weight: 400; color: var(--fg); }
+  .menu > button:hover, .menu > .lang:hover { background: var(--chip); }
+  .menu > button.fav { font-size: 13px; line-height: 1.4; }
+  .menu > button.fav.on { color: var(--fg); }
+
+  /* Modes: a row with data-m shows only in its mode. */
+  .byl[data-mode=view] [data-m]:not([data-m~=view]), .byl[data-mode=sing] [data-m]:not([data-m~=sing]),
+  .byl[data-mode=edit] [data-m]:not([data-m~=edit]) { display: none !important; }
+  .row.page { padding-top: 2px; }
+  .row.page b { font-size: 14px; }
   .lang select { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; font-size: 14px; }
 
   .studio { margin: 0 12px 10px; padding: 4px 12px 12px; border-radius: 12px; background: var(--chip); }

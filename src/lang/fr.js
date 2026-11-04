@@ -367,4 +367,11 @@
   "Màu tô nền chữ đã hát": "Couleur du surligneur derrière les mots chantés",
   "Phát sáng": "Lueur",
   "Phủ mờ": "Ombre dégradée",
+  "Lời": "Paroles",
+  "👀 Xem lời": "👀 Paroles",
+  "🎤 Hát": "🎤 Chanter",
+  "✏️ Chỉnh lời": "✏️ Modifier",
+  "Quay lại": "Retour",
+  "Thêm": "Plus",
+  "Chấm điểm": "Score",
 };

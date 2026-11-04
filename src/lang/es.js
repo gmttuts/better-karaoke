@@ -367,4 +367,11 @@
   "Màu tô nền chữ đã hát": "Color de resaltado tras las palabras cantadas",
   "Phát sáng": "Brillo",
   "Phủ mờ": "Sombreado",
+  "Lời": "Letra",
+  "👀 Xem lời": "👀 Letra",
+  "🎤 Hát": "🎤 Cantar",
+  "✏️ Chỉnh lời": "✏️ Editar",
+  "Quay lại": "Volver",
+  "Thêm": "Más",
+  "Chấm điểm": "Puntuación",
 };

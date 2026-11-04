@@ -5,6 +5,10 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 ## Tính năng
 
 - **Panel lời bài hát** ở cột bên phải video: tô sáng dòng đang hát và tự cuộn. Bấm vào một dòng để tua tới đó (với lời có thời gian).
+  - **3 chế độ** ngay dưới tên bài, mỗi chế độ chỉ hiện các nút cần cho việc đó: **👀 Xem lời** (lời, song ngữ), **🎤 Hát** (tông, lọc giọng, chấm điểm, kiểu chữ trên video), **✏️ Chỉnh lời** (chọn bản lời, canh nhịp, độ lệch, sửa lời, xuất file). Lời và các thẻ nguồn có ở cả 3 chế độ.
+  - **Công tắc 🎤 Karaoke** trên đầu panel bật / tắt lời trên video ở bất kỳ chế độ nào (đỏ là đang bật, phím Alt L).
+  - **Thẻ nguồn lời** nằm trên một hàng cuộn ngang (lăn chuột cũng được): nguồn đang dùng đứng đầu, rồi các nguồn có lời, nguồn trống nằm cuối.
+  - **Menu ⋯**: ☆ yêu thích, 🕘 Đã xem, 🎬 Bản Karaoke, ⧉ Cửa sổ nổi, 🔍 Tìm theo tên, 🌐 ngôn ngữ giao diện.
 - **Karaoke trên video** (nút 🎤 Karaoke): chữ đổi màu mượt theo nhịp hát, dùng được khi toàn màn hình, chữ tự to theo kích thước video. Các kiểu chữ có sẵn ở "Kiểu chữ":
   - **Karaoke xanh dương** (mặc định) / **Karaoke đỏ**: giống đĩa karaoke Việt, chữ Roboto đậm (đổi sang chữ hẹp karaoke trong 🎨), trắng ánh bạc viền đen; phần đã hát chuyển xanh dương (hoặc đỏ) viền trắng, có bóng đổ, hai dòng so le.
   - **Nổi bật**: một dòng lớn, phần đã hát chuyển màu vàng sang hồng, dòng kế tiếp nhỏ bên dưới.
@@ -49,7 +53,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **⏱ Gõ nhịp**: phát bài, bấm **Space** đúng lúc bắt đầu hát dòng có viền; mỗi lần bấm ghi thời gian cho một dòng. **Backspace** lùi một dòng và tua lại 3 giây; bấm vào một dòng để gõ lại từ đó. Dòng bị bỏ qua được ước lượng theo hai dòng bên cạnh. Kết quả lưu thành "✍ Lời của bạn" có thời gian. Mỗi video giữ được hai bản của bạn, nên gõ nhịp lời gốc không ghi đè lên bản dịch đang hiện.
 - **Kéo thanh dưới khung lời** để thu gọn hoặc mở rộng; độ cao được nhớ lại. Nháy đúp thanh để về mặc định.
 - **🔍 Tìm theo tên**: extension đoán sai tên bài hoặc ca sĩ? Gõ lại rồi bấm Tìm, mọi nguồn chạy lại theo tên mới. Tên sửa được nhớ cho video đó (hiện dấu ✎ cạnh tên ca sĩ); bấm "Dùng tên tự đoán" để bỏ.
-- **Tab "Đã xem"**: các bài đã mở, mới nhất trước, kèm số lần xem. Bấm ☆ cạnh tên bài (hoặc trong danh sách) để đánh dấu **★ yêu thích**; lọc "★ Yêu thích" để xem riêng. "Xoá lịch sử" giữ lại bài yêu thích. Lịch sử nằm trong file sao lưu.
+- **🕘 Đã xem** (trong menu ⋯): các bài đã mở, mới nhất trước, kèm số lần xem. Bấm ☆ cạnh tên bài (hoặc trong danh sách) để đánh dấu **★ yêu thích**; lọc "★ Yêu thích" để xem riêng. "Xoá lịch sử" giữ lại bài yêu thích. Lịch sử nằm trong file sao lưu.
 - **Sao chép** lời, **Mở nguồn** để xem trang gốc.
 - **🎚 Tông** (♭ ♯, Alt ↑ ↓): nâng / hạ tông bài hát từng nửa cung (tới ±6) mà không đổi tốc độ, để vừa giọng người hát. Tông được nhớ theo từng video; bấm số tông để về tông gốc. Chạy ngay trên máy (phase vocoder trong AudioWorklet, `src/audio/pitch-worklet.js`), trễ khoảng 65 ms. 🎙 Chấm điểm tự tính theo tông mới.
 - **🎤 Lọc giọng** (Alt V): giảm giọng ca sĩ để tự hát trên bài gốc khi không có bản karaoke, kéo thanh để chỉnh mức lọc. Âm thanh được chia theo từng dải tần, và chỉ phần vừa nằm giữa hai loa, vừa ở dải giọng người, vừa ngân dài như nốt hát mới bị giảm. Trống, bass, nhạc cụ lệch hai bên và tiếng cao vẫn giữ, nên bài không bị "rỗng". Tuỳ bài: thường giảm được phần lớn giọng nhưng vẫn còn vang và bè; bài thu mono hoặc có nhạc cụ ngân dài đặt giữa (piano, pad) thì kém hơn.
@@ -104,7 +108,7 @@ src/
     romanize.js        Phiên âm Latin cho lời Hàn / Nhật (kana) / Trung
     ui-editor.js       ✏️ Sửa lời / tự nhập lời
     ui-tap.js          ⏱ Gõ nhịp
-    ui-tabs.js         Tab "Bản Karaoke" và "Đã xem" (lịch sử, ★ yêu thích)
+    ui-tabs.js         Trang "Bản Karaoke" và "Đã xem" (lịch sử, ★ yêu thích)
     history.js         Lưu lịch sử bài đã xem và bài yêu thích
     export.js          Xuất .lrc / .srt / .ass, chuyển lời sang trang gửi LRCLIB
     ocr.js             🔠 Đọc chữ trên video: quét khung hình, gom các dòng chữ thành lời có thời gian

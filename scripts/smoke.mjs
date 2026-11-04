@@ -73,7 +73,7 @@ try {
   check('Panel hiện cạnh video', panel);
   if (EN) {
     const tabs = await ev(`return [...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('nav button')].map((b) => b.textContent).join()`);
-    check('Panel in English', tabs === 'Lyrics,Karaoke,History', tabs);
+    check('Panel in English', tabs === '👀 Lyrics,🎤 Sing,✏️ Edit', tabs);
     // 🌐 on the panel switches the language on the spot, keeping the song.
     const pick = (code) => ev(`
       const sr = document.getElementById('byl-panel-host').shadowRoot;
@@ -92,7 +92,7 @@ try {
     const ja = await pick('ja');
     check('🌐 đổi sang 日本語 ngay', /JA/.test(ja?.lang) && !/Lyrics|Lời/.test(ja?.tabs) && ja.song === ja.before && ja.hosts === 1, JSON.stringify(ja));
     const back = await pick('en');
-    check('🌐 đổi lại English', back?.tabs === 'Lyrics,Karaoke,History' && back.hosts === 1, JSON.stringify(back));
+    check('🌐 đổi lại English', back?.tabs === '👀 Lyrics,🎤 Sing,✏️ Edit' && back.hosts === 1, JSON.stringify(back));
     throw 'done';
   }
   await sleep(4000);
@@ -149,7 +149,7 @@ try {
   // Pick timed lyrics when the video has some (⏱ / 🎯 in the list).
   for (let t = 0; t < 15; t++) {
     const picked = await ev(`
-      const sel = document.getElementById('byl-panel-host').shadowRoot.querySelector('select');
+      const sel = document.getElementById('byl-panel-host').shadowRoot.querySelector('select.src');
       const o = [...sel.options].find((o) => /⏱|🎯/.test(o.textContent));
       if (!o) return false;
       if (sel.value !== o.value) { sel.value = o.value; sel.dispatchEvent(new Event('change')); }
@@ -212,7 +212,7 @@ try {
     check('Trang gửi LRCLIB mở và điền sẵn lời', !!filled?.track && filled.lines > 3 && filled.send === true, JSON.stringify(filled) + ' ' + (filled ? '' : note + ' ' + targetInfos.map((t) => t.url).join(' ')));
   }
   // 🎙 opens the score window, which connects to this tab.
-  await ev(`[...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('button')].find((b) => b.textContent.trim() === '🎙').click()`);
+  await ev(`[...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('button')].find((b) => b.textContent.trim().startsWith('🎙')).click()`);
   await sleep(3000);
   {
     const { result: { targetInfos } } = await send('Target.getTargets');

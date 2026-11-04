@@ -367,4 +367,11 @@
   "Màu tô nền chữ đã hát": "Warna stabilo di belakang kata yang sudah dinyanyikan",
   "Phát sáng": "Berpendar",
   "Phủ mờ": "Bayangan",
+  "Lời": "Lirik",
+  "👀 Xem lời": "👀 Lirik",
+  "🎤 Hát": "🎤 Nyanyi",
+  "✏️ Chỉnh lời": "✏️ Edit",
+  "Quay lại": "Kembali",
+  "Thêm": "Lainnya",
+  "Chấm điểm": "Skor",
 };
