@@ -1521,6 +1521,15 @@ BYL.ui = (() => {
   const renderers = () => [state.overlayOn ? O : null, F].filter(Boolean);
 
   function frame() {
+    // An ad: hide the lyrics on the video and leave the panel where the song
+    // stopped; everything picks up again when the video comes back.
+    if (BYL.adShowing()) {
+      if (state.lastActive !== -3) {
+        state.lastActive = -3;
+        for (const R of renderers()) drawLines(R, null);
+      }
+      return;
+    }
     const v = video();
     if (v) editorTick(v.currentTime);
     if (F_TICK) F_TICK();

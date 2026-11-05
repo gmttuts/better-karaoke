@@ -58,7 +58,7 @@
     // Title and artist the user typed in (🔍 Tìm theo tên) win over the guess.
     const fixed = (await BYL.videoStore.get(videoId))?.song;
     if (fixed?.title) Object.assign(song, { title: fixed.title, artist: fixed.artist || '', manual: true });
-    const duration = player?.lengthSeconds || BYL.playerEl()?.querySelector('video')?.duration || 0;
+    const duration = player?.lengthSeconds || (!BYL.adShowing() && BYL.playerEl()?.querySelector('video')?.duration) || 0;
     BYL.ui.setSong(song, duration, player?.author || info.author);
 
     const ctx = { videoId, song, duration, next, player, settings };

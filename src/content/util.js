@@ -32,6 +32,9 @@ BYL.DEFAULTS = {
 // Shorts play in their own player and page layout.
 BYL.isShorts = () => location.pathname.startsWith('/shorts/');
 BYL.playerEl = () => document.getElementById(BYL.isShorts() ? 'shorts-player' : 'movie_player');
+// While an ad plays, the <video> holds the ad: its time and length say
+// nothing about the song.
+BYL.adShowing = () => !!BYL.playerEl()?.classList.contains('ad-showing');
 
 // The look edits and saved presets live in storage.local: storage.sync caps
 // each item at 8 KB (about 20 presets) and limits writes per minute. The

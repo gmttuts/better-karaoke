@@ -240,7 +240,7 @@ BYL.ocr = (() => {
   async function scan(video, onProgress, skip = []) {
     if (job) throw new Error('busy');
     const me = (job = { stop: false });
-    const ad = () => !!BYL.playerEl()?.classList.contains('ad-showing');
+    const ad = BYL.adShowing;
     // Wait out ads and the video still loading (its length unknown).
     for (let i = 0; i < 240 && !me.stop && (ad() || !(video.duration > 0) || video.readyState < 1); i++) await sleep(500);
     if (!(video.duration > 0)) {
