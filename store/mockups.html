@@ -5,7 +5,9 @@
 <title>Store mockups</title>
 <!-- Chrome Web Store images built around real screenshots of the extension on
      YouTube (store/shots/*.png). Rendered by scripts/store-assets.mjs:
-     ?scene=hero|styles|karaoke|sound|promo|marquee&lang=vi|en -->
+     ?scene=hero|styles|karaoke|sound|studio|promo|marquee&lang=vi|en
+     shots/style-*.png are 1280 wide (theater, dark); panel-, sing-, studio-*.png
+     are 1440 wide (default layout, light). -->
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; font-family: Roboto, -apple-system, 'Segoe UI', Arial, sans-serif; color: #fff; background: #0f0f14; overflow: hidden; }
@@ -42,30 +44,36 @@
     vi: {
       heroH: 'Lời bài hát <em>ngay trên YouTube</em>',
       heroS: 'Mở video nhạc là có lời: dòng đang hát sáng lên và tự cuộn, karaoke chạy ngay trên video.',
-      heroC: [['🔎 Tự tìm lời', 'Mô tả, comment, LRCLIB, Hợp âm chuẩn, Genius, phụ đề'], ['🎤 Karaoke trên video', 'Chữ đổi màu theo nhịp hát'], ['🎯 Canh lời dễ', 'Theo phụ đề, gõ nhịp Space, ghim 📍'], ['🌐 12 ngôn ngữ', 'Đổi ngay trên panel']],
+      heroC: [['🔎 Tự tìm lời', 'Mô tả, comment, LRCLIB, Hợp âm chuẩn, Genius, phụ đề'], ['🎤 Karaoke trên video', 'Chữ đổi màu theo nhịp hát, bật tắt ngay trên thanh điều khiển'], ['🧭 4 chế độ gọn', 'Xem lời · Hát · Chỉnh lời · Karaoke'], ['🌐 12 ngôn ngữ', 'Đổi ngay trên đầu panel']],
       stylesH: '9 kiểu <em>phụ đề karaoke</em>',
-      stylesS: 'Chọn một kiểu có sẵn, hoặc tự chỉnh màu, phông, viền, nền rồi lưu thành preset. Ghim 📌 riêng cho từng kênh.',
+      stylesS: 'Chọn một kiểu có sẵn, bấm 🎲 thử kiểu ngẫu nhiên, hoặc tự chỉnh rồi lưu thành preset. Ghim 📌 riêng cho từng kênh.',
+      studioH: 'Kiểu chữ <em>theo ý bạn</em>',
+      studioS: 'Bấm 🎲 để thử kiểu mới, chỉnh từng phần, ↺ để về mặc định, rồi lưu thành preset của riêng bạn.',
+      studioC: ['🎲 Ngẫu nhiên', '↺ Mặc định', '💾 Lưu preset', 'Phông · Màu · Viền · Nền', 'Chuyển màu · Phát sáng', '📌 Theo kênh'],
       karaH: 'Hát theo <em>từng chữ</em> trên video',
       karaS: 'Chữ đổi màu đúng lúc ca sĩ hát, cả khi xem toàn màn hình, chế độ rạp và YouTube Shorts.',
       karaC: ['Toàn màn hình', 'Shorts', 'Cửa sổ nổi ⧉', 'Song ngữ 🌐', 'Phiên âm Hàn · Nhật · Trung 🔤'],
       soundH: 'Hát trên <em>bài gốc</em>',
       soundS: 'Không cần bản karaoke: đổi tông và lọc giọng ca sĩ ngay trong trình duyệt.',
-      soundC: [['🎚 Đổi tông', 'Nâng, hạ nửa cung mà không đổi tốc độ. Nhớ riêng cho từng video.'], ['🎤 Lọc giọng', 'Bớt giọng ca sĩ, giữ lại tiếng đàn, trống và bass.'], ['🎙 Chấm điểm', 'Hát vào micro, mỗi dòng có điểm: đủ lời, đúng nốt.'], ['⬇ Xuất LRC · SRT · ASS', 'Phụ đề karaoke đúng kiểu chữ, ghép cứng vào video của bạn.']],
+      soundC: [['🎚 Đổi tông', 'Nâng, hạ nửa cung mà không đổi tốc độ. Nhớ riêng cho từng video.'], ['🎤 Lọc giọng', 'Giảm rõ giọng ca sĩ, giữ lại tiếng đàn, trống và bass. Kéo thanh để chỉnh mức.'], ['🎙 Chấm điểm', 'Hát vào micro, mỗi dòng có điểm: đủ lời, đúng nốt.'], ['⬇ Xuất LRC · SRT · ASS', 'Phụ đề karaoke đúng kiểu chữ, ghép cứng vào video của bạn.']],
       tag: 'Lời bài hát & karaoke ngay trên YouTube',
       names: { red: 'Karaoke đỏ', classic: 'Karaoke xanh dương', focus: 'Nổi bật', box: 'Khung tối', captions: 'Phụ đề YouTube', cinema: 'Dải điện ảnh', mini: 'Gọn nhẹ', fade: 'Sáng dần', big: 'Chữ lớn' },
     },
     en: {
       heroH: 'Song lyrics <em>right on YouTube</em>',
       heroS: 'Open a music video and the lyrics are there: the sung line lights up and scrolls, with karaoke on the video.',
-      heroC: [['🔎 Finds lyrics', 'Description, comments, LRCLIB, Genius, captions'], ['🎤 Karaoke on video', 'Words light up as they are sung'], ['🎯 Easy timing', 'Sync to captions, tap with Space, pin 📍'], ['🌐 12 languages', 'Switch from the panel']],
+      heroC: [['🔎 Finds lyrics', 'Description, comments, LRCLIB, Genius, captions'], ['🎤 Karaoke on video', 'Words light up as they are sung, one click on the player'], ['🧭 Four simple modes', 'Lyrics · Sing · Edit · Karaoke'], ['🌐 12 languages', 'Switch right at the top of the panel']],
       stylesH: '9 <em>karaoke subtitle</em> styles',
-      stylesS: 'Pick a built-in style, or tune colours, font, outline and background and save it as a preset. Pin 📌 one per channel.',
+      stylesS: 'Pick a built-in style, roll 🎲 for a random one, or tune it and save it as a preset. Pin 📌 one per channel.',
+      studioH: 'Your own <em>subtitle style</em>',
+      studioS: 'Roll 🎲 for a fresh look, fine-tune each part, ↺ to start over, then save it as your own preset.',
+      studioC: ['🎲 Random', '↺ Default', '💾 Save preset', 'Font · Colour · Outline · Background', 'Gradient · Glow', '📌 Per channel'],
       karaH: 'Sing along <em>word by word</em>',
       karaS: 'Words change colour right as they are sung, in full screen, theater mode and on YouTube Shorts.',
       karaC: ['Full screen', 'Shorts', 'Floating window ⧉', 'Translations 🌐', 'Korean · Japanese · Chinese romanization 🔤'],
       soundH: 'Sing over <em>the original</em>',
       soundS: 'No karaoke version needed: change the key and cut the vocals right in your browser.',
-      soundC: [['🎚 Change the key', 'Semitones up or down at the same speed, remembered per video.'], ['🎤 Vocal cut', 'Turns the singer down, keeps the band, drums and bass.'], ['🎙 Scoring', 'Sing into your mic and get a mark for every line.'], ['⬇ Export LRC · SRT · ASS', 'Styled karaoke subtitles to burn into your own video.']],
+      soundC: [['🎚 Change the key', 'Semitones up or down at the same speed, remembered per video.'], ['🎤 Vocal cut', 'Turns the singer well down, keeps the band, drums and bass. Slide to set how much.'], ['🎙 Scoring', 'Sing into your mic and get a mark for every line.'], ['⬇ Export LRC · SRT · ASS', 'Styled karaoke subtitles to burn into your own video.']],
       tag: 'Song lyrics & karaoke right on YouTube',
       names: { red: 'Karaoke red', classic: 'Karaoke blue', focus: 'Spotlight', box: 'Dark box', captions: 'YouTube captions', cinema: 'Cinema band', mini: 'Compact', fade: 'Fade in', big: 'Big words' },
     },
@@ -78,8 +86,11 @@
   };
   const brand = '<div class="brand"><img src="../icons/icon128.png">Better Karaoke</div>';
   // A window onto part of a 1280×800 screenshot: (x, y, w, h) of the source shown at `scale`.
-  const crop = (src, x, y, w, h, scale) =>
-    `<div class="crop" style="width:${w * scale}px;height:${h * scale}px"><img src="shots/${src}.png" style="width:${1280 * scale}px;left:${-x * scale}px;top:${-y * scale}px"></div>`;
+  const crop = (src, x, y, w, h, scale, full = src.startsWith('style-') ? 1280 : 1440) =>
+    `<div class="crop" style="width:${w * scale}px;height:${h * scale}px"><img src="shots/${src}.png" style="width:${full * scale}px;left:${-x * scale}px;top:${-y * scale}px"></div>`;
+  // The default layout at 1440 wide: video and panel.
+  const PANEL = [1021, 68, 388];
+  const PLAYER = [16, 68, 989, 556];
   // The 4:3 video in the theater-mode screenshots.
   const VIDEO = [212, 56, 840, 630];
 
@@ -87,7 +98,7 @@
   if (scene === 'hero') {
     html = `<div class="stage">${brand}<h1>${T.heroH}</h1><p class="sub">${T.heroS}</p>
       <div style="display:flex;gap:26px;align-items:flex-start">
-        <div class="frame" style="width:900px">${crop('panel-' + lang, 0, 0, 1280, 800, 900 / 1280)}</div>
+        <div class="frame" style="width:900px">${crop('panel-' + lang, 0, 0, 1440, 860, 900 / 1440)}</div>
         <div class="cards" style="flex:1">${T.heroC.map(([b, s]) => `<div class="card" style="padding:13px 15px"><b style="font-size:17px">${b}</b><span style="font-size:14px">${s}</span></div>`).join('')}</div>
       </div></div>`;
   } else if (scene === 'styles') {
@@ -102,7 +113,16 @@
     html = `<div class="stage">${brand}<h1>${T.soundH}</h1><p class="sub">${T.soundS}</p>
       <div style="display:flex;gap:40px;align-items:flex-start">
         <div class="cards" style="width:560px">${T.soundC.map(([b, s]) => `<div class="card"><b>${b}</b><span>${s}</span></div>`).join('')}</div>
-        <div class="frame" style="background:#fff">${crop('panel-' + lang, 906, 68, 342, 590, 1.0)}</div>
+        <div class="frame" style="background:#fff">${crop('sing-' + lang, PANEL[0], PANEL[1], PANEL[2], 560, 1.0)}</div>
+      </div></div>`;
+  } else if (scene === 'studio') {
+    html = `<div class="stage">${brand}<h1>${T.studioH}</h1><p class="sub" style="margin-bottom:22px">${T.studioS}</p>
+      <div style="display:flex;gap:28px;align-items:flex-start">
+        <div style="flex:1">
+          <div class="frame">${crop('studio-' + lang, ...PLAYER, 790 / 989)}</div>
+          <div class="chips">${T.studioC.map((c) => `<span>${c}</span>`).join('')}</div>
+        </div>
+        <div class="frame" style="background:#fff">${crop('studio-' + lang, PANEL[0], 420, PANEL[2], 600, 0.92)}</div>
       </div></div>`;
   } else if (scene === 'promo') {
     html = `<div class="stage" style="width:440px;height:280px;padding:26px 28px;display:flex;flex-direction:column;justify-content:space-between;

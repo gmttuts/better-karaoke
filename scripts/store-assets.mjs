@@ -1,7 +1,7 @@
 // Renders the Chrome Web Store images in headless Chrome:
-//   store/{vi,en}/1-hero.png … (1280×800) from store/mockups.html, around the
-//   real screenshots in store/shots/; store/vi/5-studio.png from store/assets.html;
-//   store/promo-440x280.png and store/{vi,en}/marquee-1400x560.png.
+//   store/{vi,en}/1-hero.png … 5-studio.png (1280×800) from store/mockups.html,
+//   around the real screenshots in store/shots/; store/promo-440x280.png and
+//   store/{vi,en}/marquee-1400x560.png.
 //   node scripts/store-assets.mjs
 import { spawn } from 'child_process';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
@@ -40,9 +40,9 @@ try {
   const { result: { sessionId } } = await send('Target.attachToTarget', { targetId, flatten: true });
   const shots = [];
   for (const lang of ['vi', 'en'])
-    for (const [i, scene] of ['hero', 'styles', 'karaoke', 'sound'].entries())
+    for (const [i, scene] of ['hero', 'styles', 'karaoke', 'sound', 'studio'].entries())
       shots.push(['mockups', `scene=${scene}&lang=${lang}`, 1280, 800, `${lang}/${i + 1}-${scene}`]);
-  shots.push(['assets', 'scene=2', 1280, 800, 'vi/5-studio'], ['mockups', 'scene=promo', 440, 280, 'promo-440x280'], ['mockups', 'scene=marquee&lang=vi', 1400, 560, 'vi/marquee-1400x560'], ['mockups', 'scene=marquee&lang=en', 1400, 560, 'en/marquee-1400x560']);
+  shots.push(['mockups', 'scene=promo', 440, 280, 'promo-440x280'], ['mockups', 'scene=marquee&lang=vi', 1400, 560, 'vi/marquee-1400x560'], ['mockups', 'scene=marquee&lang=en', 1400, 560, 'en/marquee-1400x560']);
   for (const lang of ['vi', 'en']) mkdirSync(join(root, 'store', lang), { recursive: true });
   for (const [page, query, w, hgt, name] of shots) {
     await send('Emulation.setDeviceMetricsOverride', { width: w, height: hgt, deviceScaleFactor: 1, mobile: false }, sessionId);
