@@ -2136,6 +2136,7 @@ BYL.ui = (() => {
       span.append(el('span', 'b', w));
       if (track) {
         const f = el('span', 'f', w);
+        f.dataset.t = w;
         f.setAttribute('aria-hidden', 'true');
         span.append(f);
         R.words.push({ span, start: total, end: total + w.length, p: -1 });

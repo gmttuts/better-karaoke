@@ -139,8 +139,11 @@ BYL.look = (() => {
     /* The sung layer's outline pokes out past the word box, so an unsung word
        would show a sliver of it at its left edge: hide it until it starts. */
     .w:not(.s) .f { visibility: hidden; }
-    :host([data-grad]) .w .f { background: linear-gradient(90deg, var(--sung), var(--sung2)); -webkit-background-clip: text;
-      background-clip: text; color: transparent; }
+    /* Chuyển màu: the gradient on its own layer over the sung word, like the
+       silver sheen: on the word itself its outline would cover the colours. */
+    :host([data-grad]) .w .f::after { content: attr(data-t); position: absolute; left: 0; top: 0; -webkit-text-stroke: 0;
+      background: linear-gradient(90deg, var(--sung), var(--sung2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    :host([data-grad][data-mark]) .w .f::after { content: none; }
     .prev, .next { font-size: var(--next, .8em); }
     .prev { opacity: .6; margin-bottom: .15em; }
     .next { opacity: .8; margin-top: .2em; }
