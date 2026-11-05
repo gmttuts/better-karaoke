@@ -36,12 +36,12 @@ BYL.PANEL_CSS = `
   :host-context(html[dark]) .byl { --base: #0f0f0f; --fg: #f1f1f1; --fg2: #aaa; --chip: rgba(255,255,255,.1); --line: rgba(255,255,255,.2);
     --raised: #3f3f3f; color-scheme: dark; }
   :host-context(html[dark]) select option, :host-context(html[dark]) select optgroup { color: #f1f1f1; background: #272727; }
-  /* Sources on one line that scrolls sideways (wheel too): the one in use
-     first, then those with lyrics, the empty ones last (order from ui.js). */
-  .status { display: flex; gap: 4px; padding: 0 12px 8px; overflow-x: auto; scrollbar-width: none; overscroll-behavior: contain;
-    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
-  .status::-webkit-scrollbar { display: none; }
+  /* Sources on two lines at most (+N for the rest): the one in use first,
+     then those with lyrics, the empty ones last (order from ui.js). */
+  .status { display: flex; flex-wrap: wrap; gap: 5px 4px; padding: 0 12px 8px; }
   .status .chip { flex: none; white-space: nowrap; }
+  .status .chip[hidden] { display: none; }
+  .status .chip.more { font-weight: 600; color: var(--fg); }
   .chip { font: inherit; font-size: 12px; font-weight: 400; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--fg2);
     border: 1px solid transparent; cursor: pointer; }
   .chip:hover { border-color: var(--line); background: var(--line); }
@@ -152,6 +152,9 @@ BYL.PANEL_CSS = `
   .ksw.on .sw::after { left: 14px; }
   :host-context(html[dark]) .ksw .sw { background: rgba(255,255,255,.25); }
   :host([data-float]) .ksw .kt { display: none; }
+  /* A narrow side column: room for the song's name before the buttons. */
+  .byl { container-type: inline-size; }
+  @container (max-width: 380px) { .ksw .kt, .logo { display: none; } }
   button.more { flex: none; width: 32px; height: 32px; padding: 0; background: transparent; font-size: 18px; line-height: 1; color: var(--fg2); }
   button.more:hover { background: var(--chip); }
 

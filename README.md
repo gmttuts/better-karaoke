@@ -7,7 +7,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **Panel lời bài hát** ở cột bên phải video: tô sáng dòng đang hát và tự cuộn. Bấm vào một dòng để tua tới đó (với lời có thời gian).
   - **4 thẻ** ngay dưới tên bài, mỗi chế độ chỉ hiện các nút cần cho việc đó: **👀 Xem lời** (lời, song ngữ), **🎤 Hát** (tông, lọc giọng, chấm điểm, kiểu chữ trên video), **✏️ Chỉnh lời** (chọn bản lời, canh nhịp, độ lệch, sửa lời, xuất file), **🎬 Karaoke** (các bản karaoke của bài trên YouTube, thay chỗ lời). Lời và các thẻ nguồn có ở 3 chế độ đầu.
   - **Công tắc 🎤 Karaoke** trên đầu panel bật / tắt lời trên video ở bất kỳ chế độ nào (đỏ là đang bật, phím Alt L). Thanh điều khiển của YouTube cũng có nút 🎤 cạnh nút CC, có vạch đỏ khi đang bật, nên tắt bật được ngay trên video, kể cả khi toàn màn hình. Hai nút luôn khớp nhau.
-  - **Thẻ nguồn lời** nằm trên một hàng cuộn ngang (lăn chuột cũng được): nguồn đang dùng đứng đầu, rồi các nguồn có lời, nguồn trống nằm cuối.
+  - **Thẻ nguồn lời** tự xuống dòng, tối đa 2 dòng: nguồn đang dùng đứng đầu, rồi các nguồn có lời, nguồn trống nằm cuối. Không đủ chỗ thì các thẻ cuối gom vào nút **+N**, bấm để hiện hết, bấm ▴ để thu lại.
   - **🌐 ngôn ngữ giao diện** (ví dụ 🌐 VI) nằm ngay trên đầu, cạnh công tắc Karaoke.
   - **Menu ⋯**: ☆ yêu thích, 🕘 Đã xem, ⧉ Cửa sổ nổi, 🔍 Tìm theo tên.
 - **Karaoke trên video** (nút 🎤 Karaoke): chữ đổi màu mượt theo nhịp hát, dùng được khi toàn màn hình, chữ tự to theo kích thước video. Các kiểu chữ có sẵn ở "Kiểu chữ":

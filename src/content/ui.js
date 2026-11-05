@@ -572,11 +572,19 @@ BYL.ui = (() => {
       setTimeout(() => (copy.textContent = L('Sao chép')), 1500);
     });
     lines.addEventListener('wheel', () => (state.userScrollUntil = Date.now() + 4000), { passive: true });
-    status.addEventListener('wheel', (e) => {
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX) || status.scrollWidth <= status.clientWidth) return;
-      e.preventDefault();
-      status.scrollLeft += e.deltaY;
+    // Chips wrap onto two lines at most; the rest wait behind +N.
+    const chipMore = el('button', 'chip more');
+    chipMore.addEventListener('click', () => {
+      state.chipsOpen = !state.chipsOpen;
+      fitChips();
     });
+    P.chipMore = chipMore;
+    let chipsWidth = 0;
+    new ResizeObserver(() => {
+      if (status.clientWidth === chipsWidth) return;
+      chipsWidth = status.clientWidth;
+      fitChips();
+    }).observe(status);
     lines.addEventListener('touchmove', () => (state.userScrollUntil = Date.now() + 4000), { passive: true });
     lines.addEventListener('click', (e) => {
       const ln = e.target.closest('.ln');
@@ -994,11 +1002,35 @@ BYL.ui = (() => {
   // The chip in use first, then sources with lyrics, the empty ones last.
   function orderChips() {
     const rank = (c) => (c.classList.contains('cur') ? 0 : { ok: 1, loading: 2, idle: 3, error: 3, none: 4 }[[...c.classList].find((x) => x !== 'chip' && x !== 'cur')] ?? 3);
-    for (const c of P.status.children) c.style.order = rank(c);
-    // A newly chosen source comes into view at the start of the line.
-    const cur = state.current?.source || '';
-    if (P.status.dataset.cur !== cur) P.status.scrollLeft = 0;
-    P.status.dataset.cur = cur;
+    for (const c of P.status.querySelectorAll('[data-k]')) c.style.order = rank(c);
+    fitChips();
+  }
+
+  // Two lines of chips at most: the last ones (the empty sources, by the
+  // order above) give way to a +N chip that shows them all, and ▴ folds
+  // them back.
+  function fitChips() {
+    const box = P.status;
+    const more = P.chipMore;
+    const chips = [...box.querySelectorAll('[data-k]')].sort((a, b) => a.style.order - b.style.order);
+    for (const c of chips) c.hidden = false;
+    more.style.order = 99;
+    more.hidden = true;
+    if (more.parentElement !== box) box.append(more);
+    const lines = () => new Set([...box.children].filter((c) => !c.hidden).map((c) => c.offsetTop)).size;
+    if (!box.clientWidth || lines() <= 2) return;
+    more.hidden = false;
+    if (state.chipsOpen) {
+      more.textContent = '▴';
+      more.title = '';
+      return;
+    }
+    let hid = 0;
+    for (let i = chips.length - 1; i > 0 && lines() > 2; i--, hid++) {
+      chips[i].hidden = true;
+      more.textContent = '+' + (hid + 1);
+    }
+    more.title = chips.filter((c) => c.hidden).map((c) => c.textContent).join(' · ');
   }
 
   // Source chips: show that source's lyrics; clicking again cycles through
@@ -1020,7 +1052,7 @@ BYL.ui = (() => {
   }
 
   function markChips() {
-    for (const chip of P.status.children) chip.classList.toggle('cur', state.current?.source === chip.dataset.k);
+    for (const chip of P.status.querySelectorAll('[data-k]')) chip.classList.toggle('cur', state.current?.source === chip.dataset.k);
     orderChips();
   }
 
