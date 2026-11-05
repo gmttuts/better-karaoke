@@ -25,7 +25,6 @@
   "Bấm để đưa về 0 và bỏ các mốc 📍": "Click to reset to 0 and remove the 📍 points",
   "Bật / tắt lời trên video": "Lyrics on the video on / off",
   "Bật trên YouTube": "On for YouTube",
-  "Bỏ chỉnh": "Discard edits",
   "Bỏ khỏi bài yêu thích": "Remove from favourites",
   "Bố cục": "Layout",
   "Ca sĩ": "Artist",
@@ -374,4 +373,9 @@
   "Quay lại": "Back",
   "Thêm": "More",
   "Chấm điểm": "Score",
+  "🎲 Ngẫu nhiên": "🎲 Random",
+  "Thử một kiểu ngẫu nhiên": "Try a random look",
+  "↺ Mặc định": "↺ Default",
+  "Ngẫu nhiên: {0}": "Random: {0}",
+  "Mặc định: {0}": "Default: {0}",
 };

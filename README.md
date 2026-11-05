@@ -20,9 +20,9 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
   - **Chữ lớn**: một dòng chữ in hoa rất to giữa màn hình, viền đen dày, hát tới đâu vàng tới đó (kiểu video TikTok, Shorts).
   - **Gọn nhẹ**: một dòng nhỏ dạng viên thuốc, ít che video.
 
-  - **🎨 Tuỳ chỉnh** (chia nhóm Chữ / Màu / Nền / Bố cục): phông chữ, độ đậm, cỡ chữ, giãn chữ, in hoa, màu chữ / màu đã hát (có chuyển màu), độ rõ chữ chưa hát (kéo về 0 thành chữ rỗng), tô nền bút dạ quang, viền, bóng đổ, phát sáng, nền (khung, viên thuốc, dải ngang, từng dòng, phủ mờ) cùng lề trong khung trên / dưới / trái / phải, bố cục (so le, 1 dòng, 2 dòng, 3 dòng), hiệu ứng (chạy từng chữ hoặc sáng cả dòng), khoảng cách mép. Lưu lại thành **preset** riêng, chọn lại trong "Kiểu chữ". **Nháy đúp một thanh trượt** để đưa thông số đó về mặc định của kiểu đang chọn.
+  - **🎨 Tuỳ chỉnh** (chia nhóm Chữ / Màu / Nền / Bố cục): phông chữ, độ đậm, cỡ chữ, giãn chữ, in hoa, màu chữ / màu đã hát (có chuyển màu), độ rõ chữ chưa hát (kéo về 0 thành chữ rỗng), tô nền bút dạ quang, viền, bóng đổ, phát sáng, nền (khung, viên thuốc, dải ngang, từng dòng, phủ mờ) cùng lề trong khung trên / dưới / trái / phải, bố cục (so le, 1 dòng, 2 dòng, 3 dòng), hiệu ứng (chạy từng chữ hoặc sáng cả dòng), khoảng cách mép. Trên cùng bảng có **🎲 Ngẫu nhiên** (thử ngay một kiểu mới, luôn dễ đọc), **↺ Mặc định** (về kiểu đang chọn) và ô **Lưu preset**: bấm 🎲 đến khi ưng rồi lưu thành **preset** riêng, chọn lại trong "Kiểu chữ". Mỗi nhóm Chữ / Màu / Nền / Bố cục cũng có 🎲 và ↺ riêng, ví dụ giữ phông chữ mà chỉ đổi màu. **Nháy đúp một thanh trượt** để đưa thông số đó về mặc định của kiểu đang chọn.
 
-  Nút **⬇ Dưới / ⬆ Trên** đổi vị trí lời để không che chữ có sẵn trong MV. Chỉnh cỡ chữ bằng A− / A+.
+  Cặp nút **⬆ ⬇** (nút đang sáng là vị trí hiện tại) đặt lời ở trên hoặc dưới video để không che chữ có sẵn trong MV. Chỉnh cỡ chữ bằng A− / A+.
 
   **📌 Kiểu chữ theo kênh**: bấm 📌 để kênh đang xem nhớ kiểu chữ riêng (ví dụ kênh nhạc Việt dùng Karaoke xanh dương, kênh K-pop dùng Phụ đề YouTube). Khi 📌 đang bật, đổi kiểu hay chỉnh 🎨 chỉ áp dụng cho kênh đó; bấm lại để dùng kiểu chung.
 

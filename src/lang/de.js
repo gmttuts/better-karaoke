@@ -25,7 +25,6 @@
   "Bấm để đưa về 0 và bỏ các mốc 📍": "Klicken, um auf 0 zurückzusetzen und die 📍-Markierungen zu entfernen",
   "Bật / tắt lời trên video": "Text im Video ein / aus",
   "Bật trên YouTube": "Auf YouTube aktiv",
-  "Bỏ chỉnh": "Verwerfen",
   "Bỏ khỏi bài yêu thích": "Aus Favoriten entfernen",
   "Bố cục": "Layout",
   "Ca sĩ": "Interpret",
@@ -374,4 +373,9 @@
   "Quay lại": "Zurück",
   "Thêm": "Mehr",
   "Chấm điểm": "Bewertung",
+  "🎲 Ngẫu nhiên": "🎲 Zufällig",
+  "Thử một kiểu ngẫu nhiên": "Einen zufälligen Stil ausprobieren",
+  "↺ Mặc định": "↺ Standard",
+  "Ngẫu nhiên: {0}": "Zufällig: {0}",
+  "Mặc định: {0}": "Standard: {0}",
 };

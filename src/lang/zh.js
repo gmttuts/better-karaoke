@@ -25,7 +25,6 @@
   "Bấm để đưa về 0 và bỏ các mốc 📍": "点击归零并清除 📍 标记点",
   "Bật / tắt lời trên video": "开启 / 关闭视频上的歌词",
   "Bật trên YouTube": "在 YouTube 上启用",
-  "Bỏ chỉnh": "放弃修改",
   "Bỏ khỏi bài yêu thích": "从收藏中移除",
   "Bố cục": "布局",
   "Ca sĩ": "歌手",
@@ -374,4 +373,9 @@
   "Quay lại": "返回",
   "Thêm": "更多",
   "Chấm điểm": "评分",
+  "🎲 Ngẫu nhiên": "🎲 随机",
+  "Thử một kiểu ngẫu nhiên": "试试随机样式",
+  "↺ Mặc định": "↺ 默认",
+  "Ngẫu nhiên: {0}": "随机：{0}",
+  "Mặc định: {0}": "默认：{0}",
 };

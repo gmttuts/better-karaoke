@@ -25,7 +25,6 @@
   "Bấm để đưa về 0 và bỏ các mốc 📍": "Cliquer pour revenir à 0 et supprimer les repères 📍",
   "Bật / tắt lời trên video": "Activer / désactiver les paroles sur la vidéo",
   "Bật trên YouTube": "Activé sur YouTube",
-  "Bỏ chỉnh": "Annuler les modifs",
   "Bỏ khỏi bài yêu thích": "Retirer des favoris",
   "Bố cục": "Disposition",
   "Ca sĩ": "Artiste",
@@ -374,4 +373,9 @@
   "Quay lại": "Retour",
   "Thêm": "Plus",
   "Chấm điểm": "Score",
+  "🎲 Ngẫu nhiên": "🎲 Au hasard",
+  "Thử một kiểu ngẫu nhiên": "Essayer un style au hasard",
+  "↺ Mặc định": "↺ Par défaut",
+  "Ngẫu nhiên: {0}": "Au hasard : {0}",
+  "Mặc định: {0}": "Par défaut : {0}",
 };

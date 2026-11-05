@@ -25,7 +25,6 @@
   "Bấm để đưa về 0 và bỏ các mốc 📍": "Klik untuk mengatur ulang ke 0 dan menghapus titik 📍",
   "Bật / tắt lời trên video": "Lirik di video aktif / nonaktif",
   "Bật trên YouTube": "Aktif di YouTube",
-  "Bỏ chỉnh": "Buang editan",
   "Bỏ khỏi bài yêu thích": "Hapus dari favorit",
   "Bố cục": "Tata letak",
   "Ca sĩ": "Artis",
@@ -374,4 +373,9 @@
   "Quay lại": "Kembali",
   "Thêm": "Lainnya",
   "Chấm điểm": "Skor",
+  "🎲 Ngẫu nhiên": "🎲 Acak",
+  "Thử một kiểu ngẫu nhiên": "Coba gaya acak",
+  "↺ Mặc định": "↺ Bawaan",
+  "Ngẫu nhiên: {0}": "Acak: {0}",
+  "Mặc định: {0}": "Bawaan: {0}",
 };

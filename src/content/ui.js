@@ -333,8 +333,19 @@ BYL.ui = (() => {
     const fontDown = el('button', '', 'A−');
     const fontUp = el('button', '', 'A+');
     fontDown.title = fontUp.title = L('Cỡ chữ');
-    const posBtn = el('button', '', '');
+    // ⬆ / ⬇: where the lyrics sit on the video; the one in use is lit.
+    const posBtn = el('div', 'seg pos');
     posBtn.title = L('Đặt lời ở trên hoặc dưới video (tránh che chữ có sẵn trong video)');
+    for (const [where, text] of [['top', '⬆'], ['bottom', '⬇']]) {
+      const b = el('button', '', text);
+      b.dataset.pos = where;
+      b.title = where === 'top' ? L('⬆ Trên') : L('⬇ Dưới');
+      b.addEventListener('click', () => {
+        BYL.settings.set({ overlayPosition: where });
+        refreshLook();
+      });
+      posBtn.append(b);
+    }
     const studioBtn = el('button', '', '🎨');
     studioBtn.title = L('Tuỳ chỉnh màu, phông, viền, nền… và lưu thành preset');
     const chanBtn = el('button', 'chan', '📌');
@@ -549,10 +560,6 @@ BYL.ui = (() => {
       if (!studio.hidden) buildStudio();
       say(all[ch] ? L('📌 Kênh "{0}" giờ có kiểu chữ riêng. Đổi kiểu hay chỉnh 🎨 lúc này chỉ áp dụng cho kênh này.', ch) : L('Kênh "{0}" dùng lại kiểu chữ chung.', ch));
     });
-    posBtn.addEventListener('click', () => {
-      BYL.settings.set({ overlayPosition: BYL.settings.value.overlayPosition === 'top' ? 'bottom' : 'top' });
-      refreshLook();
-    });
     studioBtn.addEventListener('click', () => {
       studio.hidden = !studio.hidden;
       studioBtn.classList.toggle('on', !studio.hidden);
@@ -656,7 +663,7 @@ BYL.ui = (() => {
     }
     sel.value = slot().look ? '' : slot().style;
     if (sel.selectedIndex < 0) sel.value = 'red';
-    P.posBtn.textContent = v.overlayPosition === 'top' ? L('⬆ Trên') : L('⬇ Dưới');
+    for (const b of P.posBtn.children) b.classList.toggle('on', b.dataset.pos === (v.overlayPosition === 'top' ? 'top' : 'bottom'));
     const pinned = !!chanSlot();
     P.chanBtn.hidden = !state.channel;
     P.chanBtn.classList.toggle('on', pinned);
@@ -685,15 +692,82 @@ BYL.ui = (() => {
     refreshLook();
   }
 
+  // A random look that stays readable on any video: bright sung colours,
+  // and an outline, a shadow or a background behind the words.
+  function randomLook() {
+    const any = (list) => list[Math.floor(Math.random() * list.length)];
+    const chance = (p) => Math.random() < p;
+    const int = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+    const hsl = (h, sat, l) => {
+      const f = (n) => {
+        const k = (n + h / 30) % 12;
+        const c = l - (sat * Math.min(l, 1 - l)) * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+        return Math.round(c * 255).toString(16).padStart(2, '0');
+      };
+      return '#' + f(0) + f(8) + f(4);
+    };
+    const hue = int(0, 359);
+    const shape = any(['none', 'none', 'none', 'box', 'pill', 'band', 'lines', 'fade']);
+    // A highlighter carries dark words: no outline or shadow to smudge them.
+    const mark = chance(0.12);
+    const strokeW = mark ? 0 : shape === 'none' ? any([8, 12, 16, 20, 24]) : any([0, 0, 6, 12]);
+    return {
+      font: any(FONTS)[0],
+      weight: any([600, 700, 800, 800, 900]),
+      scale: int(90, 150),
+      tracking: any([0, 1, 1, 2, 4, 8]),
+      upper: chance(0.25),
+      wipe: chance(0.8) ? 'word' : 'line',
+      text: chance(0.75) ? '#ffffff' : hsl(hue + 180, 0.4, 0.92),
+      textGrad: chance(0.4),
+      dim: shape === 'fade' ? int(35, 60) : chance(0.85) ? 100 : int(50, 90),
+      sung: mark ? '#111111' : hsl(hue, 0.9, 0.6),
+      sung2: !mark && chance(0.35) ? hsl(hue + int(40, 120), 0.9, 0.62) : '',
+      mark: mark ? hsl(hue, 0.95, 0.65) : '',
+      stroke: '#101010',
+      sstroke: chance(0.5) ? '#ffffff' : '#101010',
+      strokeW,
+      shadow: !mark && (shape === 'none' || chance(0.4)),
+      glow: chance(0.2),
+      shape,
+      bg: chance(0.8) ? '#000000' : hsl(hue, 0.5, 0.12),
+      bgAlpha: int(45, 80),
+      ...Object.fromEntries(PAD_KEYS.map((k) => [k, undefined])),
+      layout: any(['stagger', 'center2', 'center2', 'three', 'single']),
+      nextScale: int(55, 100),
+      margin: int(6, 16),
+    };
+  }
+
   function buildStudio() {
     const box = P.studio;
     box.replaceChildren();
     const look = currentLook();
     const sections = [];
     let grid;
-    const section = (title) => {
+    // Each part has 🎲 (try something at random) and ↺ (back to the chosen
+    // style's values) for its own settings.
+    const section = (title, keys) => {
       const s = el('section');
-      s.append(el('h4', '', title));
+      const h = el('h4', '', title);
+      const dice = el('button', 'mini', '🎲');
+      dice.title = L('Ngẫu nhiên: {0}', title);
+      dice.addEventListener('click', () => {
+        const r = randomLook();
+        editLook(Object.fromEntries(keys.map((k) => [k, r[k]])), true);
+        buildStudio();
+      });
+      const back = el('button', 'mini', '↺');
+      back.title = L('Mặc định: {0}', title);
+      back.addEventListener('click', () => {
+        const def = compose(slot().style);
+        editLook(Object.fromEntries(keys.map((k) => [k, def[k]])), true);
+        buildStudio();
+      });
+      const acts = el('span', 'acts');
+      acts.append(dice, back);
+      h.append(acts);
+      s.append(h);
       grid = el('div', 'grid');
       s.append(grid);
       sections.push(s);
@@ -778,14 +852,14 @@ BYL.ui = (() => {
     };
     const flag = (key, text) => toggle(!!look[key], text, (on) => editLook({ [key]: on }, true));
 
-    section(L('Chữ'));
+    section(L('Chữ'), ['font', 'weight', 'scale', 'tracking', 'upper', 'wipe']);
     row(L('Phông'), pick('font', FONTS));
     row(L('Độ đậm'), pick('weight', [['400', L('Thường')], ['600', L('Vừa')], ['700', L('Đậm')], ['800', L('Rất đậm')], ['900', L('Đen')]]));
     row(L('Cỡ chữ'), range('scale', 50, 220));
     row(L('Giãn chữ'), range('tracking', -5, 30, ''), flag('upper', L('In hoa')));
     row(L('Hiệu ứng'), seg('wipe', [['word', L('Chạy từng chữ')], ['line', L('Sáng cả dòng')]]));
 
-    section(L('Màu'));
+    section(L('Màu'), ['text', 'textGrad', 'dim', 'sung', 'sung2', 'mark', 'stroke', 'sstroke', 'strokeW', 'shadow', 'glow']);
     row(L('Chưa hát'), color('text', L('Màu chữ chưa hát')), flag('textGrad', L('Ánh bạc')));
     // 0 leaves only the outline: hollow words that fill in as they are sung.
     row(L('Độ rõ'), range('dim', 0, 100)).title = L('Độ rõ của chữ chưa hát (0: chỉ còn viền)');
@@ -815,7 +889,7 @@ BYL.ui = (() => {
     row(L('Viền'), color('stroke', L('Màu viền')), color('sstroke', L('Màu viền khi đã hát')), range('strokeW', 0, 30, ''));
     row(L('Bóng'), flag('shadow', L('Đổ bóng')), flag('glow', L('Phát sáng')));
 
-    section(L('Nền'));
+    section(L('Nền'), ['shape', 'bg', 'bgAlpha', ...PAD_KEYS]);
     // A new shape starts from its own padding.
     const reshape = () => {
       editLook(Object.fromEntries(PAD_KEYS.map((k) => [k, undefined])), true);
@@ -838,18 +912,27 @@ BYL.ui = (() => {
       row(L('Lề trong'), pads);
     }
 
-    section(L('Bố cục'));
+    section(L('Bố cục'), ['layout', 'nextScale', 'margin']);
     row(L('Số dòng'), pick('layout', [['stagger', L('So le 2 dòng')], ['center2', L('Dòng hát + dòng kế')], ['three', L('3 dòng')], ['single', L('Một dòng')]]));
     row(L('Dòng phụ'), range('nextScale', 40, 100));
     row(L('Cách mép'), range('margin', 2, 40));
 
+    // On top: 🎲 a whole new look, ↺ back to the chosen style, and save
+    // what you see as your own preset straight away.
+    const top = el('div', 'presets top');
+    const dice = el('button', '', L('🎲 Ngẫu nhiên'));
+    dice.title = L('Thử một kiểu ngẫu nhiên');
+    dice.addEventListener('click', () => {
+      editLook(randomLook(), true);
+      buildStudio();
+    });
     const presets = el('div', 'presets');
     const name = el('input');
     name.type = 'text';
     name.placeholder = L('Tên preset…');
     name.maxLength = 24;
     const save = el('button', 'primary', L('Lưu preset'));
-    const reset = el('button', '', L('Bỏ chỉnh'));
+    const reset = el('button', '', L('↺ Mặc định'));
     reset.title = L('Quay về kiểu đang chọn, bỏ các chỉnh sửa');
     const del = el('button', 'danger', L('Xoá preset'));
     const style = slot().style;
@@ -880,8 +963,9 @@ BYL.ui = (() => {
       refreshLook();
       buildStudio();
     });
-    presets.append(name, save, reset, del);
-    box.append(...sections, presets);
+    top.append(dice, reset);
+    presets.append(name, save, del);
+    box.append(top, presets, ...sections);
   }
 
   // ---------- state changes ----------

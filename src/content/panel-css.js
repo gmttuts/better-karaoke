@@ -178,6 +178,13 @@ BYL.PANEL_CSS = `
   .studio { margin: 0 12px 10px; padding: 4px 12px 12px; border-radius: 12px; background: var(--chip); }
   .studio[hidden], .studio [hidden] { display: none !important; }
   .studio section + section { border-top: 1px solid var(--line); }
+  .studio h4 .acts { float: right; display: flex; gap: 4px; margin-top: -5px; text-transform: none; letter-spacing: 0; }
+  .studio button.mini { padding: 3px 8px; font-size: 13px; background: var(--raised); }
+  .studio .presets.top { padding-top: 10px; border-top: 0; }
+  .studio .presets.top + .presets { border-top: 0; padding-top: 8px; padding-bottom: 4px; }
+  .seg.pos { flex: none; display: inline-flex; gap: 0; padding: 2px; border-radius: 10px; background: var(--chip); }
+  .seg.pos button { padding: 5px 7px; background: transparent; }
+  .seg.pos button.on { background: var(--raised); box-shadow: 0 1px 3px rgba(0,0,0,.15); color: var(--fg); }
   .studio h4 { margin: 0; padding: 12px 0 8px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--fg2); }
   .studio .grid { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px 12px; align-items: center; padding-bottom: 12px; }
   .studio .lbl { font-size: 13px; color: var(--fg2); }
