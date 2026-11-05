@@ -6,11 +6,13 @@
 // the snare, the piano, the bass guitar… that are mixed there too, and most
 // songs then sound nearly empty. Here the sound is cut into 2048-sample
 // blocks of frequencies, and a frequency is only turned down when it is
-//   - in the middle: about the same, in step, in both speakers,
+//   - in the middle: what both speakers share, measured over the last few
+//     frames (about 30 ms) so the singer's reverb doesn't hide it,
 //   - in the range of a voice (about 150 Hz – 8 kHz),
 //   - held like a sung note rather than struck like a drum: its level over
-//     the last frames is steadier than across its neighbouring frequencies
-//     (harmonic / percussive split, after D. FitzGerald, 2010).
+//     the last frames (allowing for vibrato, one bin either way) is steadier
+//     than across its neighbouring frequencies (harmonic / percussive split,
+//     after D. FitzGerald, 2010).
 // Sound only on one side, the drums, the bass and the cymbals stay. Adds
 // about 43 ms of delay (one block).
 const N = 2048;
@@ -20,6 +22,7 @@ const LATENCY = N - HOP;
 const HALF = N / 2;
 const TIME_MED = 9; // past frames for "held" (causal: no extra delay)
 const FREQ_MED = 17; // neighbouring bins for "struck"
+const AVG = 0.7; // smoothing of the stereo measures, per frame (~30 ms)
 
 const WINDOW = new Float64Array(N);
 for (let k = 0; k < N; k++) WINDOW[k] = 0.5 - 0.5 * Math.cos((2 * Math.PI * k) / N);
@@ -111,6 +114,10 @@ function state(rate) {
     tmp: new Float64Array(Math.max(TIME_MED, FREQ_MED)),
     band,
     rover: LATENCY,
+    // Smoothed powers of left, right and their cross product, per bin.
+    pLL: new Float64Array(HALF + 1),
+    pRR: new Float64Array(HALF + 1),
+    pLR: new Float64Array(HALF + 1),
   };
 }
 
@@ -132,7 +139,7 @@ function frame(s, amount) {
     mag[k] = Math.hypot(Lr[k] + Rr[k], Li[k] + Ri[k]) / 2;
   }
   const now = s.hist[s.at];
-  now.set(mag);
+  for (let k = 0; k <= HALF; k++) now[k] = Math.max(mag[Math.max(0, k - 1)], mag[k], mag[Math.min(HALF, k + 1)]);
   s.at = (s.at + 1) % TIME_MED;
 
   for (let k = 0; k <= HALF; k++) {
@@ -142,13 +149,18 @@ function frame(s, amount) {
     const si = (Li[k] - Ri[k]) / 2;
     let g = 1;
     if (s.band[k] > 0) {
-      // In the middle: as loud on both sides and in step. A guitar mixed
-      // 70 / 30 to one side is still well in step, so the levels decide too.
+      // In the middle: the share of this frequency's middle that both
+      // speakers carry alike. A guitar mixed 70 / 30 to one side is shared
+      // too, so the levels of the two sides have to be close as well.
       const l2 = Lr[k] * Lr[k] + Li[k] * Li[k];
       const r2 = Rr[k] * Rr[k] + Ri[k] * Ri[k];
-      const level = Math.sqrt(Math.min(l2, r2) / (Math.max(l2, r2) + 1e-20));
-      const inStep = (Lr[k] * Rr[k] + Li[k] * Ri[k]) / (Math.sqrt(l2 * r2) + 1e-20);
-      const centre = smooth(0.6, 0.92, level) * smooth(0.7, 0.95, inStep);
+      s.pLL[k] = AVG * s.pLL[k] + (1 - AVG) * l2;
+      s.pRR[k] = AVG * s.pRR[k] + (1 - AVG) * r2;
+      s.pLR[k] = AVG * s.pLR[k] + (1 - AVG) * (Lr[k] * Rr[k] + Li[k] * Ri[k]);
+      const pMM = (s.pLL[k] + s.pRR[k] + 2 * s.pLR[k]) / 4;
+      const shared = Math.min(1, Math.max(0, s.pLR[k] / (pMM + 1e-20)));
+      const level = Math.sqrt(Math.min(s.pLL[k], s.pRR[k]) / (Math.max(s.pLL[k], s.pRR[k]) + 1e-20));
+      const centre = shared * smooth(0.5, 0.85, level);
       if (centre > 0) {
         for (let t = 0; t < TIME_MED; t++) s.tmp[t] = s.hist[t][k];
         const held = median(s.tmp, TIME_MED);
@@ -157,6 +169,7 @@ function frame(s, amount) {
         const struck = median(s.tmp, FREQ_MED);
         const sung = (held * held) / (held * held + struck * struck + 1e-12);
         g = 1 - amount * centre * s.band[k] * sung;
+        g *= g; // deeper where it is sure, gentle where it is not
       }
     }
     // Middle turned down, sides as they were: L = M + S, R = M − S.
@@ -174,8 +187,8 @@ function frame(s, amount) {
   }
   fft(re, im, 1);
   // Hann in and out, 4 times overlapped: the windows sum to 1.5.
-  // Taking the singer out leaves the song quieter: up to +2.5 dB back.
-  const g = Math.pow(10, (2.5 * amount) / 20) / (N * 1.5);
+  // Taking the singer out leaves the song quieter: up to +1.5 dB back.
+  const g = Math.pow(10, (1.5 * amount) / 20) / (N * 1.5);
   for (let k = 0; k < N; k++) {
     s.accL[k] += WINDOW[k] * re[k] * g;
     s.accR[k] += WINDOW[k] * im[k] * g;

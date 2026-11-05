@@ -223,10 +223,11 @@ BYL.ui = (() => {
       paintFav(on);
       BYL.history.setFav(state.videoId, on);
     });
-    // 🌐 Interface language, changed on the spot (main.js rebuilds the panel).
-    const lang = el('span', 'lang', `🌐 ${BYL.LANGS.find(([c]) => c === BYL.lang)?.[1] || ''} · ${BYL.lang.toUpperCase()}`);
+    // 🌐 Interface language, at the top, changed on the spot (main.js
+    // rebuilds the panel).
+    const lang = el('span', 'lang', '🌐 ' + BYL.lang.toUpperCase());
     const langSel = el('select');
-    langSel.title = 'Language';
+    langSel.title = 'Language · ' + (BYL.LANGS.find(([c]) => c === BYL.lang)?.[1] || '');
     langSel.append(new Option('Auto (GMT+7 → Tiếng Việt, other → English)', 'auto'), ...BYL.LANGS.map(([c, n]) => new Option(n, c)));
     langSel.value = BYL.settings.value.uiLang || 'auto';
     lang.append(langSel);
@@ -238,17 +239,19 @@ BYL.ui = (() => {
     overlayBtn.title = L('Hiện lời chữ to trên video (dùng được cả khi toàn màn hình)') + ' (Alt L)';
     const menuBtn = el('button', 'more', '⋯');
     menuBtn.title = L('Thêm');
-    header.append(el('span', 'logo', '🎤'), song, overlayBtn, menuBtn, el('span', 'chev', '▾'));
+    header.append(el('span', 'logo', '🎤'), song, lang, overlayBtn, menuBtn, el('span', 'chev', '▾'));
     header.title = 'Better Karaoke v' + chrome.runtime.getManifest().version;
 
     const body = el('div', 'body');
     // Xem lời / Hát / Chỉnh lời: each mode shows only the rows for it
     // (data-m on the row); the lyrics, chips and notes are in all of them.
+    // 🎬 Karaoke puts the list of karaoke videos in place of the lyrics.
     const nav = el('nav');
     const MODES = [
       ['view', L('👀 Xem lời')],
       ['sing', L('🎤 Hát')],
       ['edit', L('✏️ Chỉnh lời')],
+      ['karaoke', '🎬 Karaoke'],
     ];
     const modeBtns = MODES.map(([m, t]) => {
       const b = el('button', '', t);
@@ -434,7 +437,6 @@ BYL.ui = (() => {
     lyricTab.append(findRow, status, row1, rowK, rowS, rowT, row2, row3, studio, warn, note, editor, tapbar, lines, grip, row4, exportRow);
     makeResizable(lines, grip);
 
-    // Karaoke tab
     // Pages opened from ⋯, over the lyrics, with a way back.
     const pageHead = (title) => {
       const h = el('div', 'row page');
@@ -443,11 +445,12 @@ BYL.ui = (() => {
       h.append(back, el('b', '', title));
       return h;
     };
+    // 🎬 Karaoke mode
     const karaokeTab = el('div');
     karaokeTab.hidden = true;
     const kchips = el('div', 'row');
     const klist = el('div', 'klist');
-    karaokeTab.append(pageHead('🎬 ' + L('Bản Karaoke')), kchips, klist);
+    karaokeTab.append(kchips, klist);
 
     // History tab
     const historyTab = el('div');
@@ -479,10 +482,8 @@ BYL.ui = (() => {
     menu.append(
       favBtn,
       item('🕘 ' + L('Đã xem'), () => showPage('history')),
-      item('🎬 ' + L('Bản Karaoke'), () => showPage('karaoke')),
       pipBtn,
-      findBtn,
-      lang
+      findBtn
     );
     menuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1706,20 +1707,22 @@ BYL.ui = (() => {
   }
 
   function setMode(mode, byUser) {
-    if (!['view', 'sing', 'edit'].includes(mode)) mode = 'view';
+    if (!['view', 'sing', 'edit', 'karaoke'].includes(mode)) mode = 'view';
     P.wrap.dataset.mode = mode;
     for (const b of P.modeBtns) b.classList.toggle('on', b.dataset.mode === mode);
     showPage(null);
     if (byUser) BYL.settings.set({ panelMode: mode });
   }
 
-  // 🕘 Đã xem / 🎬 Bản Karaoke take the place of the lyrics until ← Quay lại.
+  // 🕘 Đã xem takes the place of the lyrics until ← Quay lại.
   function showPage(page) {
-    P.lyricTab.hidden = P.nav.hidden = !!page;
+    const karaoke = !page && P.wrap.dataset.mode === 'karaoke';
+    P.nav.hidden = !!page;
+    P.lyricTab.hidden = !!page || karaoke;
+    P.karaokeTab.hidden = !karaoke;
     P.historyTab.hidden = page !== 'history';
-    P.karaokeTab.hidden = page !== 'karaoke';
     if (page === 'history') renderHistory();
-    if (page === 'karaoke') loadKaraoke();
+    if (karaoke) loadKaraoke();
   }
 
   function setOverlay(on, byUser) {

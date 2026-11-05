@@ -5,10 +5,11 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 ## Tính năng
 
 - **Panel lời bài hát** ở cột bên phải video: tô sáng dòng đang hát và tự cuộn. Bấm vào một dòng để tua tới đó (với lời có thời gian).
-  - **3 chế độ** ngay dưới tên bài, mỗi chế độ chỉ hiện các nút cần cho việc đó: **👀 Xem lời** (lời, song ngữ), **🎤 Hát** (tông, lọc giọng, chấm điểm, kiểu chữ trên video), **✏️ Chỉnh lời** (chọn bản lời, canh nhịp, độ lệch, sửa lời, xuất file). Lời và các thẻ nguồn có ở cả 3 chế độ.
+  - **4 thẻ** ngay dưới tên bài, mỗi chế độ chỉ hiện các nút cần cho việc đó: **👀 Xem lời** (lời, song ngữ), **🎤 Hát** (tông, lọc giọng, chấm điểm, kiểu chữ trên video), **✏️ Chỉnh lời** (chọn bản lời, canh nhịp, độ lệch, sửa lời, xuất file), **🎬 Karaoke** (các bản karaoke của bài trên YouTube, thay chỗ lời). Lời và các thẻ nguồn có ở 3 chế độ đầu.
   - **Công tắc 🎤 Karaoke** trên đầu panel bật / tắt lời trên video ở bất kỳ chế độ nào (đỏ là đang bật, phím Alt L). Thanh điều khiển của YouTube cũng có nút 🎤 cạnh nút CC, có vạch đỏ khi đang bật, nên tắt bật được ngay trên video, kể cả khi toàn màn hình. Hai nút luôn khớp nhau.
   - **Thẻ nguồn lời** nằm trên một hàng cuộn ngang (lăn chuột cũng được): nguồn đang dùng đứng đầu, rồi các nguồn có lời, nguồn trống nằm cuối.
-  - **Menu ⋯**: ☆ yêu thích, 🕘 Đã xem, 🎬 Bản Karaoke, ⧉ Cửa sổ nổi, 🔍 Tìm theo tên, 🌐 ngôn ngữ giao diện.
+  - **🌐 ngôn ngữ giao diện** (ví dụ 🌐 VI) nằm ngay trên đầu, cạnh công tắc Karaoke.
+  - **Menu ⋯**: ☆ yêu thích, 🕘 Đã xem, ⧉ Cửa sổ nổi, 🔍 Tìm theo tên.
 - **Karaoke trên video** (nút 🎤 Karaoke): chữ đổi màu mượt theo nhịp hát, dùng được khi toàn màn hình, chữ tự to theo kích thước video. Các kiểu chữ có sẵn ở "Kiểu chữ":
   - **Karaoke xanh dương** (mặc định) / **Karaoke đỏ**: giống đĩa karaoke Việt, chữ Roboto đậm (đổi sang chữ hẹp karaoke trong 🎨), trắng ánh bạc viền đen; phần đã hát chuyển xanh dương (hoặc đỏ) viền trắng, có bóng đổ, hai dòng so le.
   - **Nổi bật**: một dòng lớn, phần đã hát chuyển màu vàng sang hồng, dòng kế tiếp nhỏ bên dưới.
@@ -56,7 +57,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **🕘 Đã xem** (trong menu ⋯): các bài đã mở, mới nhất trước, kèm số lần xem. Bấm ☆ cạnh tên bài (hoặc trong danh sách) để đánh dấu **★ yêu thích**; lọc "★ Yêu thích" để xem riêng. "Xoá lịch sử" giữ lại bài yêu thích. Lịch sử nằm trong file sao lưu.
 - **Sao chép** lời, **Mở nguồn** để xem trang gốc.
 - **🎚 Tông** (♭ ♯, Alt ↑ ↓): nâng / hạ tông bài hát từng nửa cung (tới ±6) mà không đổi tốc độ, để vừa giọng người hát. Tông được nhớ theo từng video; bấm số tông để về tông gốc. Chạy ngay trên máy (phase vocoder trong AudioWorklet, `src/audio/pitch-worklet.js`), trễ khoảng 65 ms. 🎙 Chấm điểm tự tính theo tông mới.
-- **🎤 Lọc giọng** (Alt V): giảm giọng ca sĩ để tự hát trên bài gốc khi không có bản karaoke, kéo thanh để chỉnh mức lọc. Âm thanh được chia theo từng dải tần, và chỉ phần vừa nằm giữa hai loa, vừa ở dải giọng người, vừa ngân dài như nốt hát mới bị giảm. Trống, bass, nhạc cụ lệch hai bên và tiếng cao vẫn giữ, nên bài không bị "rỗng". Tuỳ bài: thường giảm được phần lớn giọng nhưng vẫn còn vang và bè; bài thu mono hoặc có nhạc cụ ngân dài đặt giữa (piano, pad) thì kém hơn.
+- **🎤 Lọc giọng** (Alt V): giảm giọng ca sĩ để tự hát trên bài gốc khi không có bản karaoke, kéo thanh để chỉnh mức lọc. Âm thanh được chia theo từng dải tần, và chỉ phần vừa nằm giữa hai loa (đo trung bình qua khoảng 30 ms để tiếng vang của giọng không che mất), vừa ở dải giọng người, vừa ngân dài như nốt hát (có tính cả rung giọng) mới bị giảm. Trống, bass, nhạc cụ lệch hai bên và tiếng cao vẫn giữ, nên bài không bị "rỗng". Tuỳ bài: thường giảm được phần lớn giọng nhưng vẫn còn vang và bè; bài thu mono hoặc có nhạc cụ ngân dài đặt giữa (piano, pad) thì kém hơn.
   - Cả hai cần một cú bấm trên trang trước (trình duyệt chỉ cho phát âm thanh sau khi người dùng bấm). Âm thanh không bị ghi lại hay gửi đi đâu.
 - **⬇ Xuất**: lưu lời có thời gian ra file **`.lrc`** (cho trình phát nhạc) **`.srt`** (phụ đề cho VLC, CapCut, Premiere, YouTube Studio) hoặc **`.ass`** (phụ đề karaoke giữ đúng kiểu chữ 🎨 đang dùng: phông, màu, viền, khung, bố cục so le hay ở giữa, dòng dịch, chữ đổi màu từng từ). File dùng đúng thời gian bạn đã canh: độ lệch, các mốc 📍, ⏱ gõ nhịp, 🎯 canh theo phụ đề. Lời chưa có thời gian thì canh trước rồi xuất.
   - **Ghép cứng (hard sub) vào video của bạn** bằng file `.ass`: `ffmpeg -i video.mp4 -vf ass="Ca sĩ - Bài.ass" video-co-loi.mp4` (ffmpeg cần có libass), hoặc mở bằng Aegisub, VLC, mpv, CapCut. Kiểu nền *Dải điện ảnh* thành khung quanh chữ, và viền của chữ đã hát giữ màu viền thường (ASS không đổi màu viền theo karaoke).
@@ -108,7 +109,7 @@ src/
     romanize.js        Phiên âm Latin cho lời Hàn / Nhật (kana) / Trung
     ui-editor.js       ✏️ Sửa lời / tự nhập lời
     ui-tap.js          ⏱ Gõ nhịp
-    ui-tabs.js         Trang "Bản Karaoke" và "Đã xem" (lịch sử, ★ yêu thích)
+    ui-tabs.js         Thẻ "🎬 Karaoke" và trang "Đã xem" (lịch sử, ★ yêu thích)
     history.js         Lưu lịch sử bài đã xem và bài yêu thích
     export.js          Xuất .lrc / .srt / .ass, chuyển lời sang trang gửi LRCLIB
     ocr.js             🔠 Đọc chữ trên video: quét khung hình, gom các dòng chữ thành lời có thời gian

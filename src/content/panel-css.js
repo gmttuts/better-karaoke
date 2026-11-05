@@ -26,7 +26,7 @@ BYL.PANEL_CSS = `
   .byl.collapsed .body { display: none; }
   nav { display: flex; gap: 2px; margin: 0 12px 10px; padding: 3px; border-radius: 10px; background: var(--chip); }
   nav[hidden] { display: none; }
-  nav button { flex: 1; background: transparent; color: var(--fg2); border-radius: 8px; }
+  nav button { flex: 1 1 auto; min-width: 0; padding-left: 4px; padding-right: 4px; white-space: nowrap; background: transparent; color: var(--fg2); border-radius: 8px; }
   nav button:hover { background: transparent; color: var(--fg); }
   nav button.on { background: var(--raised); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
   button { font: inherit; font-size: 13px; font-weight: 500; color: var(--fg); background: var(--chip); border: 0;
@@ -139,7 +139,7 @@ BYL.PANEL_CSS = `
     box-shadow: 0 1px 3px rgba(0,0,0,.4); }
   .fx input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
   .fx .off.on { color: var(--accent, #e8212b); font-weight: 700; }
-  .lang { position: relative; font-size: 12px; color: var(--fg2); padding: 4px 6px; border-radius: 8px; white-space: nowrap; }
+  .lang { position: relative; flex: none; font-size: 12px; font-weight: 600; color: var(--fg2); padding: 6px 7px; border-radius: 8px; white-space: nowrap; }
   .lang:hover { background: var(--chip); }
 
   /* 🎤 Karaoke switch at the top: red while the lyrics are on the video. */
@@ -159,9 +159,9 @@ BYL.PANEL_CSS = `
   .menu { position: absolute; right: 10px; top: 52px; z-index: 5; min-width: 230px; padding: 6px; border-radius: 12px; background: var(--raised);
     box-shadow: 0 8px 30px rgba(0,0,0,.22); display: flex; flex-direction: column; }
   .menu[hidden] { display: none; }
-  .menu > button, .menu > .lang { display: block; width: 100%; text-align: left; padding: 8px 10px; border-radius: 8px; background: transparent;
+  .menu > button { display: block; width: 100%; text-align: left; padding: 8px 10px; border-radius: 8px; background: transparent;
     font-size: 13px; font-weight: 400; color: var(--fg); }
-  .menu > button:hover, .menu > .lang:hover { background: var(--chip); }
+  .menu > button:hover { background: var(--chip); }
   .menu > button.fav { font-size: 13px; line-height: 1.4; }
   .menu > button.fav.on { color: var(--fg); }
 
