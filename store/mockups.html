@@ -96,10 +96,14 @@
 
   let html;
   if (scene === 'hero') {
-    html = `<div class="stage">${brand}<h1>${T.heroH}</h1><p class="sub">${T.heroS}</p>
-      <div style="display:flex;gap:26px;align-items:flex-start">
-        <div class="frame" style="width:900px">${crop('panel-' + lang, 0, 0, 1440, 860, 900 / 1440)}</div>
-        <div class="cards" style="flex:1">${T.heroC.map(([b, s]) => `<div class="card" style="padding:13px 15px"><b style="font-size:17px">${b}</b><span style="font-size:14px">${s}</span></div>`).join('')}</div>
+    // Video and panel side by side at full size, so the panel's text stays readable.
+    html = `<div class="stage">${brand}<h1>${T.heroH}</h1><p class="sub" style="margin-bottom:22px">${T.heroS}</p>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="width:700px">
+          <div class="frame">${crop('panel-' + lang, ...PLAYER, 700 / 989)}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">${T.heroC.map(([b, s]) => `<div class="card" style="padding:11px 14px"><b style="font-size:16px">${b}</b><span style="font-size:13.5px">${s}</span></div>`).join('')}</div>
+        </div>
+        <div class="frame" style="background:#fff">${crop('panel-' + lang, PANEL[0], PANEL[1], PANEL[2], 572, 1.0)}</div>
       </div></div>`;
   } else if (scene === 'styles') {
     const keys = ['red', 'focus', 'box', 'cinema', 'fade', 'big'];
@@ -119,10 +123,10 @@
     html = `<div class="stage">${brand}<h1>${T.studioH}</h1><p class="sub" style="margin-bottom:22px">${T.studioS}</p>
       <div style="display:flex;gap:28px;align-items:flex-start">
         <div style="flex:1">
-          <div class="frame">${crop('studio-' + lang, ...PLAYER, 790 / 989)}</div>
+          <div class="frame">${crop('studio-' + lang, ...PLAYER, 756 / 989)}</div>
           <div class="chips">${T.studioC.map((c) => `<span>${c}</span>`).join('')}</div>
         </div>
-        <div class="frame" style="background:#fff">${crop('studio-' + lang, PANEL[0], 420, PANEL[2], 600, 0.92)}</div>
+        <div class="frame" style="background:#fff">${crop('studio-' + lang, PANEL[0], 420, PANEL[2], 568, 1.0)}</div>
       </div></div>`;
   } else if (scene === 'promo') {
     html = `<div class="stage" style="width:440px;height:280px;padding:26px 28px;display:flex;flex-direction:column;justify-content:space-between;

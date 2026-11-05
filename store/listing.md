@@ -6,10 +6,14 @@
   Nguồn: `mockups.html` dựng quanh ảnh chụp thật bản 0.24 trên YouTube ở `shots/`:
   9 kiểu chữ ở chế độ rạp (`style-*`, 1280 rộng), panel ở chế độ Xem lời
   (`panel-*`), chế độ Hát với lọc giọng và tông +2 (`sing-*`), bảng 🎨 với một
-  kiểu tự chỉnh (`studio-*`), các ảnh panel 1440 rộng.
+  kiểu tự chỉnh (`studio-*`), các ảnh panel 1440 rộng; tất cả chụp ở độ nét 2x.
 - Ô quảng cáo nhỏ 440×280 (bắt buộc): `promo-440x280.png`.
 - Ảnh marquee 1400×560 (tuỳ chọn): `vi/marquee-1400x560.png`, `en/marquee-1400x560.png`.
 - Icon 128×128: `../icons/icon128.png`.
+- `2x/` giữ bản gấp đôi của mọi ảnh (2560×1600, 880×560, 2800×1120) để xem
+  trên màn hình retina hoặc dùng nơi khác. **Không tải `2x/` lên Store**: Store
+  chỉ nhận đúng 1280×800 (hoặc 640×400), 440×280 và 1400×560. Các ảnh 1x được
+  dựng ở 2x từ ảnh chụp 2x rồi thu nhỏ chất lượng cao nên chữ vẫn sắc.
 
 Ảnh chụp thật có khung hình và lời của video Rick Astley trên YouTube. Nếu
 bị nhắc về bản quyền, chụp lại `shots/` bằng một video có quyền dùng.
