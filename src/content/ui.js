@@ -156,6 +156,7 @@ BYL.ui = (() => {
   function hide() {
     if (panelHost) panelHost.hidden = true;
     if (O) O.host.remove();
+    playerBtn?.remove();
     if (pipWin) pipWin.close();
   }
 
@@ -1492,6 +1493,7 @@ BYL.ui = (() => {
       if (!panelHost?.isConnected || panelHost.hidden) {
         looping = false;
         O?.host.remove();
+        playerBtn?.remove();
         return;
       }
       try {
@@ -1506,6 +1508,7 @@ BYL.ui = (() => {
         if (++ticks % 30 === 0) {
           placeFloat(); // Shorts: follow the video if the layout shifts
           shortsLift();
+          ensurePlayerBtn();
         }
       } catch {}
       // A background tab gets no animation frames; the floating window does,
@@ -1713,12 +1716,51 @@ BYL.ui = (() => {
   function setOverlay(on, byUser) {
     state.overlayOn = on;
     P.overlayBtn.classList.toggle('on', on);
+    paintPlayerBtn();
     if (byUser) BYL.settings.set({ overlayOnByDefault: on });
     if (on && ensureOverlay()) {
       state.lastActive = -2; // force rebuild
     } else if (O) {
       O.host.remove();
     }
+  }
+
+  // 🎤 in YouTube's own control bar, next to ⚙ and CC: turns the lyrics on
+  // the video on and off without opening the panel, also in fullscreen.
+  // YouTube rebuilds the bar now and then, so the loop puts it back.
+  let playerBtn = null;
+  function ensurePlayerBtn() {
+    const bar = !BYL.isShorts() && document.querySelector('#movie_player .ytp-right-controls');
+    if (!bar) return playerBtn?.remove();
+    if (!playerBtn) {
+      if (!document.getElementById('byl-ytp-style')) {
+        const css = el('style');
+        css.id = 'byl-ytp-style';
+        css.textContent =
+          '.byl-ytp-btn{position:relative;display:inline-flex!important;align-items:center;justify-content:center}' +
+          '.byl-ytp-btn svg{width:60%;height:60%;max-width:28px;max-height:28px;fill:#fff;opacity:.9}' +
+          '.byl-ytp-btn::after{content:"";display:block!important;position:absolute;left:28%;right:28%;bottom:18%;height:3px;border-radius:2px;background:#f00;transform:scaleX(0);transition:transform .15s}' +
+          '.byl-ytp-btn[aria-pressed=true]::after{transform:scaleX(1)}' +
+          '.byl-ytp-btn[aria-pressed=true] svg{opacity:1}';
+        document.head.append(css);
+      }
+      playerBtn = el('button', 'ytp-button byl-ytp-btn');
+      playerBtn.innerHTML =
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>';
+      playerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setOverlay(!state.overlayOn, true);
+      });
+    }
+    if (playerBtn.parentElement !== bar) bar.prepend(playerBtn);
+    paintPlayerBtn();
+  }
+  function paintPlayerBtn() {
+    if (!playerBtn) return;
+    const tip = 'Karaoke (Alt L)';
+    playerBtn.setAttribute('aria-pressed', String(!!state.overlayOn));
+    playerBtn.setAttribute('aria-label', tip);
+    playerBtn.title = tip;
   }
 
   // Floating window: Document Picture-in-Picture keeps a small always-on-top
