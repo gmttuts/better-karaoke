@@ -101,14 +101,14 @@ try {
     const btn = (t) => [...sr.querySelectorAll('button')].find((b) => b.textContent.trim() === t);
     btn('🎨').click();
     await new Promise((r) => setTimeout(r, 400));
-    const studio = [...sr.querySelectorAll('.studio section')].map((s) => s.querySelector('h4').textContent);
+    const studio = [...sr.querySelectorAll('.studio section')].map((s) => s.querySelector('h4').firstChild.textContent);
     const overlay = !!document.getElementById('byl-overlay-host')?.isConnected;
     const before = btn('🎤 Karaoke').classList.contains('on');
     btn('🎤 Karaoke').click();
     const toggled = btn('🎤 Karaoke').classList.contains('on') !== before && !!document.getElementById('byl-overlay-host')?.isConnected === !before;
     btn('🎤 Karaoke').click();
-    return { studio, overlay, toggled, title: sr.querySelector('.song b').textContent };`);
-  check('Bảng 🎨 có đủ 4 nhóm', r?.studio?.join() === 'Chữ,Màu,Nền,Bố cục', r?.studio?.join());
+    return { studio, acts: sr.querySelectorAll('.studio h4 .acts').length, overlay, toggled, title: sr.querySelector('.song b').textContent };`);
+  check('Bảng 🎨 có đủ 4 nhóm, mỗi nhóm có 🎲 ↺', r?.studio?.join() === 'Chữ,Màu,Nền,Bố cục' && r?.acts === 4, r?.studio?.join() + ' acts ' + r?.acts);
   check('Mở 🎨 hiện lời trên video', r?.overlay);
   check('Nút 🎤 Karaoke bật/tắt được', r?.toggled);
   check('Đọc được tên bài', !!r?.title && r.title !== 'Better Karaoke', r?.title);
