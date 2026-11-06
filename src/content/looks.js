@@ -216,5 +216,25 @@ BYL.look = (() => {
   // A style key (built-in or 'u:<preset>') plus the user's edits on top.
   const compose = (style, tweaks) => ({ ...BASE_LOOK, ...presetLook(style), ...(tweaks || {}) });
 
-  return { KARAOKE_FONT, BASE_LOOK, PAD_KEYS, SHAPE_PAD, padOf, FONTS, loadFont, presetLook, compose, OVERLAY_CSS, paintLook };
+  // A look from someone else's file (📥 Nhập file): only the knobs we know,
+  // each with a value of its kind, so nothing but our own fonts and plain
+  // colours ever reaches the page's styles.
+  const COLOR_KEYS = ['text', 'sung', 'sung2', 'mark', 'stroke', 'sstroke', 'bg'];
+  const CHOICES = { shape: Object.keys(SHAPE_PAD), layout: ['stagger', 'center2', 'three', 'single'], wipe: ['word', 'line'], font: FONTS.map(([f]) => f) };
+  function cleanLook(look) {
+    if (!look || typeof look !== 'object') return null;
+    const out = {};
+    for (const [k, base] of Object.entries(BASE_LOOK)) {
+      const v = look[k];
+      if (v === undefined) continue;
+      if (typeof base === 'number' && Number.isFinite(Number(v))) out[k] = Math.max(-50, Math.min(400, Number(v)));
+      else if (typeof base === 'boolean') out[k] = !!v;
+      else if (COLOR_KEYS.includes(k) && (/^#[0-9a-f]{6}$/i.test(v) || (v === '' && (k === 'sung2' || k === 'mark')))) out[k] = v;
+      else if (CHOICES[k]?.includes(v)) out[k] = v;
+    }
+    for (const k of PAD_KEYS) if (Number.isFinite(Number(look[k])) && look[k] !== null && look[k] !== '') out[k] = Math.max(0, Math.min(300, Number(look[k])));
+    return Object.keys(out).length ? { ...BASE_LOOK, ...out } : null;
+  }
+
+  return { KARAOKE_FONT, BASE_LOOK, PAD_KEYS, SHAPE_PAD, padOf, FONTS, loadFont, presetLook, compose, cleanLook, OVERLAY_CSS, paintLook };
 })();

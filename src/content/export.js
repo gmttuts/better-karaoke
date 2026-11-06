@@ -1,8 +1,9 @@
 'use strict';
 
-// Save the lyrics shown in the panel as .lrc / .srt, with the timing the user
-// fixed (offset, 📍 points, ⏱) already applied, or hand them to the LRCLIB
-// publish page.
+// Save the lyrics shown in the panel as .lrc / .srt / .ass, with the timing
+// the user fixed (offset, 📍 points, ⏱) already applied, or hand them to the
+// LRCLIB publish page; and read such files back (📥 Nhập file), so users can
+// share timed lyrics and looks with each other.
 BYL.exporter = (() => {
   // lines: [{ t, text, section? }] in video time, sorted.
   const sung = (lines) => lines.filter((l) => typeof l.t === 'number' && l.text && !l.section);
@@ -19,6 +20,7 @@ BYL.exporter = (() => {
     if (meta.artist) head.push(`[ar:${meta.artist}]`);
     if (meta.duration) head.push(`[length:${BYL.fmtTime(meta.duration)}]`);
     head.push('[re:Better Karaoke]');
+    if (meta.videoId) head.push(`[byl:${meta.videoId}]`);
     // Blank lines become empty stamps so players clear the previous line.
     const body = lines.filter((l) => typeof l.t === 'number' && !l.section).map((l) => `${BYL.lrcStamp(l.t)} ${l.text}`.trimEnd());
     return [...head, '', ...body].join('\n') + '\n';
@@ -101,6 +103,7 @@ BYL.exporter = (() => {
   // sung words keep their colour only; the shade (Phủ mờ) is a soft-edged band.
   function toAss(lines, opts = {}) {
     const look = { ...BYL.look.BASE_LOOK, ...(opts.look || {}) };
+    const asWritten = lines; // the shared copy at the end keeps the lyrics' own case
     if (look.upper) lines = lines.map((l) => ({ ...l, text: String(l.text).toLocaleUpperCase() }));
     const vw = opts.width || 1920;
     const vh = opts.height || 1080;
@@ -211,7 +214,131 @@ BYL.exporter = (() => {
       'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text',
       ...ev,
       '',
+      // Players skip sections they don't know. This one brings the file back
+      // into Better Karaoke as it was: the lyrics with word timing, the look.
+      '[Better Karaoke]',
+      ...(opts.videoId ? [`Video: ${opts.videoId}`] : []),
+      ...(opts.title ? [`Title: ${assText(opts.title)}`] : []),
+      ...(opts.artist ? [`Artist: ${assText(opts.artist)}`] : []),
+      `Look: ${JSON.stringify(look)}`,
+      ...asWritten.filter((l) => typeof l.t === 'number' && !l.section).map((l) => 'Lyric: ' + lrcLine(l)),
+      '',
     ].join('\n');
+  }
+
+  // "[00:12.00] <00:12.00>Em <00:12.40>ơi" when the words have their own times.
+  function lrcLine(l) {
+    const words = l.text.split(/\s+/).filter(Boolean);
+    if (!l.wd || l.wd.length !== words.length) return `${BYL.lrcStamp(l.t)} ${l.text}`.trimEnd();
+    return `${BYL.lrcStamp(l.t)} ` + words.map((w, i) => `<${BYL.lrcStamp(l.t + l.wd[i]).slice(1, -1)}>${w}`).join(' ');
+  }
+
+  // ---------- 📥 reading a shared file ----------
+  // Any .lrc, .srt / .vtt or .ass, ours or not. Returns the lyrics as
+  // (enhanced) LRC text, and what a file of ours also carries: the video it
+  // was timed on and, in an .ass, the look.
+  function fromFile(raw) {
+    const text = String(raw || '').replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
+    const got = { lrc: '', videoId: null, look: null, title: '', artist: '' };
+    const at = text.search(/^\[Better Karaoke\]$/m);
+    if (at >= 0) {
+      const rows = [];
+      for (const row of text.slice(at).split('\n').slice(1)) {
+        if (/^\[.+\]$/.test(row)) break;
+        const m = row.match(/^(\w+):\s?(.*)$/);
+        if (!m) continue;
+        if (m[1] === 'Lyric') rows.push(m[2]);
+        else if (m[1] === 'Video') got.videoId = m[2].trim();
+        else if (m[1] === 'Title') got.title = m[2].trim();
+        else if (m[1] === 'Artist') got.artist = m[2].trim();
+        else if (m[1] === 'Look') {
+          try {
+            got.look = JSON.parse(m[2]);
+          } catch {}
+        }
+      }
+      got.lrc = rows.join('\n');
+    } else if (/^\[(Script Info|Events)\]$/m.test(text) || /^Dialogue:/m.test(text)) {
+      got.lrc = assLyrics(text);
+    } else if (/-->/.test(text)) {
+      got.lrc = cueLyrics(text);
+    } else {
+      got.lrc = text;
+      got.videoId = text.match(/^\[byl:([\w-]{6,})\]/m)?.[1] || null;
+      got.title = text.match(/^\[ti:(.*)\]/m)?.[1].trim() || '';
+      got.artist = text.match(/^\[ar:(.*)\]/m)?.[1].trim() || '';
+    }
+    return got;
+  }
+
+  const toLrcLines = (lines) =>
+    lines
+      .filter((l) => l.text)
+      .sort((a, b) => a.t - b.t)
+      .filter((l, i, all) => !i || l.text !== all[i - 1].text || l.t - all[i - 1].t > 0.05)
+      .map(lrcLine)
+      .join('\n');
+  const plain = (s) => s.replace(/\{[^}]*\}/g, '').replace(/<[^>]*>/g, '').replace(/\\[Nnh]/g, ' ').replace(/\s+/g, ' ').trim();
+
+  // .srt / .vtt: each cue's start and its text on one line.
+  function cueLyrics(text) {
+    const lines = [];
+    for (const block of text.split(/\n\s*\n/)) {
+      const rows = block.split('\n');
+      const i = rows.findIndex((r) => r.includes('-->'));
+      const m = i >= 0 && rows[i].match(/(?:(\d+):)?(\d{1,2}):(\d{2})[,.](\d{1,3})\s*-->/);
+      if (!m) continue;
+      const t = Number(m[1] || 0) * 3600 + Number(m[2]) * 60 + Number(m[3]) + Number(m[4].padEnd(3, '0')) / 1000;
+      lines.push({ t: Math.round(t * 100) / 100, text: plain(rows.slice(i + 1).join(' ')) });
+    }
+    return toLrcLines(lines);
+  }
+
+  // .ass from anywhere: with karaoke tags (\k, \kf, \ko) only the timed events
+  // count, each word starting where its tag starts; otherwise every line of
+  // text. Drawings and our blank-box copies are left out.
+  function assLyrics(text) {
+    const fields = (text.match(/^\[Events\][\s\S]*?^Format:(.*)$/m)?.[1] || 'Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text').split(',').map((f) => f.trim());
+    const startAt = fields.indexOf('Start');
+    const events = [];
+    for (const row of text.split('\n')) {
+      if (!row.startsWith('Dialogue:')) continue;
+      const parts = row.slice(9).split(',');
+      const body = parts.slice(fields.length - 1).join(',');
+      const m = (parts[startAt] || '').trim().match(/^(\d+):(\d{2}):(\d{2})[.,](\d{1,3})$/);
+      if (!m || /\\p[1-9]/.test(body)) continue;
+      const t0 = Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]) + Number(m[4].padEnd(3, '0').slice(0, 3)) / 1000;
+      events.push({ t0, body, kara: /\\k[fo]?\d+/i.test(body) });
+    }
+    const timed = events.some((e) => e.kara);
+    const lines = [];
+    for (const { t0, body, kara } of events) {
+      if (timed !== kara) continue;
+      if (!kara) {
+        lines.push({ t: Math.round(t0 * 100) / 100, text: plain(body) });
+        continue;
+      }
+      // Walk the syllables: a {\kN} starts the text after it, N centiseconds long.
+      const words = [];
+      let acc = 0;
+      let start = 0;
+      for (const [, tags, seg] of body.split(/\\N/)[0].matchAll(/\{([^}]*)\}|([^{]+)/g)) {
+        if (tags !== undefined) {
+          for (const k of tags.matchAll(/\\[kK][fo]?(\d+)/g)) {
+            start = acc;
+            acc += Number(k[1]);
+          }
+        } else {
+          for (const w of plain(seg).split(' ').filter(Boolean)) words.push({ w, at: start });
+          start = acc;
+        }
+      }
+      if (!words.length) continue;
+      const t = Math.round((t0 + words[0].at / 100) * 100) / 100;
+      const wd = words.map((x) => Math.max(0, Math.round((x.at - words[0].at)) / 100));
+      lines.push({ t, text: words.map((x) => x.w).join(' '), wd: wd[wd.length - 1] > 0 ? wd : undefined });
+    }
+    return toLrcLines(lines);
   }
 
   const fileName = (meta, ext) =>
@@ -234,5 +361,5 @@ BYL.exporter = (() => {
     return chrome.runtime.sendMessage({ type: 'openPublish' });
   }
 
-  return { toLrc, toSrt, toAss, srtStamp, assStamp, assColor, fileName, download, openPublish };
+  return { toLrc, toSrt, toAss, fromFile, srtStamp, assStamp, assColor, fileName, download, openPublish };
 })();

@@ -379,4 +379,12 @@
   "Mặc định: {0}": "기본값: {0}",
   "Tự bật Karaoke khi mở video": "영상을 열면 노래방 자동 켜기",
   "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "끄면: 영상마다 🎤 Karaoke 스위치로 켜기",
+  "📥 Nhập file": "📥 파일 가져오기",
+  "Nạp lời có thời gian từ file .lrc, .srt hoặc .ass (ví dụ file người khác xuất từ Better Karaoke). Kéo thả file vào panel cũng được.": ".lrc, .srt, .ass 파일에서 타이밍이 있는 가사를 불러옵니다(예: 다른 사람이 Better Karaoke에서 내보낸 파일). 패널에 파일을 끌어다 놓아도 됩니다.",
+  "File quá lớn.": "파일이 너무 큽니다.",
+  "Không đọc được lời có thời gian trong file {0}.": "{0}에서 타이밍이 있는 가사를 찾지 못했습니다.",
+  "Lời bạn đã sửa cho video này sẽ được thay bằng lời trong file. Tiếp tục?": "이 영상에 편집한 가사가 파일의 가사로 바뀝니다. 계속할까요?",
+  "📥 Đã nạp {0} dòng lời từ {1}.": "📥 {1}에서 {0}줄을 불러왔습니다.",
+  "File này làm cho một video khác: nếu lời lệch, chỉnh \"Lệch\" trong ✏️ Chỉnh lời.": "이 파일은 다른 영상용입니다. 가사가 어긋나면 ✏️ 편집에서 \"오프셋\"을 조정하세요.",
+  "Kiểu chữ trong file đã thêm vào \"Kiểu chữ\": ★ {0}.": "파일의 스타일을 \"스타일\"에 추가했습니다: ★ {0}.",
 };

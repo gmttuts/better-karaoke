@@ -386,7 +386,20 @@ BYL.ui = (() => {
     findBtn.title = L('Tên bài hoặc ca sĩ bị đoán sai? Tự gõ lại rồi tìm');
     const exportBtn = el('button', '', L('⬇ Xuất'));
     exportBtn.title = L('Lưu lời ra file .lrc / .srt (giữ thời gian bạn đã canh), hoặc gửi lên LRCLIB');
-    row4.append(editBtn, tapBtn, copy, exportBtn, againBtn, open);
+    // 📥 Timed lyrics from a file someone shared (.lrc / .srt / .ass), or
+    // dropped onto the panel.
+    const importBtn = el('button', '', L('📥 Nhập file'));
+    importBtn.title = L('Nạp lời có thời gian từ file .lrc, .srt hoặc .ass (ví dụ file người khác xuất từ Better Karaoke). Kéo thả file vào panel cũng được.');
+    const importPick = el('input');
+    importPick.type = 'file';
+    importPick.accept = '.lrc,.srt,.vtt,.ass,.ssa,.txt';
+    importPick.hidden = true;
+    importBtn.addEventListener('click', () => importPick.click());
+    importPick.addEventListener('change', () => {
+      importFile(importPick.files[0]);
+      importPick.value = '';
+    });
+    row4.append(editBtn, tapBtn, copy, exportBtn, importBtn, importPick, againBtn, open);
 
     // Manual search: the title/artist typed here replace the guess from the
     // video title, are remembered for this video, and every source runs again.
@@ -524,6 +537,21 @@ BYL.ui = (() => {
     });
 
     body.append(nav, lyricTab, karaokeTab, historyTab);
+    wrap.addEventListener('dragover', (e) => {
+      if (![...(e.dataTransfer?.types || [])].includes('Files')) return;
+      e.preventDefault();
+      wrap.classList.add('drop');
+    });
+    wrap.addEventListener('dragleave', (e) => {
+      if (!wrap.contains(e.relatedTarget)) wrap.classList.remove('drop');
+    });
+    wrap.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      wrap.classList.remove('drop');
+      if (!file) return;
+      e.preventDefault();
+      importFile(file);
+    });
     wrap.append(header, menu, body);
     root.append(wrap);
 
@@ -1450,13 +1478,42 @@ BYL.ui = (() => {
   function exportFile(kind) {
     const lines = timedLines();
     if (!lines) return say(noTiming());
-    const meta = { title: state.song?.title, artist: state.song?.artist, duration: state.duration };
+    const meta = { title: state.song?.title, artist: state.song?.artist, duration: state.duration, videoId: state.videoId };
     const text =
       kind === 'srt' ? BYL.exporter.toSrt(lines, state.duration) : kind === 'ass' ? assFile(lines, meta) : BYL.exporter.toLrc(lines, meta);
     BYL.exporter.download(text, BYL.exporter.fileName(meta, kind), kind !== 'lrc');
     if (kind === 'ass') return say(L('⬇ Đã lưu file .ass với kiểu chữ đang dùng. Ghép cứng vào video của bạn: ffmpeg -i video.mp4 -vf ass="{0}" video-co-loi.mp4', BYL.exporter.fileName(meta, 'ass')));
     const fixed = state.offset || state.warps[state.current.id]?.length;
     say(L('⬇ Đã lưu file .{0}', kind) + (fixed ? L(', đã tính cả độ lệch và các mốc 📍.') : '.'));
+  }
+
+  // 📥 A shared file becomes the user's own lyrics for this video (the
+  // ✏️ slot), with its timing; a look in it is added to the presets.
+  async function importFile(file) {
+    if (!file || !state.videoId) return;
+    if (file.size > 2e6) return say(L('File quá lớn.'));
+    let got = null;
+    try {
+      got = BYL.exporter.fromFile(await file.text());
+    } catch {}
+    const n = got ? BYL.parseLrc(got.lrc).length : 0;
+    if (!n) return say(L('Không đọc được lời có thời gian trong file {0}.', file.name));
+    if (state.candidates.some((c) => baseId(c) === 'custom') && !confirm(L('Lời bạn đã sửa cho video này sẽ được thay bằng lời trong file. Tiếp tục?'))) return;
+    const name = file.name.replace(/\.[^.]+$/, '');
+    P.note.textContent = ' ';
+    saveCustom(got.lrc, '📥 ' + name.slice(0, 40).trim());
+    const notes = [L('📥 Đã nạp {0} dòng lời từ {1}.', n, file.name)];
+    if (got.videoId && got.videoId !== state.videoId) notes.push(L('File này làm cho một video khác: nếu lời lệch, chỉnh "Lệch" trong ✏️ Chỉnh lời.'));
+    const look = BYL.look.cleanLook(got.look);
+    if (look) {
+      const preset = (got.title || name).trim().slice(0, 24).trim() || 'Preset';
+      const list = (BYL.settings.value.overlayPresets || []).filter((p) => p.name !== preset);
+      list.push({ name: preset, look });
+      await BYL.settings.set({ overlayPresets: list });
+      refreshLook();
+      notes.push(L('Kiểu chữ trong file đã thêm vào "Kiểu chữ": ★ {0}.', preset));
+    }
+    say(notes.join(' '));
   }
 
   // The look, size, position and translation the overlay shows right now.

@@ -386,9 +386,10 @@ BYL.plainLines = (text) => {
 
 // LRC with centiseconds, so editing timed lyrics keeps their timing intact.
 BYL.lrcStamp = (t) => {
-  t = Math.max(0, t);
-  const m = String(Math.floor(t / 60)).padStart(2, '0');
-  const sec = (Math.floor((t % 60) * 100) / 100).toFixed(2).padStart(5, '0');
+  // In whole centiseconds: 3723.04 % 60 is 3.0399…, which used to print 3.03.
+  const cs = Math.round(Math.max(0, t) * 100);
+  const m = String(Math.floor(cs / 6000)).padStart(2, '0');
+  const sec = ((cs % 6000) / 100).toFixed(2).padStart(5, '0');
   return `[${m}:${sec}]`;
 };
 BYL.toLrc = (lines, shift = 0) =>

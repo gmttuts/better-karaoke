@@ -379,4 +379,12 @@
   "Mặc định: {0}": "ค่าเริ่มต้น: {0}",
   "Tự bật Karaoke khi mở video": "เปิดคาราโอเกะอัตโนมัติเมื่อเปิดวิดีโอ",
   "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "ปิด: เปิดด้วยสวิตช์ 🎤 Karaoke ในแต่ละวิดีโอ",
+  "📥 Nhập file": "📥 นำเข้าไฟล์",
+  "Nạp lời có thời gian từ file .lrc, .srt hoặc .ass (ví dụ file người khác xuất từ Better Karaoke). Kéo thả file vào panel cũng được.": "โหลดเนื้อเพลงพร้อมเวลาจากไฟล์ .lrc, .srt หรือ .ass (เช่น ไฟล์ที่คนอื่นส่งออกจาก Better Karaoke) ลากไฟล์มาวางบนแผงก็ได้",
+  "File quá lớn.": "ไฟล์ใหญ่เกินไป",
+  "Không đọc được lời có thời gian trong file {0}.": "ไม่พบเนื้อเพลงพร้อมเวลาใน {0}",
+  "Lời bạn đã sửa cho video này sẽ được thay bằng lời trong file. Tiếp tục?": "เนื้อเพลงที่คุณแก้ไขสำหรับวิดีโอนี้จะถูกแทนที่ด้วยเนื้อเพลงในไฟล์ ดำเนินการต่อไหม?",
+  "📥 Đã nạp {0} dòng lời từ {1}.": "📥 โหลด {0} บรรทัดจาก {1} แล้ว",
+  "File này làm cho một video khác: nếu lời lệch, chỉnh \"Lệch\" trong ✏️ Chỉnh lời.": "ไฟล์นี้ทำมาสำหรับวิดีโออื่น: ถ้าเนื้อเพลงไม่ตรง ให้ปรับ \"ค่าชดเชย\" ใน ✏️ แก้ไข",
+  "Kiểu chữ trong file đã thêm vào \"Kiểu chữ\": ★ {0}.": "เพิ่มสไตล์ในไฟล์ไปที่ \"สไตล์\" แล้ว: ★ {0}",
 };

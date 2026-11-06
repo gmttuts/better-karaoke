@@ -379,4 +379,12 @@
   "Mặc định: {0}": "默认：{0}",
   "Tự bật Karaoke khi mở video": "打开视频时自动开启卡拉OK",
   "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "关闭：每个视频用 🎤 Karaoke 开关手动开启",
+  "📥 Nhập file": "📥 导入文件",
+  "Nạp lời có thời gian từ file .lrc, .srt hoặc .ass (ví dụ file người khác xuất từ Better Karaoke). Kéo thả file vào panel cũng được.": "从 .lrc、.srt 或 .ass 文件载入带时间的歌词（例如别人从 Better Karaoke 导出的文件）。也可以把文件拖到面板上。",
+  "File quá lớn.": "文件太大。",
+  "Không đọc được lời có thời gian trong file {0}.": "在 {0} 中没有找到带时间的歌词。",
+  "Lời bạn đã sửa cho video này sẽ được thay bằng lời trong file. Tiếp tục?": "你为此视频编辑的歌词将被文件中的歌词替换。继续吗？",
+  "📥 Đã nạp {0} dòng lời từ {1}.": "📥 已从 {1} 载入 {0} 行歌词。",
+  "File này làm cho một video khác: nếu lời lệch, chỉnh \"Lệch\" trong ✏️ Chỉnh lời.": "此文件是为另一个视频制作的：如果歌词不同步，请在 ✏️ 编辑 中调整“偏移”。",
+  "Kiểu chữ trong file đã thêm vào \"Kiểu chữ\": ★ {0}.": "文件中的样式已添加到“样式”：★ {0}。",
 };

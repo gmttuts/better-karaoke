@@ -379,4 +379,12 @@
   "Mặc định: {0}": "デフォルト：{0}",
   "Tự bật Karaoke khi mở video": "動画を開いたらカラオケを自動でオン",
   "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "オフ：動画ごとに 🎤 Karaoke スイッチでオン",
+  "📥 Nhập file": "📥 ファイルを読み込む",
+  "Nạp lời có thời gian từ file .lrc, .srt hoặc .ass (ví dụ file người khác xuất từ Better Karaoke). Kéo thả file vào panel cũng được.": ".lrc・.srt・.ass ファイルからタイミング付きの歌詞を読み込みます（Better Karaoke から書き出したファイルなど）。パネルにドロップしても読み込めます。",
+  "File quá lớn.": "ファイルが大きすぎます。",
+  "Không đọc được lời có thời gian trong file {0}.": "{0} にタイミング付きの歌詞が見つかりません。",
+  "Lời bạn đã sửa cho video này sẽ được thay bằng lời trong file. Tiếp tục?": "この動画用に編集した歌詞がファイルの歌詞に置き換わります。続けますか？",
+  "📥 Đã nạp {0} dòng lời từ {1}.": "📥 {1} から {0} 行を読み込みました。",
+  "File này làm cho một video khác: nếu lời lệch, chỉnh \"Lệch\" trong ✏️ Chỉnh lời.": "このファイルは別の動画用です。歌詞がずれる場合は ✏️ 編集 の「オフセット」で調整してください。",
+  "Kiểu chữ trong file đã thêm vào \"Kiểu chữ\": ★ {0}.": "ファイルのスタイルを「スタイル」に追加しました：★ {0}。",
 };

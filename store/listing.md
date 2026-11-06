@@ -45,6 +45,7 @@ Mở một video nhạc trên YouTube là có lời bài hát ở cột bên ph�
 • 🎯 Tự canh lời theo phụ đề của video, ⏱ gõ nhịp bằng phím Space, 📍 ghim dòng đang hát để sửa lệch từng đoạn.
 • 🎚 Đổi tông (nâng / hạ nửa cung, không đổi tốc độ) và 🎤 Lọc giọng ca sĩ để hát trên bài gốc, chạy ngay trên máy.
 • ⬇ Xuất file LRC / SRT / ASS (phụ đề karaoke đúng kiểu chữ, ghép cứng được vào video của bạn) với đúng thời gian bạn đã canh; ☁ chia sẻ lên LRCLIB (chỉ khi bạn xác nhận).
+• 📥 Nhập lại file .lrc / .srt / .ass để chia sẻ lời đã canh nhịp và kiểu chữ với bạn bè.
 • 🌐 Song ngữ: hiện lời dịch dưới mỗi dòng. 🔤 Phiên âm Latin cho lời Hàn, Nhật, Trung.
 • 🎙 Chấm điểm karaoke: hát vào micro, mỗi dòng có điểm (đủ lời, đúng nốt).
 • ⧉ Cửa sổ lời nổi luôn nằm trên cùng, kể cả khi chuyển tab.
@@ -64,6 +65,7 @@ Open a music video on YouTube and the lyrics appear in the right column, with th
 • 🎯 Sync the lyrics to the video's captions, ⏱ tap along with Space, 📍 pin the line being sung to fix one part of the song.
 • 🎚 Change the key (semitones up / down, same speed) and 🎤 cut the singer's voice to sing over the original, all on your device.
 • ⬇ Export LRC / SRT / ASS files (styled karaoke subtitles you can burn into your own video) with your timing; ☁ share them on LRCLIB (only after you confirm).
+• 📥 Import .lrc / .srt / .ass files to share timed lyrics and styles with friends.
 • 🌐 Show a translation under each line. 🔤 Latin spelling for Korean, Japanese and Chinese lyrics.
 • 🎙 Karaoke scoring: sing into your microphone and get a mark for every line (in time, in tune).
 • ⧉ A floating, always-on-top lyrics window that keeps going when you switch tabs.

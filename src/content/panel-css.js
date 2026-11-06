@@ -22,6 +22,7 @@ BYL.PANEL_CSS = `
   .song b { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .song span { display: block; font-size: 12px; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .chev { color: var(--fg2); transition: transform .2s; }
+  .byl.drop { outline: 2px dashed var(--accent); outline-offset: -2px; }
   .byl.collapsed .chev { transform: rotate(-90deg); }
   .byl.collapsed .body { display: none; }
   nav { display: flex; gap: 2px; margin: 0 12px 10px; padding: 3px; border-radius: 10px; background: var(--chip); }

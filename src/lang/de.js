@@ -379,4 +379,12 @@
   "Mặc định: {0}": "Standard: {0}",
   "Tự bật Karaoke khi mở video": "Karaoke beim Öffnen eines Videos einschalten",
   "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "Aus: für jedes Video mit dem 🎤 Karaoke-Schalter einschalten",
+  "📥 Nhập file": "📥 Datei importieren",
+  "Nạp lời có thời gian từ file .lrc, .srt hoặc .ass (ví dụ file người khác xuất từ Better Karaoke). Kéo thả file vào panel cũng được.": "Lädt Lyrics mit Zeitangaben aus einer .lrc-, .srt- oder .ass-Datei (zum Beispiel einer, die jemand aus Better Karaoke exportiert hat). Du kannst die Datei auch auf das Panel ziehen.",
+  "File quá lớn.": "Die Datei ist zu groß.",
+  "Không đọc được lời có thời gian trong file {0}.": "Keine Lyrics mit Zeitangaben in {0} gefunden.",
+  "Lời bạn đã sửa cho video này sẽ được thay bằng lời trong file. Tiếp tục?": "Deine bearbeiteten Lyrics für dieses Video werden durch die aus der Datei ersetzt. Fortfahren?",
+  "📥 Đã nạp {0} dòng lời từ {1}.": "📥 {0} Zeilen aus {1} geladen.",
+  "File này làm cho một video khác: nếu lời lệch, chỉnh \"Lệch\" trong ✏️ Chỉnh lời.": "Diese Datei wurde für ein anderes Video erstellt: Wenn die Lyrics nicht passen, stelle den „Versatz“ unter ✏️ Bearbeiten ein.",
+  "Kiểu chữ trong file đã thêm vào \"Kiểu chữ\": ★ {0}.": "Der Stil aus der Datei wurde zu „Stil“ hinzugefügt: ★ {0}.",
 };

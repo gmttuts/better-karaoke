@@ -379,4 +379,12 @@
   "Mặc định: {0}": "Bawaan: {0}",
   "Tự bật Karaoke khi mở video": "Nyalakan Karaoke saat video dibuka",
   "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "Mati: nyalakan dengan sakelar 🎤 Karaoke di tiap video",
+  "📥 Nhập file": "📥 Impor file",
+  "Nạp lời có thời gian từ file .lrc, .srt hoặc .ass (ví dụ file người khác xuất từ Better Karaoke). Kéo thả file vào panel cũng được.": "Muat lirik berwaktu dari file .lrc, .srt atau .ass (misalnya file yang diekspor orang lain dari Better Karaoke). File juga bisa diseret ke panel.",
+  "File quá lớn.": "File terlalu besar.",
+  "Không đọc được lời có thời gian trong file {0}.": "Tidak ada lirik berwaktu di {0}.",
+  "Lời bạn đã sửa cho video này sẽ được thay bằng lời trong file. Tiếp tục?": "Lirik yang kamu edit untuk video ini akan diganti dengan lirik di file. Lanjutkan?",
+  "📥 Đã nạp {0} dòng lời từ {1}.": "📥 Memuat {0} baris dari {1}.",
+  "File này làm cho một video khác: nếu lời lệch, chỉnh \"Lệch\" trong ✏️ Chỉnh lời.": "File ini dibuat untuk video lain: jika lirik meleset, atur \"Offset\" di ✏️ Edit.",
+  "Kiểu chữ trong file đã thêm vào \"Kiểu chữ\": ★ {0}.": "Gaya di file ditambahkan ke \"Gaya\": ★ {0}.",
 };
