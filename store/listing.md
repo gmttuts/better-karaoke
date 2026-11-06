@@ -51,7 +51,7 @@ Mở một video nhạc trên YouTube là có lời bài hát ở cột bên ph�
 • ✏️ Sửa hoặc tự nhập lời, 🔍 tìm lại theo tên bài, ★ bài yêu thích, lịch sử bài đã xem, phím tắt Alt + phím.
 • Giao diện 12 ngôn ngữ (Việt, Anh, Trung, Nhật, Hàn, Thái, Indonesia, Tây Ban Nha, Bồ Đào Nha, Pháp, Đức, Nga), đổi ngay trên đầu panel.
 
-Không quảng cáo, không thu thập dữ liệu. Mã nguồn mở: https://github.com/gmttuts/better-youtube-lyric
+Không quảng cáo, không thu thập dữ liệu. Mã nguồn mở: https://github.com/gmttuts/better-karaoke
 
 **en:**
 
@@ -70,7 +70,7 @@ Open a music video on YouTube and the lyrics appear in the right column, with th
 • ✏️ Edit or type lyrics, 🔍 search again by name, ★ favourites, watch history, Alt + key shortcuts.
 • Interface in 12 languages (Vietnamese, English, Chinese, Japanese, Korean, Thai, Indonesian, Spanish, Portuguese, French, German, Russian), switchable at the top of the panel.
 
-No ads, no data collection. Open source: https://github.com/gmttuts/better-youtube-lyric
+No ads, no data collection. Open source: https://github.com/gmttuts/better-karaoke
 
 ## Danh mục · Category
 Entertainment (Giải trí)
@@ -98,7 +98,7 @@ Tick only **Website content**, then tick all three certifications.
 - Not sold to third parties; not used for purposes unrelated to the single purpose; not used for credit-worthiness or lending.
 
 ## Chính sách quyền riêng tư · Privacy policy URL
-https://github.com/gmttuts/better-youtube-lyric/blob/main/PRIVACY.md
+https://github.com/gmttuts/better-karaoke/blob/main/PRIVACY.md
 
 ## Ghi chú cho người duyệt · Notes for the reviewer (tuỳ chọn)
 Open any music video on youtube.com (e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ): the lyrics panel appears at the top of the right column; turn on the "🎤 Karaoke" switch at the top of the panel (or the 🎤 button in the player's control bar) to show them on the video. Microphone access is asked only when the user presses 🎙 (karaoke scoring) and the audio never leaves the device.

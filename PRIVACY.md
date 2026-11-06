@@ -38,4 +38,4 @@ Better Karaoke **does not collect, sell or send your personal data to its develo
 
 **Files you export** (.lrc, .srt, .json backup) are only saved to your device.
 
-Liên hệ / contact: https://github.com/gmttuts/better-youtube-lyric/issues
+Liên hệ / contact: https://github.com/gmttuts/better-karaoke/issues

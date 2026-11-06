@@ -3,7 +3,7 @@
 // Sends lyrics the user timed on YouTube to LRCLIB (POST /api/publish).
 // Nothing leaves the browser until the user ticks the box and presses send.
 const API = 'https://lrclib.net/api';
-const CLIENT = `BetterYouTubeLyric/${chrome.runtime.getManifest().version} (https://github.com/gmttuts/better-youtube-lyric)`;
+const CLIENT = `BetterKaraoke/${chrome.runtime.getManifest().version} (https://github.com/gmttuts/better-karaoke)`;
 const $ = (id) => document.getElementById(id);
 const headers = { 'Lrclib-Client': CLIENT };
 let draft = null;
