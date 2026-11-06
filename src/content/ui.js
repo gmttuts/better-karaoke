@@ -107,6 +107,20 @@ BYL.ui = (() => {
     return true;
   }
 
+  // A playlist or Mix, chat or another panel YouTube adds to the side column
+  // can land above the lyrics: put them back at the top of the column. Only
+  // moved when something really is above, so the lyrics keep their scroll.
+  function keepOnTop() {
+    if (!panelHost?.isConnected || panelHost.hasAttribute('data-float')) return;
+    const parent = panelHost.parentElement;
+    if (parent.firstElementChild !== panelHost) return parent.prepend(panelHost);
+    const col = document.querySelector('#secondary');
+    if (!col || col === parent || !col.contains(parent) || col.firstElementChild === panelHost) return;
+    // Something in the column outside our box shows above us.
+    const above = [...col.children].some((c) => !c.contains(panelHost) && c.offsetHeight && c.getBoundingClientRect().top < panelHost.getBoundingClientRect().top);
+    if (above) col.prepend(panelHost);
+  }
+
   // Shorts: sit right of the video's action buttons when there's room,
   // otherwise in the top-right corner.
   function placeFloat() {
@@ -1634,6 +1648,7 @@ BYL.ui = (() => {
           placeFloat(); // Shorts: follow the video if the layout shifts
           shortsLift();
           ensurePlayerBtn();
+          keepOnTop();
         }
       } catch {}
       // A background tab gets no animation frames; the floating window does,
