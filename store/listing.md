@@ -23,6 +23,14 @@ Bản nộp: `npm run build:store` → `dist/better-youtube-lyric-<version>-stor
 
 ---
 
+## Ngôn ngữ · Languages
+Ngôn ngữ mặc định của gói là **tiếng Anh** (`default_locale: en`): người dùng ở
+nước chưa có bản mô tả riêng sẽ thấy trang Store tiếng Anh. Thêm bản
+**Tiếng Việt** trong ô chọn ngôn ngữ của tab Store listing. Ảnh chung (global)
+dùng bộ `en/`; bật *Localized assets* cho Tiếng Việt và tải bộ `vi/`. Giao diện
+trong extension không theo cài đặt này: nó tự chọn tiếng Việt ở GMT+7, tiếng
+Anh ở nơi khác, đổi được bằng 🌐.
+
 ## Tên · Name
 Better Karaoke
 
