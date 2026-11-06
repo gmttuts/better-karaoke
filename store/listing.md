@@ -87,7 +87,7 @@ Show song lyrics for the YouTube video being watched, in a side panel and as kar
 - **Host `https://lrclib.net/*`**: searches the open LRCLIB lyrics library by song title and artist, and (only when the user confirms on the publish page) sends lyrics the user timed.
 - **Host `https://hopamchuan.com/*`**: searches Vietnamese lyrics by song title and artist. Can be turned off in the settings.
 - **Host `https://genius.com/*`**: searches song lyrics (Vietnamese and international) by song title and artist. Can be turned off in the settings.
-- **Content script on `https://www.youtube.com/*` loads `src/audio/pitch-worklet.js`** (web accessible resource): the 🎚 key change runs as an AudioWorklet on the video's own sound, on the device.
+- **Web accessible resources** (`src/audio/pitch-worklet.js`, `src/audio/vocal-worklet.js`, `fonts/*.woff2`, `data/pinyin.json`), loaded by the content script on `https://www.youtube.com/*`: the 🎚 key change and the 🎤 vocal cut run as AudioWorklets on the video's own sound, on the device; the bundled fonts draw the karaoke styles; the pinyin table romanizes Chinese lyrics.
 - **offscreen**: runs the on-device text recognition (Tesseract, WebAssembly) for "🔠 Read text in the video" in an offscreen document; nothing is sent anywhere.
 - **Remote code**: none. All code ships in the package; data/pinyin.json is a static reading table.
 
@@ -106,7 +106,7 @@ https://github.com/gmttuts/better-karaoke/blob/main/PRIVACY.md
 Open any music video on youtube.com (e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ): the lyrics panel appears at the top of the right column; turn on the "🎤 Karaoke" switch at the top of the panel (or the 🎤 button in the player's control bar) to show them on the video. Microphone access is asked only when the user presses 🎙 (karaoke scoring) and the audio never leaves the device.
 
 ## Trước khi bấm gửi · Before you submit
-1. Push repo lên GitHub để link chính sách quyền riêng tư ở trên mở được.
+1. ~~Push repo lên GitHub~~ (đã xong: https://github.com/gmttuts/better-karaoke).
 2. `npm run build:store` → tải file zip trong `dist/` lên.
 3. Điền tab Store listing (mô tả, danh mục, ảnh), tab Privacy (mục đích duy nhất, lý do từng quyền, remote code, dữ liệu, link chính sách), tab Distribution (miễn phí, mọi quốc gia).
 4. Khai báo non-trader trong tài khoản (miễn phí, không kinh doanh).
