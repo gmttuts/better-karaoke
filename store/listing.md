@@ -62,6 +62,8 @@ Mở một video nhạc trên YouTube là có lời bài hát ở cột bên ph�
 
 Không quảng cáo, không thu thập dữ liệu. Mã nguồn mở: https://github.com/gmttuts/better-karaoke
 
+☕ Nếu thấy Better Karaoke hữu ích, bạn có thể ủng hộ người làm tại: https://buymeacoffee.com/gmttuts
+
 **en:**
 
 Open a music video on YouTube and the lyrics appear in the right column, with the line being sung highlighted and scrolling along.
@@ -81,6 +83,8 @@ Open a music video on YouTube and the lyrics appear in the right column, with th
 • Interface in 12 languages (Vietnamese, English, Chinese, Japanese, Korean, Thai, Indonesian, Spanish, Portuguese, French, German, Russian), switchable at the top of the panel.
 
 No ads, no data collection. Open source: https://github.com/gmttuts/better-karaoke
+
+☕ If Better Karaoke is useful to you, you can support the developer at: https://buymeacoffee.com/gmttuts
 
 ## Danh mục · Category
 Entertainment (Giải trí)

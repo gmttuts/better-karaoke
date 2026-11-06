@@ -169,3 +169,9 @@ Better Karaoke lấy ý tưởng overlay và LRCLIB, rồi thêm phần những 
 - **Chrome Web Store**: `npm run build:store` → `dist/better-youtube-lyric-<version>-store.zip` (đã bỏ trường `key`, Store tự cấp ID). Nội dung giới thiệu tiếng Việt / tiếng Anh, lý do xin từng quyền và câu trả lời mục "Dữ liệu người dùng" nằm trong [`store/listing.md`](store/listing.md). Ảnh chụp 1280×800 và ảnh 440×280 ở `store/`, tạo lại bằng `node scripts/store-assets.mjs`. Chính sách quyền riêng tư: [`PRIVACY.md`](PRIVACY.md) (dùng link GitHub của file này).
 - **Microsoft Edge**: Edge chạy được đúng bản Chrome (Load unpacked ở `edge://extensions`, hoặc nộp cùng file `-store.zip` lên Edge Add-ons).
 - **Firefox** (128 trở lên): `npm run build:firefox` → `dist/better-youtube-lyric-<version>-firefox.zip`. Bản này chạy nền bằng event page thay cho service worker và có ID `better-youtube-lyric@gmttuts`; đã qua `web-ext lint` (0 lỗi, 0 cảnh báo) nhưng **chưa chạy thử trên Firefox thật**. Firefox chưa có cửa sổ nổi (Document Picture-in-Picture), nút ⧉ sẽ báo không hỗ trợ. Thử tạm: `about:debugging` → *This Firefox* → *Load Temporary Add-on* → chọn `manifest.json` trong `dist/better-youtube-lyric-firefox`.
+
+## Ủng hộ · Support
+
+Better Karaoke miễn phí, không quảng cáo. Nếu thấy hữu ích, bạn có thể ủng hộ người làm tại ☕ https://buymeacoffee.com/gmttuts
+
+Better Karaoke is free and ad-free. If it is useful to you, you can support the developer at ☕ https://buymeacoffee.com/gmttuts
