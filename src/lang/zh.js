@@ -225,7 +225,6 @@
   "Tắt để ẩn hẳn panel và lời trên video ở mọi tab YouTube": "关闭后，所有 YouTube 标签页中的面板和视频歌词都会被隐藏",
   "Tổng": "总计",
   "Từng dòng": "逐行",
-  "Tự bật lời trên video": "自动显示视频歌词",
   "Tự nhập": "手动输入",
   "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "画面中带有歌词文字？快速播放视频（静音）并识别各帧中的文字，同时记录时间。大约需要歌曲时长的一半。",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "YouTube 上同一首歌的歌词视频 / 其他上传",
@@ -378,4 +377,6 @@
   "↺ Mặc định": "↺ 默认",
   "Ngẫu nhiên: {0}": "随机：{0}",
   "Mặc định: {0}": "默认：{0}",
+  "Tự bật Karaoke khi mở video": "打开视频时自动开启卡拉OK",
+  "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "关闭：每个视频用 🎤 Karaoke 开关手动开启",
 };

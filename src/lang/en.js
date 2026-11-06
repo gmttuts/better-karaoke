@@ -225,7 +225,6 @@
   "Tắt để ẩn hẳn panel và lời trên video ở mọi tab YouTube": "Turn off to hide the panel and the lyrics on every YouTube tab",
   "Tổng": "Total",
   "Từng dòng": "Per line",
-  "Tự bật lời trên video": "Show lyrics on the video automatically",
   "Tự nhập": "Typed in",
   "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "Lyrics shown in the picture? Plays the video fast (muted) and reads the text in its frames, with timing. Takes about half the length of the song.",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "Lyric videos / other uploads of the song on YouTube",
@@ -378,4 +377,6 @@
   "↺ Mặc định": "↺ Default",
   "Ngẫu nhiên: {0}": "Random: {0}",
   "Mặc định: {0}": "Default: {0}",
+  "Tự bật Karaoke khi mở video": "Turn Karaoke on when a video opens",
+  "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "Off: turn it on with the 🎤 Karaoke switch for each video",
 };

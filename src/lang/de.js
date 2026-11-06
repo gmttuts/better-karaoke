@@ -225,7 +225,6 @@
   "Tắt để ẩn hẳn panel và lời trên video ở mọi tab YouTube": "Ausschalten, um Panel und Text im Video in allen YouTube-Tabs auszublenden",
   "Tổng": "Gesamt",
   "Từng dòng": "Pro Zeile",
-  "Tự bật lời trên video": "Text im Video automatisch anzeigen",
   "Tự nhập": "Eigene",
   "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "Text im Bild eingeblendet? Spielt das Video schnell (stumm) ab und liest den Text in den Einzelbildern samt Timing. Dauert etwa halb so lang wie der Song.",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "Lyric-Videos / andere Uploads des Songs auf YouTube",
@@ -378,4 +377,6 @@
   "↺ Mặc định": "↺ Standard",
   "Ngẫu nhiên: {0}": "Zufällig: {0}",
   "Mặc định: {0}": "Standard: {0}",
+  "Tự bật Karaoke khi mở video": "Karaoke beim Öffnen eines Videos einschalten",
+  "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "Aus: für jedes Video mit dem 🎤 Karaoke-Schalter einschalten",
 };

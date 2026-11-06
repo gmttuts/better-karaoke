@@ -225,7 +225,6 @@
   "Tắt để ẩn hẳn panel và lời trên video ở mọi tab YouTube": "Nonaktifkan untuk menyembunyikan panel dan lirik di video pada semua tab YouTube",
   "Tổng": "Total",
   "Từng dòng": "Per baris",
-  "Tự bật lời trên video": "Tampilkan lirik di video secara otomatis",
   "Tự nhập": "Diketik sendiri",
   "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "Lirik tampil di gambar? Memutar video dengan cepat (tanpa suara) dan membaca teks di setiap frame, lengkap dengan waktunya. Memakan waktu sekitar setengah durasi lagu.",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "Video lirik / unggahan lain dari lagu yang sama di YouTube",
@@ -378,4 +377,6 @@
   "↺ Mặc định": "↺ Bawaan",
   "Ngẫu nhiên: {0}": "Acak: {0}",
   "Mặc định: {0}": "Bawaan: {0}",
+  "Tự bật Karaoke khi mở video": "Nyalakan Karaoke saat video dibuka",
+  "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "Mati: nyalakan dengan sakelar 🎤 Karaoke di tiap video",
 };

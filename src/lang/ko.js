@@ -225,7 +225,6 @@
   "Tắt để ẩn hẳn panel và lời trên video ở mọi tab YouTube": "끄면 모든 YouTube 탭에서 패널과 영상 위 가사가 완전히 숨겨집니다",
   "Tổng": "합계",
   "Từng dòng": "줄별",
-  "Tự bật lời trên video": "영상 위 가사 자동 표시",
   "Tự nhập": "직접 입력",
   "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "화면에 가사가 나오는 영상인가요? 영상을 빠르게(음소거로) 재생하며 각 프레임의 글자를 타이밍과 함께 읽습니다. 곡 길이의 절반 정도 걸립니다.",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "YouTube의 가사 영상 / 같은 곡의 다른 업로드",
@@ -378,4 +377,6 @@
   "↺ Mặc định": "↺ 기본값",
   "Ngẫu nhiên: {0}": "랜덤: {0}",
   "Mặc định: {0}": "기본값: {0}",
+  "Tự bật Karaoke khi mở video": "영상을 열면 노래방 자동 켜기",
+  "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "끄면: 영상마다 🎤 Karaoke 스위치로 켜기",
 };

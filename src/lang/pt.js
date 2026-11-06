@@ -225,7 +225,6 @@
   "Tắt để ẩn hẳn panel và lời trên video ở mọi tab YouTube": "Desative para ocultar o painel e a letra sobre o vídeo em todas as abas do YouTube",
   "Tổng": "Total",
   "Từng dòng": "Por linha",
-  "Tự bật lời trên video": "Mostrar a letra sobre o vídeo automaticamente",
   "Tự nhập": "Digitada",
   "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "Letra aparece na imagem do vídeo? Reproduz o vídeo em alta velocidade (sem som) e lê o texto dos quadros, com os tempos. Leva cerca de metade da duração da música.",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "Vídeos de letra / outros envios da música no YouTube",
@@ -378,4 +377,6 @@
   "↺ Mặc định": "↺ Padrão",
   "Ngẫu nhiên: {0}": "Aleatório: {0}",
   "Mặc định: {0}": "Padrão: {0}",
+  "Tự bật Karaoke khi mở video": "Ativar o Karaokê ao abrir um vídeo",
+  "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "Desligado: ative com o botão 🎤 Karaoke em cada vídeo",
 };

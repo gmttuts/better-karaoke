@@ -490,8 +490,12 @@ BYL.ui = (() => {
     };
     findBtn.addEventListener('click', () => (menu.hidden = true));
     pipBtn.addEventListener('click', () => (menu.hidden = true));
+    // Whether 🎤 Karaoke comes on by itself for each video (off at first);
+    // the switch at the top only covers the video being watched.
+    const autoBtn = item('', () => BYL.settings.set({ karaokeAuto: !BYL.settings.value.karaokeAuto }).then(paintAuto));
     menu.append(
       favBtn,
+      autoBtn,
       item('🕘 ' + L('Đã xem'), () => showPage('history')),
       pipBtn,
       findBtn
@@ -509,7 +513,7 @@ BYL.ui = (() => {
     wrap.append(header, menu, body);
     root.append(wrap);
 
-    Object.assign(P, { wrap, songTitle, songArtist, status, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
+    Object.assign(P, { wrap, songTitle, songArtist, status, autoBtn, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
       row2, row3, row4, favBtn, hlist, hAll, hFav, historyTab, nav, modeBtns, lyricTab, karaokeTab, menu, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
       tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt });
     editBtn.addEventListener('click', () => openEditor());
@@ -527,6 +531,7 @@ BYL.ui = (() => {
       BYL.settings.set({ panelCollapsed: wrap.classList.contains('collapsed') });
     });
     setMode(BYL.settings.value.panelMode, false);
+    paintAuto();
     select.addEventListener('change', () => {
       const c = state.candidates.find((x) => x.id === select.value);
       if (c) choose(c, true);
@@ -1030,8 +1035,11 @@ BYL.ui = (() => {
       state.manual = true;
     }
     if (mine.length) setSourceStatus('custom', 'ok', mine.length);
-    setOverlay(!!BYL.settings.value.overlayOnByDefault, false);
+    setOverlay(!!BYL.settings.value.karaokeAuto, false);
     pipTitle();
+    // 🎤 Lọc giọng is only ever on because the user just turned it on: a new
+    // video (or the next one playing by itself) starts with the singer back.
+    setVocal(0);
     setKey(saved?.semis || 0, false);
   }
 
@@ -1841,11 +1849,17 @@ BYL.ui = (() => {
     if (karaoke) loadKaraoke();
   }
 
+  function paintAuto() {
+    if (!P) return;
+    const on = !!BYL.settings.value.karaokeAuto;
+    P.autoBtn.textContent = (on ? '☑ ' : '☐ ') + L('Tự bật Karaoke khi mở video');
+    P.autoBtn.classList.toggle('on', on);
+  }
+
   function setOverlay(on, byUser) {
     state.overlayOn = on;
     P.overlayBtn.classList.toggle('on', on);
     paintPlayerBtn();
-    if (byUser) BYL.settings.set({ overlayOnByDefault: on });
     if (on && ensureOverlay()) {
       state.lastActive = -2; // force rebuild
     } else if (O) {
@@ -2299,7 +2313,7 @@ BYL.ui = (() => {
     const v = video();
     return state.current && v ? position(v.currentTime).i : -1;
   };
-  const api = { lineNow, mount, remount, relang, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
+  const api = { paintAuto, lineNow, mount, remount, relang, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
   const ctx = { P, S, addCandidates, api, baseId, choose, closeEditor, effT, el, frame, maybeAutoPick, renderLines, renderSelect, saveCustom, saveWarps, say, setOffset, setSourceStatus, singable, slot, slotFor, state, stopTap, tap, tapping, video };
   for (const k of ['editor', 'tap', 'tabs']) parts[k] = BYL.uiParts[k](ctx);
   return api;

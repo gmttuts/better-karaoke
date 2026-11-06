@@ -225,7 +225,6 @@
   "Tắt để ẩn hẳn panel và lời trên video ở mọi tab YouTube": "オフにすると、すべての YouTube タブでパネルと動画上の歌詞が完全に非表示になります",
   "Tổng": "合計",
   "Từng dòng": "行ごと",
-  "Tự bật lời trên video": "動画の歌詞を自動で表示",
   "Tự nhập": "手入力",
   "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "映像に歌詞が表示されていますか？ 動画を（ミュートで）早送り再生し、各フレームの文字をタイミングとともに読み取ります。曲の長さの約半分の時間がかかります。",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "YouTube 上の同じ曲のリリックビデオ / 別のアップロード",
@@ -378,4 +377,6 @@
   "↺ Mặc định": "↺ デフォルト",
   "Ngẫu nhiên: {0}": "ランダム：{0}",
   "Mặc định: {0}": "デフォルト：{0}",
+  "Tự bật Karaoke khi mở video": "動画を開いたらカラオケを自動でオン",
+  "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "オフ：動画ごとに 🎤 Karaoke スイッチでオン",
 };

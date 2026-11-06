@@ -13,13 +13,13 @@ const DEFAULTS = {
   srcGenius: true,
   srcTranscript: true,
   preferSynced: false,
-  overlayOnByDefault: false,
+  karaokeAuto: false,
   commentPages: 3,
 };
 
 document.getElementById('ver').textContent = 'v' + chrome.runtime.getManifest().version;
 
-const LIVE = ['enabled', 'overlayOnByDefault'];
+const LIVE = ['enabled', 'karaokeAuto'];
 const saved = document.getElementById('saved');
 let timer;
 

@@ -20,7 +20,7 @@ BYL.DEFAULTS = {
   overlayFontSize: 34,
   overlayStyle: 'classic',
   overlayPosition: 'bottom',
-  overlayOnByDefault: false,
+  karaokeAuto: false, // turn 🎤 Karaoke on by itself when a video opens (the switch only covers the video being watched)
   overlayLook: null, // edits on top of the chosen style (🎨 in the panel)
   overlayPresets: [], // [{ name, look }] saved by the user
   channelStyles: {}, // channel name -> { style, look } pinned with 📌

@@ -225,7 +225,6 @@
   "Tắt để ẩn hẳn panel và lời trên video ở mọi tab YouTube": "ปิดเพื่อซ่อนแผงและเนื้อเพลงบนวิดีโอในทุกแท็บ YouTube",
   "Tổng": "รวม",
   "Từng dòng": "ทีละบรรทัด",
-  "Tự bật lời trên video": "แสดงเนื้อเพลงบนวิดีโอโดยอัตโนมัติ",
   "Tự nhập": "พิมพ์เอง",
   "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "วิดีโอมีเนื้อเพลงอยู่ในภาพใช่ไหม จะเล่นวิดีโอเร็ว ๆ (ปิดเสียง) แล้วอ่านตัวอักษรในแต่ละเฟรมพร้อมเวลา ใช้เวลาประมาณครึ่งหนึ่งของความยาวเพลง",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "วิดีโอเนื้อเพลง / อัปโหลดอื่นของเพลงเดียวกันบน YouTube",
@@ -378,4 +377,6 @@
   "↺ Mặc định": "↺ ค่าเริ่มต้น",
   "Ngẫu nhiên: {0}": "สุ่ม: {0}",
   "Mặc định: {0}": "ค่าเริ่มต้น: {0}",
+  "Tự bật Karaoke khi mở video": "เปิดคาราโอเกะอัตโนมัติเมื่อเปิดวิดีโอ",
+  "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "ปิด: เปิดด้วยสวิตช์ 🎤 Karaoke ในแต่ละวิดีโอ",
 };

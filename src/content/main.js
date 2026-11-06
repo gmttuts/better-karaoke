@@ -157,9 +157,10 @@
         BYL.ui.hide();
       }
     }
-    if (changes.overlayOnByDefault) {
-      const on = !!changes.overlayOnByDefault.newValue;
-      BYL.settings.value.overlayOnByDefault = on;
+    if (changes.karaokeAuto) {
+      const on = !!changes.karaokeAuto.newValue;
+      BYL.settings.value.karaokeAuto = on;
+      BYL.ui.paintAuto?.();
       const host = document.getElementById('byl-panel-host');
       if (BYL.ui.state.videoId && host && !host.hidden) BYL.ui.setOverlay(on, false);
     }

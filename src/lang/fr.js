@@ -225,7 +225,6 @@
   "Tắt để ẩn hẳn panel và lời trên video ở mọi tab YouTube": "Désactiver pour masquer le panneau et les paroles sur la vidéo dans tous les onglets YouTube",
   "Tổng": "Total",
   "Từng dòng": "Par ligne",
-  "Tự bật lời trên video": "Afficher automatiquement les paroles sur la vidéo",
   "Tự nhập": "Saisies",
   "Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.": "Paroles affichées dans l'image ? Lit la vidéo en accéléré (sans le son) et lit le texte de ses images, avec l'horodatage. Dure environ la moitié de la chanson.",
   "Video lyric / bản đăng lại cùng bài trên YouTube": "Vidéos de paroles / autres mises en ligne du titre sur YouTube",
@@ -378,4 +377,6 @@
   "↺ Mặc định": "↺ Par défaut",
   "Ngẫu nhiên: {0}": "Au hasard : {0}",
   "Mặc định: {0}": "Par défaut : {0}",
+  "Tự bật Karaoke khi mở video": "Activer le karaoké à l’ouverture d’une vidéo",
+  "Tắt: bật bằng công tắc 🎤 Karaoke cho từng video": "Désactivé : activez-le avec l’interrupteur 🎤 Karaoke pour chaque vidéo",
 };
