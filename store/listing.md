@@ -1,15 +1,15 @@
 # Chrome Web Store listing
 
-Ảnh (tạo lại bằng `node scripts/store-assets.mjs`):
+Ảnh (chụp lại trên YouTube bằng `node scripts/store-shots.mjs`, rồi dựng bằng `node scripts/store-assets.mjs`):
 - Ảnh chụp 1280×800, tải lên theo ngôn ngữ của trang: `vi/1-hero.png` …
   `vi/5-studio.png` (tiếng Việt), `en/1-hero.png` … `en/5-studio.png` (English).
   Nguồn: `mockups.html` dựng quanh ảnh chụp thật bản 0.24 trên YouTube ở `shots/`:
   9 kiểu chữ ở chế độ rạp (`style-*`, 1280 rộng), panel ở chế độ Xem lời
   (`panel-*`), chế độ Hát với lọc giọng và tông +2 (`sing-*`), bảng 🎨 với một
   kiểu tự chỉnh (`studio-*`), các ảnh panel 1440 rộng; tất cả chụp ở độ nét 2x.
-- Ô quảng cáo nhỏ 440×280 (bắt buộc): `promo-440x280.png`.
+- Ô quảng cáo nhỏ 440×280 (bắt buộc, là "thumbnail" trong danh sách Store): `promo-440x280.png` (English, ảnh chung) và `vi/promo-440x280.png` (Tiếng Việt, localized).
 - Ảnh marquee 1400×560 (tuỳ chọn): `vi/marquee-1400x560.png`, `en/marquee-1400x560.png`.
-- Icon 128×128: `../icons/icon128.png`.
+- Icon 128×128: `../icons/icon128.png`. Bản gốc 1000×1000: `icon-source-1000.png` (các cỡ 16/32 cắt sát khuôn mặt cho dễ nhìn).
 - `2x/` giữ bản gấp đôi của mọi ảnh (2560×1600, 880×560, 2800×1120) để xem
   trên màn hình retina hoặc dùng nơi khác. **Không tải `2x/` lên Store**: Store
   chỉ nhận đúng 1280×800 (hoặc 640×400), 440×280 và 1400×560. Các ảnh 1x được
@@ -99,7 +99,7 @@ Show song lyrics for the YouTube video being watched, in a side panel and as kar
 - **Host `https://lrclib.net/*`**: searches the open LRCLIB lyrics library by song title and artist, and (only when the user confirms on the publish page) sends lyrics the user timed.
 - **Host `https://hopamchuan.com/*`**: searches Vietnamese lyrics by song title and artist. Can be turned off in the settings.
 - **Host `https://genius.com/*`**: searches song lyrics (Vietnamese and international) by song title and artist. Can be turned off in the settings.
-- **Web accessible resources** (`src/audio/pitch-worklet.js`, `src/audio/vocal-worklet.js`, `fonts/*.woff2`, `data/pinyin.json`), loaded by the content script on `https://www.youtube.com/*`: the 🎚 key change and the 🎤 vocal cut run as AudioWorklets on the video's own sound, on the device; the bundled fonts draw the karaoke styles; the pinyin table romanizes Chinese lyrics.
+- **Web accessible resources** (`src/audio/pitch-worklet.js`, `src/audio/vocal-worklet.js`, `fonts/*.woff2`, `data/pinyin.json`, `icons/icon48.png`), loaded by the content script on `https://www.youtube.com/*`: the 🎚 key change and the 🎤 vocal cut run as AudioWorklets on the video's own sound, on the device; the bundled fonts draw the karaoke styles; the pinyin table romanizes Chinese lyrics; the icon is the panel's logo.
 - **offscreen**: runs the on-device text recognition (Tesseract, WebAssembly) for "🔠 Read text in the video" in an offscreen document; nothing is sent anywhere.
 - **Remote code**: none. All code ships in the package; data/pinyin.json is a static reading table.
 

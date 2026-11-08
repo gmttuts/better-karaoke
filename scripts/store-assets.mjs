@@ -45,7 +45,7 @@ try {
   for (const lang of ['vi', 'en'])
     for (const [i, scene] of ['hero', 'styles', 'karaoke', 'sound', 'studio'].entries())
       shots.push(['mockups', `scene=${scene}&lang=${lang}`, 1280, 800, `${lang}/${i + 1}-${scene}`]);
-  shots.push(['mockups', 'scene=promo', 440, 280, 'promo-440x280'], ['mockups', 'scene=marquee&lang=vi', 1400, 560, 'vi/marquee-1400x560'], ['mockups', 'scene=marquee&lang=en', 1400, 560, 'en/marquee-1400x560']);
+  shots.push(['mockups', 'scene=promo&lang=en', 440, 280, 'promo-440x280'], ['mockups', 'scene=promo&lang=vi', 440, 280, 'vi/promo-440x280'], ['mockups', 'scene=marquee&lang=vi', 1400, 560, 'vi/marquee-1400x560'], ['mockups', 'scene=marquee&lang=en', 1400, 560, 'en/marquee-1400x560']);
   for (const dir of ['vi', 'en', '2x/vi', '2x/en']) mkdirSync(join(root, 'store', dir), { recursive: true });
   const shrink = async (png, w, h) => {
     const r = await send(

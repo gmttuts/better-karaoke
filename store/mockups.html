@@ -31,6 +31,26 @@
   .card span { font-size: 15.5px; color: #c9c9d6; line-height: 1.4; }
   .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
   .chips span { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); padding: 7px 14px; border-radius: 999px; font-size: 15px; }
+  @font-face { font-family: 'RCl'; src: url(../fonts/rc-latin.woff2) format('woff2'); font-weight: 100 900; }
+  @font-face { font-family: 'RCv'; src: url(../fonts/rc-vietnamese.woff2) format('woff2'); font-weight: 100 900; }
+  @font-face { font-family: 'RCe'; src: url(../fonts/rc-latin-ext.woff2) format('woff2'); font-weight: 100 900; }
+  /* Promo tile and marquee: the icon's red, big and loud. */
+  .hot { position: relative; overflow: hidden; color: #fff;
+    background: radial-gradient(60% 80% at 22% 30%, #ff7a95 0%, rgba(255,122,149,0) 70%), radial-gradient(70% 90% at 100% 100%, #b80d3a 0%, rgba(184,13,58,0) 70%), linear-gradient(135deg, #ff4d6d 0%, #f72a52 45%, #d9133f 100%); }
+  .hot .rays { position: absolute; inset: -50%; background: repeating-conic-gradient(from 0deg at 30% 40%, rgba(255,255,255,.07) 0deg 9deg, transparent 9deg 18deg); }
+  .hot .note { position: absolute; color: rgba(255,255,255,.55); font-weight: 700; text-shadow: 0 4px 12px rgba(120,0,30,.35); }
+  .hot .icon { position: absolute; border-radius: 22%; border: solid #fff; box-shadow: 0 22px 50px rgba(110,0,30,.55), 0 0 0 1px rgba(0,0,0,.05); }
+  .hot .wm { font-family: RCl, RCv, RCe, 'Arial Narrow', sans-serif; line-height: .9; text-transform: uppercase; }
+  .hot .wm small { display: block; font-weight: 700; letter-spacing: .32em; opacity: .9; }
+  .hot .wm b { display: block; font-weight: 900; letter-spacing: -.01em; text-shadow: 0 6px 0 #a30a33, 0 14px 30px rgba(110,0,30,.45); }
+  /* A karaoke line caught half sung: the sung part in yellow over the white. */
+  .hot .sing { position: relative; display: inline-block; font-family: RCl, RCv, RCe, 'Arial Narrow', sans-serif; font-weight: 800; white-space: nowrap;
+    padding: .18em .5em; border-radius: .5em; background: rgba(40,0,12,.38); }
+  .hot .sing span { color: #fff; -webkit-text-stroke: .06em #3a0010; paint-order: stroke fill; }
+  .hot .sing i { position: absolute; left: .5em; top: .18em; font-style: normal; color: #ffe600; -webkit-text-stroke: .06em #3a0010; paint-order: stroke fill;
+    clip-path: inset(0 var(--left, 45%) 0 0); text-shadow: 0 0 .35em rgba(255,230,0,.55); }
+  .hot .pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .hot .pills span { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35); padding: 8px 15px; border-radius: 999px; font-size: 17px; font-weight: 600; backdrop-filter: blur(4px); }
   .kara { font-weight: 800; color: #fff; -webkit-text-stroke: 0; text-shadow: 0 2px 6px rgba(0,0,0,.6); }
   .kara i { font-style: normal; color: #ff2e63; }
 </style>
@@ -57,6 +77,8 @@
       soundS: 'Không cần bản karaoke: đổi tông và lọc giọng ca sĩ ngay trong trình duyệt.',
       soundC: [['🎚 Đổi tông', 'Nâng, hạ nửa cung mà không đổi tốc độ. Nhớ riêng cho từng video.'], ['🎤 Lọc giọng', 'Giảm rõ giọng ca sĩ, giữ lại tiếng đàn, trống và bass. Kéo thanh để chỉnh mức.'], ['🎙 Chấm điểm', 'Hát vào micro, mỗi dòng có điểm: đủ lời, đúng nốt.'], ['⬇ Xuất LRC · SRT · ASS', 'Phụ đề karaoke đúng kiểu chữ, ghép cứng vào video của bạn.']],
       tag: 'Lời bài hát & karaoke ngay trên YouTube',
+      promoSing: ['Hát karaoke', ' trên YouTube'],
+      promoPills: ['🎤 Karaoke trên video', '🎨 9 kiểu chữ', '🎚 Tông · Lọc giọng', '🌐 12 ngôn ngữ'],
       names: { red: 'Karaoke đỏ', classic: 'Karaoke xanh dương', focus: 'Nổi bật', box: 'Khung tối', captions: 'Phụ đề YouTube', cinema: 'Dải điện ảnh', mini: 'Gọn nhẹ', fade: 'Sáng dần', big: 'Chữ lớn' },
     },
     en: {
@@ -75,6 +97,8 @@
       soundS: 'No karaoke version needed: change the key and cut the vocals right in your browser.',
       soundC: [['🎚 Change the key', 'Semitones up or down at the same speed, remembered per video.'], ['🎤 Vocal cut', 'Turns the singer well down, keeps the band, drums and bass. Slide to set how much.'], ['🎙 Scoring', 'Sing into your mic and get a mark for every line.'], ['⬇ Export LRC · SRT · ASS', 'Styled karaoke subtitles to burn into your own video.']],
       tag: 'Song lyrics & karaoke right on YouTube',
+      promoSing: ['Sing along', ' on YouTube'],
+      promoPills: ['🎤 Karaoke on video', '🎨 9 styles', '🎚 Key · Vocal cut', '🌐 12 languages'],
       names: { red: 'Karaoke red', classic: 'Karaoke blue', focus: 'Spotlight', box: 'Dark box', captions: 'YouTube captions', cinema: 'Cinema band', mini: 'Compact', fade: 'Fade in', big: 'Big words' },
     },
   }[lang];
@@ -84,7 +108,7 @@
     d.innerHTML = html.trim();
     return d.firstChild;
   };
-  const brand = '<div class="brand"><img src="../icons/icon128.png">Better Karaoke</div>';
+  const brand = '<div class="brand"><img src="icon-source-1000.png" style="border-radius:22%">Better Karaoke</div>';
   // A window onto part of a 1280×800 screenshot: (x, y, w, h) of the source shown at `scale`.
   const crop = (src, x, y, w, h, scale, full = src.startsWith('style-') ? 1280 : 1440) =>
     `<div class="crop" style="width:${w * scale}px;height:${h * scale}px"><img src="shots/${src}.png" style="width:${full * scale}px;left:${-x * scale}px;top:${-y * scale}px"></div>`;
@@ -129,17 +153,37 @@
         <div class="frame" style="background:#fff">${crop('studio-' + lang, PANEL[0], 420, PANEL[2], 568, 1.0)}</div>
       </div></div>`;
   } else if (scene === 'promo') {
-    html = `<div class="stage" style="width:440px;height:280px;padding:26px 28px;display:flex;flex-direction:column;justify-content:space-between;
-        background:linear-gradient(rgba(10,10,16,.7),rgba(10,10,16,.1) 45%,rgba(10,10,16,.85)),url(shots/style-red.png) -260px -40px / 960px auto">
-      <div class="brand" style="color:#fff;font-size:21px;margin:0"><img src="../icons/icon128.png" style="width:44px;height:44px">Better Karaoke</div>
-      <div><div class="kara" style="font-size:27px;line-height:1.15"><i>Lyrics &amp; karaoke</i> on YouTube</div></div></div>`;
+    // The tile in the Store's lists: icon, name and a line being sung, readable small.
+    const sing = (size, left) => `<div class="sing" style="font-size:${size}px;--left:${left}"><span>${T.promoSing.join('')}</span><i>${T.promoSing.join('')}</i></div>`;
+    html = `<div class="hot" style="width:440px;height:280px">
+      <div class="rays"></div>
+      <span class="note" style="left:182px;top:16px;font-size:30px;transform:rotate(-12deg)">♪</span>
+      <span class="note" style="left:398px;top:20px;font-size:26px;transform:rotate(10deg)">♫</span>
+      <span class="note" style="left:22px;top:222px;font-size:24px;transform:rotate(-8deg)">♫</span>
+      <img class="icon" src="icon-source-1000.png" style="left:24px;top:40px;width:150px;height:150px;border-width:5px;transform:rotate(-8deg)">
+      <div class="wm" style="position:absolute;left:196px;top:66px">
+        <small style="font-size:18px">Better</small>
+        <b style="font-size:57px">Karaoke</b>
+      </div>
+      <div style="position:absolute;left:194px;top:166px">${sing(21, '44%')}</div>
+    </div>`;
   } else if (scene === 'marquee') {
-    html = `<div class="stage" style="width:1400px;height:560px;padding:0;display:flex">
-      <div style="width:560px;padding:70px 56px;display:flex;flex-direction:column;justify-content:center">
-        <div class="brand" style="color:#fff;font-size:30px;margin-bottom:22px"><img src="../icons/icon128.png" style="width:64px;height:64px">Better Karaoke</div>
-        <h1 style="font-size:40px">${T.tag.replace('&', '&amp;')}</h1>
-        <p class="sub" style="margin:10px 0 0">LRC · SRT · ASS · 🎚 · 🎤 · 🌐</p></div>
-      <div style="flex:1;padding:48px 48px 48px 0;display:flex;align-items:center"><div class="frame">${crop('style-focus', 0, 56, 1264, 630, 792 / 1264)}</div></div></div>`;
+    const sing = (size, left) => `<div class="sing" style="font-size:${size}px;--left:${left}"><span>${T.promoSing.join('')}</span><i>${T.promoSing.join('')}</i></div>`;
+    html = `<div class="hot" style="width:1400px;height:560px">
+      <div class="rays"></div>
+      <span class="note" style="left:470px;top:40px;font-size:64px;transform:rotate(-12deg)">♪</span>
+      <span class="note" style="left:600px;top:452px;font-size:54px;transform:rotate(10deg)">♫</span>
+      <span class="note" style="left:40px;top:470px;font-size:46px;transform:rotate(-8deg)">♫</span>
+      <img class="icon" src="icon-source-1000.png" style="left:70px;top:70px;width:200px;height:200px;border-width:7px;transform:rotate(-8deg)">
+      <div class="wm" style="position:absolute;left:300px;top:96px">
+        <small style="font-size:30px">Better</small>
+        <b style="font-size:104px">Karaoke</b>
+      </div>
+      <div style="position:absolute;left:72px;top:318px">${sing(38, '44%')}</div>
+      <div class="pills" style="position:absolute;left:72px;top:410px;width:600px">${T.promoPills.map((p) => `<span>${p}</span>`).join('')}</div>
+      <div class="frame" style="position:absolute;left:740px;top:58px;width:600px;transform:rotate(3deg);border:6px solid #fff;box-shadow:0 30px 70px rgba(110,0,30,.55)">${crop('style-big', 212, 56, 840, 630, 600 / 840)}</div>
+      <div class="frame" style="position:absolute;left:1112px;top:372px;width:250px;transform:rotate(4deg);border:5px solid #fff;background:#fff;box-shadow:0 24px 60px rgba(110,0,30,.5)">${crop('panel-' + lang, PANEL[0], PANEL[1], PANEL[2], 255, 250 / PANEL[2])}</div>
+    </div>`;
   }
   document.body.append(el(html));
 </script>

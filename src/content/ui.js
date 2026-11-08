@@ -253,7 +253,10 @@ BYL.ui = (() => {
     overlayBtn.title = L('Hiện lời chữ to trên video (dùng được cả khi toàn màn hình)') + ' (Alt L)';
     const menuBtn = el('button', 'more', '⋯');
     menuBtn.title = L('Thêm');
-    header.append(el('span', 'logo', '🎤'), song, lang, overlayBtn, menuBtn, el('span', 'chev', '▾'));
+    const logo = el('img', 'logo');
+    logo.src = chrome.runtime.getURL('icons/icon48.png');
+    logo.alt = '';
+    header.append(logo, song, lang, overlayBtn, menuBtn, el('span', 'chev', '▾'));
     header.title = 'Better Karaoke v' + chrome.runtime.getManifest().version;
 
     const body = el('div', 'body');

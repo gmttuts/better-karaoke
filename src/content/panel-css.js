@@ -16,8 +16,7 @@ BYL.PANEL_CSS = `
     color: var(--fg); background: var(--base); border: 1px solid var(--line); border-radius: 12px;
     overflow: hidden; font-size: 14px; position: relative; }
   header { display: flex; align-items: center; gap: 10px; padding: 12px; cursor: pointer; user-select: none; }
-  .logo { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px;
-    background: linear-gradient(135deg, #ff2e63, #ff8a3d); }
+  .logo { display: block; flex: none; width: 34px; height: 34px; border-radius: 9px; box-shadow: 0 1px 3px rgba(0,0,0,.18); }
   .song { flex: 1; min-width: 0; }
   .song b { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .song span { display: block; font-size: 12px; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
