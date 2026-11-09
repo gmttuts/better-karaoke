@@ -7,7 +7,8 @@
   9 kiểu chữ ở chế độ rạp (`style-*`, 1280 rộng), panel ở chế độ Xem lời
   (`panel-*`), chế độ Hát với lọc giọng và tông +2 (`sing-*`), bảng 🎨 với một
   kiểu tự chỉnh (`studio-*`), các ảnh panel 1440 rộng; tất cả chụp ở độ nét 2x.
-- Ô quảng cáo nhỏ 440×280 (bắt buộc, là "thumbnail" trong danh sách Store): `promo-440x280.png` (English, ảnh chung) và `vi/promo-440x280.png` (Tiếng Việt, localized).
+- Ô quảng cáo nhỏ 440×280 (bắt buộc, là "thumbnail" trong danh sách Store): `promo-440x280.png`. Store chỉ cho một ô dùng chung mọi ngôn ngữ; `vi/promo-440x280.png` là bản chữ tiếng Việt nếu muốn dùng thay.
+- Ô quảng cáo, marquee và icon được vẽ bằng vector trong **`design-kit.html`** (mở bằng trình duyệt): đổi ngôn ngữ, xuất PNG 1×–8× hoặc SVG, hoặc lưu tất cả thành .zip. Nộp Store thì dùng 1×.
 - Ảnh marquee 1400×560 (tuỳ chọn): `vi/marquee-1400x560.png`, `en/marquee-1400x560.png`.
 - Icon 128×128: `../icons/icon128.png`. Bản gốc 1000×1000: `icon-source-1000.png` (các cỡ 16/32 cắt sát khuôn mặt cho dễ nhìn).
 - `2x/` giữ bản gấp đôi của mọi ảnh (2560×1600, 880×560, 2800×1120) để xem

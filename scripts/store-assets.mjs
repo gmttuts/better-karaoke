@@ -1,7 +1,7 @@
 // Renders the Chrome Web Store images in headless Chrome:
 //   store/{vi,en}/1-hero.png … 5-studio.png (1280×800) from store/mockups.html,
-//   around the real screenshots in store/shots/; store/promo-440x280.png and
-//   store/{vi,en}/marquee-1400x560.png.
+//   around the real screenshots in store/shots/. (The promo tile and the
+//   marquee come from store/design-kit.html, drawn as vectors.)
 // Each page is drawn at twice the size from the 2× screenshots, kept in
 // store/2x/, and brought down to the size the Store takes (it refuses any
 // other) with Chrome's high-quality resampling, so small text stays sharp.
@@ -45,7 +45,7 @@ try {
   for (const lang of ['vi', 'en'])
     for (const [i, scene] of ['hero', 'styles', 'karaoke', 'sound', 'studio'].entries())
       shots.push(['mockups', `scene=${scene}&lang=${lang}`, 1280, 800, `${lang}/${i + 1}-${scene}`]);
-  shots.push(['mockups', 'scene=promo&lang=en', 440, 280, 'promo-440x280'], ['mockups', 'scene=promo&lang=vi', 440, 280, 'vi/promo-440x280'], ['mockups', 'scene=marquee&lang=vi', 1400, 560, 'vi/marquee-1400x560'], ['mockups', 'scene=marquee&lang=en', 1400, 560, 'en/marquee-1400x560']);
+  // The promo tile and the marquee are vector now: saved from store/design-kit.html.
   for (const dir of ['vi', 'en', '2x/vi', '2x/en']) mkdirSync(join(root, 'store', dir), { recursive: true });
   const shrink = async (png, w, h) => {
     const r = await send(
