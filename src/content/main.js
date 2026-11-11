@@ -95,6 +95,7 @@
     const tracks = player?.captionTracks || [];
     const captionCache = new Map();
     BYL.ui.hasCaptions = () => tracks.length > 0;
+    BYL.ui.captionsReady?.();
     BYL.ui.captionWordsFor = (lines) => {
       const lang = BYL.guessLang(lines.map((l) => l.text).join(' '));
       const rank = (t) => (t.languageCode.split('-')[0] === lang ? 0 : 2) + (t.kind === 'asr' ? 1 : 0);

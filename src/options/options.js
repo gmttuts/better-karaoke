@@ -12,9 +12,9 @@ const DEFAULTS = {
   srcHopamchuan: true,
   srcGenius: true,
   srcTranscript: true,
-  preferSynced: false,
+  preferSynced: true,
   karaokeAuto: false,
-  commentPages: 3,
+  commentPages: 5,
 };
 
 document.getElementById('ver').textContent = 'v' + chrome.runtime.getManifest().version;

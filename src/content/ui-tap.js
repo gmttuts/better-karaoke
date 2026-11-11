@@ -1,6 +1,7 @@
 'use strict';
 
-// ⏱ Gõ nhịp: stamp each line by pressing Space as it starts.
+// ⏱ Gõ nhịp: stamp each line by pressing Space as it starts; holding Space
+// through a held note and letting go when it ends times the line's end too.
 // Part of the panel in ui.js, which passes in the state and helpers it uses
 // (see "parts" there).
 BYL.uiParts = BYL.uiParts || {};
@@ -20,17 +21,22 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
     const idx = singable(lines);
     // Timed lyrics start from their current times; presses replace them.
     const stamps = {};
-    if (c.synced) for (const i of idx) stamps[i] = effT(c.lines[i].t);
+    const ends = {};
+    if (c.synced)
+      for (const i of idx) {
+        stamps[i] = effT(c.lines[i].t);
+        if (c.lines[i].e > c.lines[i].t) ends[i] = effT(c.lines[i].e);
+      }
     const now = video()?.currentTime || 0;
     const ptr = idx.findIndex((i) => !(stamps[i] < now));
-    TAP = { from: c, offset: state.offset, manual: state.manual, lines, idx, stamps, ptr: ptr < 0 ? idx.length : ptr };
+    TAP = { from: c, offset: state.offset, manual: state.manual, lines, idx, stamps, ends, held: null, ptr: ptr < 0 ? idx.length : ptr };
     state.manual = true; // keep auto-pick from swapping the lyrics mid-way
     state.offset = 0; // stamps are video times
     for (const type of ['keydown', 'keypress', 'keyup']) window.addEventListener(type, onTapKey, true);
 
     const bar = P.tapbar;
     bar.replaceChildren();
-    const tip = el('div', '', L('Phát bài và bấm Space đúng lúc bắt đầu hát dòng có viền. Backspace: lùi một dòng (video tua lại). Bấm vào một dòng để gõ lại từ đó.'));
+    const tip = el('div', '', L('Phát bài và bấm Space đúng lúc bắt đầu hát dòng có viền. Backspace: lùi một dòng (video tua lại). Bấm vào một dòng để gõ lại từ đó.') + ' ' + L('Câu có nốt ngân dài: giữ Space đến khi hết ngân rồi mới thả, lời sẽ kết thúc đúng lúc đó.'));
     const now2 = el('div', 'tapnow');
     const row = el('div', 'row');
     const go = el('button', 'on', L('⏱ Gõ (Space)'));
@@ -58,6 +64,7 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
     if (t?.closest?.('input, textarea, [contenteditable=""], [contenteditable=true]')) return;
     e.preventDefault();
     e.stopImmediatePropagation();
+    if (e.type === 'keyup' && e.key === ' ') return tapRelease();
     if (e.type !== 'keydown' || e.repeat) return;
     e.key === ' ' ? tap() : tapUndo();
   }
@@ -85,14 +92,29 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
     if (v.paused) return v.play(); // the first press starts the song
     if (TAP.ptr >= TAP.idx.length) return;
     const t = Math.max(0, v.currentTime - TAP_LAG);
-    TAP.stamps[TAP.idx[TAP.ptr]] = t;
+    const i = TAP.idx[TAP.ptr];
+    TAP.stamps[i] = t;
+    delete TAP.ends[i];
+    TAP.held = { i, at: t };
     // Keep times in order: drop old stamps that now fall on the wrong side.
     TAP.idx.forEach((j, k) => {
       const s = TAP.stamps[j];
-      if ((k > TAP.ptr && s <= t) || (k < TAP.ptr && s >= t)) delete TAP.stamps[j];
+      if ((k > TAP.ptr && s <= t) || (k < TAP.ptr && s >= t)) delete TAP.stamps[j], delete TAP.ends[j];
     });
     TAP.ptr++;
     tapRefresh();
+  }
+
+  // Space let go: a press held through a long note marks where the line ends.
+  function tapRelease() {
+    const h = TAP?.held;
+    if (!h) return;
+    TAP.held = null;
+    const t = (video()?.currentTime || 0) - TAP_LAG;
+    if (t - h.at >= 0.8) {
+      TAP.ends[h.i] = t;
+      tapRefresh();
+    }
   }
 
   function tapUndo() {
@@ -101,6 +123,7 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
     const i = TAP.idx[TAP.ptr];
     const t = TAP.stamps[i];
     delete TAP.stamps[i];
+    delete TAP.ends[i];
     const v = video();
     if (v && t !== undefined) v.currentTime = Math.max(0, t - 3);
     tapRefresh();
@@ -127,7 +150,7 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
       if (!l.text) return box.append(el('div', 'ln blank'));
       const d = el('div', 'ln' + (l.section ? ' section' : '') + (i === next ? ' tapnext' : ''));
       d.dataset.i = i;
-      if (!l.section) d.append(el('span', 'ts', TAP.stamps[i] === undefined ? '–' : BYL.fmtTime(TAP.stamps[i])));
+      if (!l.section) d.append(el('span', 'ts', TAP.stamps[i] === undefined ? '–' : BYL.fmtTime(TAP.stamps[i]) + (TAP.ends[i] ? ' → ' + BYL.fmtTime(TAP.ends[i]) : '')));
       d.append(l.text);
       box.append(d);
     });
@@ -176,7 +199,8 @@ BYL.uiParts.tap = ({ P, S, choose, closeEditor, effT, el, saveCustom, say, singa
     const text = T.lines
       .map((l, i) => {
         const k = T.idx.indexOf(i);
-        return k >= 0 ? `${BYL.lrcStamp(times[k])} ${l.text}` : l.text;
+        const end = T.ends[i] > times[k] && (k + 1 >= times.length || T.ends[i] <= times[k + 1]) ? BYL.lrcEnd(T.ends[i]) : '';
+        return k >= 0 ? `${BYL.lrcStamp(times[k])} ${l.text}${end}` : l.text;
       })
       .join('\n');
     const from = T.from;

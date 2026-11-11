@@ -22,7 +22,7 @@ BYL.exporter = (() => {
     head.push('[re:Better Karaoke]');
     if (meta.videoId) head.push(`[byl:${meta.videoId}]`);
     // Blank lines become empty stamps so players clear the previous line.
-    const body = lines.filter((l) => typeof l.t === 'number' && !l.section).map((l) => `${BYL.lrcStamp(l.t)} ${l.text}`.trimEnd());
+    const body = lines.filter((l) => typeof l.t === 'number' && !l.section).map((l) => `${BYL.lrcStamp(l.t)} ${l.text}${l.e > l.t ? BYL.lrcEnd(l.e) : ''}`.trimEnd());
     return [...head, '', ...body].join('\n') + '\n';
   }
 
@@ -142,7 +142,8 @@ BYL.exporter = (() => {
       const later = timed.find((x) => x.t > l.t + 0.05)?.t;
       return Math.min(later ?? (opts.duration || l.t + 5), l.t + 10, opts.duration || Infinity);
     };
-    const wipeOf = (l) => Math.min(Math.max(endOf(l) - l.t, 0.5), 7);
+    // Up to where the line ends when its end was timed (a held note), else to the next line.
+    const wipeOf = (l) => (l.e > l.t ? Math.max(l.e - l.t, 0.3) : Math.min(Math.max(endOf(l) - l.t, 0.5), 7));
     const whole = look.wipe === 'line';
     const trans = opts.trans || [];
     const trOf = (l) => assText(trans[lines.indexOf(l)] || '');
@@ -229,8 +230,9 @@ BYL.exporter = (() => {
   // "[00:12.00] <00:12.00>Em <00:12.40>ơi" when the words have their own times.
   function lrcLine(l) {
     const words = l.text.split(/\s+/).filter(Boolean);
-    if (!l.wd || l.wd.length !== words.length) return `${BYL.lrcStamp(l.t)} ${l.text}`.trimEnd();
-    return `${BYL.lrcStamp(l.t)} ` + words.map((w, i) => `<${BYL.lrcStamp(l.t + l.wd[i]).slice(1, -1)}>${w}`).join(' ');
+    const end = l.e > l.t ? BYL.lrcEnd(l.e) : '';
+    if (!l.wd || l.wd.length !== words.length) return `${BYL.lrcStamp(l.t)} ${l.text}`.trimEnd() + end;
+    return `${BYL.lrcStamp(l.t)} ` + words.map((w, i) => `<${BYL.lrcStamp(l.t + l.wd[i]).slice(1, -1)}>${w}`).join(' ') + end;
   }
 
   // ---------- 📥 reading a shared file ----------

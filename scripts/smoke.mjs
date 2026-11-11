@@ -73,7 +73,7 @@ try {
   check('Panel hiện cạnh video', panel);
   if (EN) {
     const tabs = await ev(`return [...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('nav button')].map((b) => b.textContent).join()`);
-    check('Panel in English', tabs === '👀 Lyrics,🎤 Sing,✏️ Edit,🎬 Karaoke', tabs);
+    check('Panel in English', tabs === '🎤 Sing,✏️ Edit,🎬 Karaoke', tabs);
     // 🌐 on the panel switches the language on the spot, keeping the song.
     const pick = (code) => ev(`
       const sr = document.getElementById('byl-panel-host').shadowRoot;
@@ -92,7 +92,7 @@ try {
     const ja = await pick('ja');
     check('🌐 đổi sang 日本語 ngay', /JA/.test(ja?.lang) && !/Lyrics|Lời/.test(ja?.tabs) && ja.song === ja.before && ja.hosts === 1, JSON.stringify(ja));
     const back = await pick('en');
-    check('🌐 đổi lại English', back?.tabs === '👀 Lyrics,🎤 Sing,✏️ Edit,🎬 Karaoke' && back.hosts === 1, JSON.stringify(back));
+    check('🌐 đổi lại English', back?.tabs === '🎤 Sing,✏️ Edit,🎬 Karaoke' && back.hosts === 1, JSON.stringify(back));
     throw 'done';
   }
   await sleep(4000);

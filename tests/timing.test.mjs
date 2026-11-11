@@ -27,6 +27,15 @@ const eq = (name, got, want) => {
   eq('plain LRC has no word offsets', lines[1].wd, undefined);
 }
 
+// A held note: "<mm:ss>" after the last word times the line's end.
+{
+  const lines = BYL.parseLrc('[00:10.00] Em ơi Hà Nội phố <00:18.50>\n[00:20.00] <00:20.00>Ta <00:20.40>còn <00:21.00>em <00:23.00>\n[00:30.00] plain');
+  eq('line end read', lines.map((l) => l.e), [18.5, 23, undefined]);
+  eq('word times kept beside the end', lines[1].wd, [0, 0.4, 1]);
+  eq('line end written back', BYL.toLrc(lines).split('\n')[0], '[00:10.00] Em ơi Hà Nội phố <00:18.50>');
+  eq('line end in .lrc export', BYL.exporter.toLrc(lines).includes('[00:20.00] Ta còn em <00:23.00>'), true);
+}
+
 // Caption alignment with word-timed (auto) captions
 {
   const lyric = ['mùa thu cho em về', 'lá vàng rơi bên thềm', 'gió nhẹ lay hàng cây', 'nắng chiều phai trên tay'];

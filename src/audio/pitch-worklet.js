@@ -6,7 +6,7 @@
 // with its phase kept running, and the blocks are put back together 4 times
 // overlapped. Adds about 70 ms of delay, too little to notice on the lyrics.
 const N = 4096;
-const OSAMP = 4;
+const OSAMP = 8; // 8 times overlapped: smoother than 4, less "phasey" on held notes and drums
 const HOP = N / OSAMP;
 const LATENCY = N - HOP;
 const HALF = N / 2;

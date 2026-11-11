@@ -15,17 +15,18 @@ BYL.DEFAULTS = {
   srcHopamchuan: true,
   srcGenius: true,
   srcTranscript: true,
-  preferSynced: false,
-  commentPages: 3,
+  preferSynced: true, // lyrics timed to the singing come first
+  commentPages: 5,
   overlayFontSize: 34,
   overlayStyle: 'classic',
   overlayPosition: 'bottom',
-  karaokeAuto: false, // turn 🎤 Karaoke on by itself when a video opens (the switch only covers the video being watched)
+  karaokeAuto: false,
+  karaokeHintDone: false, // the first-use bubble under 🎤 Karaoke was seen through // turn 🎤 Karaoke on by itself when a video opens (the switch only covers the video being watched)
   overlayLook: null, // edits on top of the chosen style (🎨 in the panel)
   overlayPresets: [], // [{ name, look }] saved by the user
   channelStyles: {}, // channel name -> { style, look } pinned with 📌
   panelCollapsed: false,
-  panelMode: 'view', // 👀 Xem lời · 🎤 Hát · ✏️ Chỉnh lời
+  panelMode: 'sing', // 🎤 Hát · ✏️ Chỉnh lời · 🎬 Karaoke
   linesHeight: 0, // lyric list height set by dragging its bottom edge (0 = auto)
 };
 
@@ -332,8 +333,12 @@ BYL.parseLrc = (lrc) => {
     const stamps = [...raw.matchAll(/\[(\d{1,2}):(\d{2})(?:[.:](\d{1,3}))?\]/g)];
     if (!stamps.length) continue;
     const { text: rawText, tags } = wordTags(raw.replace(/\[[^\]]*\]/g, ''));
+    // A tag after the last word is where the line ends: a held note can end
+    // well before the next line starts.
+    const tail = tags.length && tags[tags.length - 1].at >= rawText.replace(/\s+$/, '').length ? tags.pop() : null;
     for (const s of stamps) {
       const line = BYL.makeLine(rawText.trim(), toSec(s[1], s[2], s[3]));
+      if (tail && stamps.length === 1 && tail.t > line.t) line.e = tail.t;
       const wd = tags.length && stamps.length === 1 ? wordOffsets(rawText, tags, line.t) : undefined;
       if (wd && wd.length === line.text.split(/\s+/).filter(Boolean).length) line.wd = wd;
       out.push(line);
@@ -392,8 +397,10 @@ BYL.lrcStamp = (t) => {
   const sec = ((cs % 6000) / 100).toFixed(2).padStart(5, '0');
   return `[${m}:${sec}]`;
 };
+// "<mm:ss.xx>" after the text: where the line ends (see parseLrc).
+BYL.lrcEnd = (e) => ` <${BYL.lrcStamp(e).slice(1, -1)}>`;
 BYL.toLrc = (lines, shift = 0) =>
-  lines.map((l) => (l.t === undefined ? l.text : `${BYL.lrcStamp(l.t + shift)} ${l.text}`)).join('\n');
+  lines.map((l) => (l.t === undefined ? l.text : `${BYL.lrcStamp(l.t + shift)} ${l.text}${l.e > l.t ? BYL.lrcEnd(l.e + shift) : ''}`)).join('\n');
 
 BYL.lyricsText = (lines) =>
   lines.map((l) => (l.t !== undefined ? `[${BYL.fmtTime(l.t)}] ` : '') + l.text).join('\n');

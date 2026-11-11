@@ -23,6 +23,16 @@ BYL.PANEL_CSS = `
   .chev { color: var(--fg2); transition: transform .2s; }
   .byl.drop { outline: 2px dashed var(--accent); outline-offset: -2px; }
   .byl.collapsed .chev { transform: rotate(-90deg); }
+  .fold { flex: none; display: inline-flex; align-items: center; gap: 4px; padding: 5px 8px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--fg2); }
+  header:hover .fold { background: var(--chip); color: var(--fg); }
+  .fold .ft::after { content: attr(data-open); }
+  .byl.collapsed .fold .ft::after { content: attr(data-closed); }
+  .khint { position: relative; margin: -4px 12px 10px auto; width: max-content; max-width: calc(100% - 24px); display: flex; align-items: center; gap: 6px;
+    padding: 7px 8px 7px 12px; border-radius: 10px; background: var(--accent, #e8212b); color: #fff; font-size: 12.5px; font-weight: 600; box-shadow: 0 6px 18px rgba(232,33,43,.3); }
+  .khint::before { content: ''; position: absolute; top: -5px; right: 96px; width: 10px; height: 10px; background: inherit; transform: rotate(45deg); }
+  .khint[hidden] { display: none; }
+  .khint button { background: rgba(255,255,255,.2); color: #fff; padding: 2px 7px; }
+  .byl.collapsed .khint { display: none; }
   .byl.collapsed .body { display: none; }
   nav { display: flex; gap: 2px; margin: 0 12px 10px; padding: 3px; border-radius: 10px; background: var(--chip); }
   nav[hidden] { display: none; }
@@ -42,6 +52,42 @@ BYL.PANEL_CSS = `
   .status .chip { flex: none; white-space: nowrap; }
   .status .chip[hidden] { display: none; }
   .status .chip.more { font-weight: 600; color: var(--fg); }
+  /* ⇆ So sánh lời: a dialog over the page, two versions line by line. */
+  .cmp { --cb: #fff; --cf: #0f0f0f; --cm: #606060; --cl: rgba(0,0,0,.1); --cd: #fff4d6; position: fixed; inset: 0; z-index: 2147483000;
+    background: rgba(0,0,0,.45); display: grid; place-items: center; padding: 24px; font: 13px Roboto, Arial, sans-serif; color: var(--cf); }
+  :host-context(html[dark]) .cmp { --cb: #212121; --cf: #f1f1f1; --cm: #aaa; --cl: rgba(255,255,255,.14); --cd: #4a3b12; }
+  .cmp .dlg { width: min(980px, 100%); max-height: calc(100vh - 48px); display: flex; flex-direction: column; background: var(--cb); border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.4); overflow: hidden; }
+  .cmp .chead, .cmp .cfoot { display: flex; align-items: center; gap: 10px; padding: 14px 18px; flex-wrap: wrap; }
+  .cmp .chead b { font-size: 16px; }
+  .cmp .chead select { flex: 1; min-width: 160px; font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--cl); background: var(--cb); color: var(--cf); }
+  .cmp .x { margin-left: auto; }
+  .cmp .muted { color: var(--cm); }
+  .cmp .cfoot { border-top: 1px solid var(--cl); }
+  .cmp .cfoot .muted { flex: 1; min-width: 200px; }
+  .cmp .ccols, .cmp .crow { display: grid; grid-template-columns: 52px minmax(0, 1fr) 34px minmax(0, 1fr); gap: 8px; align-items: center; padding: 3px 18px; }
+  .cmp .ccols { font-size: 12px; font-weight: 600; color: var(--cm); border-bottom: 1px solid var(--cl); padding-bottom: 8px; }
+  .cmp .ccols span:first-child { grid-column: 2; }
+  .cmp .ccols span:last-child { grid-column: 4; }
+  .cmp .cgrid { overflow: auto; padding: 6px 0; }
+  .cmp .crow.diff { background: var(--cd); }
+  .cmp .ct { font-variant-numeric: tabular-nums; color: var(--cm); font-size: 12px; }
+  .cmp input { font: inherit; width: 100%; padding: 5px 7px; border-radius: 6px; border: 1px solid var(--cl); background: var(--cb); color: var(--cf); }
+  .cmp .cr { line-height: 1.35; }
+  .cmp button { font: 600 13px Roboto, Arial, sans-serif; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--cl); background: var(--cb); color: var(--cf); cursor: pointer; }
+  .cmp button.use { padding: 4px 0; }
+  .cmp button:disabled { opacity: .3; cursor: default; }
+  .cmp button.primary { background: #e8212b; border-color: #e8212b; color: #fff; }
+  .chip.best::before { content: '★ '; color: #f5a400; }
+  /* A source with several versions: the list to pick one from. */
+  .picks { margin: -2px 12px 10px; padding: 6px; border-radius: 12px; background: var(--raised); box-shadow: 0 6px 24px rgba(0,0,0,.18); display: flex; flex-direction: column; gap: 2px; }
+  .picks[hidden] { display: none; }
+  .picks .phead { font-size: 12px; color: var(--fg2); padding: 4px 8px 6px; }
+  .picks button { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; text-align: left; background: transparent; padding: 7px 10px; border-radius: 8px; }
+  .picks button:hover { background: var(--chip); }
+  .picks button.on { background: var(--chip); }
+  .picks button b { font-size: 13px; }
+  .picks button .muted { font-size: 11.5px; font-weight: 400; }
   .chip { font: inherit; font-size: 12px; font-weight: 400; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--fg2);
     border: 1px solid transparent; cursor: pointer; }
   .chip:hover { border-color: var(--line); background: var(--line); }
@@ -133,6 +179,9 @@ BYL.PANEL_CSS = `
   /* Key and vocal cut on one line: the slider takes what is left. */
   .row.fx { flex-wrap: nowrap; }
   .fx > * { flex: none; white-space: nowrap; }
+  .row.speed button { padding-left: 9px; padding-right: 9px; }
+  button.mic { background: var(--accent, #e8212b); color: #fff; }
+  button.mic:hover { background: var(--accent, #e8212b); filter: brightness(1.08); }
   .row.fx { min-width: 0; }
   .fx input[type=range] { -webkit-appearance: none; appearance: none; flex: 1 1 0; min-width: 32px; height: 4px; margin: 0 4px; border-radius: 2px; cursor: pointer;
     background: linear-gradient(90deg, var(--accent, #e8212b) var(--fill, 100%), var(--line) var(--fill, 100%)); }
@@ -155,7 +204,7 @@ BYL.PANEL_CSS = `
   :host([data-float]) .ksw .kt { display: none; }
   /* A narrow side column: room for the song's name before the buttons. */
   .byl { container-type: inline-size; }
-  @container (max-width: 380px) { .ksw .kt, .logo { display: none; } }
+  @container (max-width: 380px) { .ksw .kt, .logo, .fold .ft { display: none; } }
   button.more { flex: none; width: 32px; height: 32px; padding: 0; background: transparent; font-size: 18px; line-height: 1; color: var(--fg2); }
   button.more:hover { background: var(--chip); }
 
