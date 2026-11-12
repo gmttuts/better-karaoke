@@ -266,8 +266,7 @@ BYL.ocr = (() => {
     return s / a.length;
   };
 
-  function snapshot(video, cv, lang) {
-    if (wide(lang)) return inked(video, cv);
+  function snapshot(video, cv) {
     // Lyrics are big text: 960 px wide reads them as well as full size, faster.
     const w = Math.min(960, video.videoWidth || 960);
     cv.width = w;
@@ -276,8 +275,8 @@ BYL.ocr = (() => {
     return cv.toDataURL('image/jpeg', 0.85);
   }
 
-  // Japanese, Chinese, Korean, Thai karaoke: coloured letters with thick
-  // outlines, small furigana over them. Tesseract reads them far better
+  // Karaoke videos: coloured letters with thick outlines (and in Japanese,
+  // Chinese, Korean, Thai small furigana over them). Tesseract reads them far better
   // large (1920 px) and in black and white: what is bright (any colour) is
   // ink, the dark sky behind is paper; on a light picture, the other way round.
   function inked(video, cv) {
@@ -346,6 +345,27 @@ BYL.ocr = (() => {
       // video, and once it ends YouTube moves on to the next one by itself.
       const end = (video.duration || 0) - 1.5;
       const page = () => new URLSearchParams(location.search).get('v') || location.pathname;
+      // Two ways to read a frame: as it is, or enlarged in black and white
+      // (karaoke lettering with outlines, which the first often can't read).
+      // Japanese & co. always use the second; otherwise both are tried on the
+      // first frames with text, and the one reading more goes on alone.
+      let mode = wide(lang) ? 'ink' : null;
+      const tally = { plain: 0, ink: 0 };
+      let tried = 0;
+      const letters = (lines) => lines.flatMap(pieces).map((x) => keep(x, lang) || '').join('').length;
+      const readFrame = () => {
+        if (mode) return read(mode === 'ink' ? inked(video, big) : snapshot(video, big), lang).catch(() => []);
+        const a = snapshot(video, big);
+        const b = inked(video, big);
+        return Promise.all([read(a, lang).catch(() => []), read(b, lang).catch(() => [])]).then(([x, y]) => {
+          const sx = letters(x);
+          const sy = letters(y);
+          tally.plain += sx;
+          tally.ink += sy;
+          if ((sx || sy) && ++tried >= 5) mode = tally.ink > tally.plain ? 'ink' : 'plain';
+          return sy > sx ? y : x;
+        });
+      };
       const here = page();
       let reached = 0; // furthest point read
       while (!me.stop && !video.ended && video.currentTime < end) {
@@ -376,7 +396,7 @@ BYL.ocr = (() => {
           samples.push({ t, p: last });
         } else {
           prev = sig;
-          const p = (last = read(snapshot(video, big, lang), lang).catch(() => []));
+          const p = (last = readFrame());
           samples.push({ t, p });
           inflight.add(p);
           p.finally(() => inflight.delete(p));

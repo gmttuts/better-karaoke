@@ -6,6 +6,7 @@
 BYL.uiParts = BYL.uiParts || {};
 BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, frame, maybeAutoPick, renderLines, renderSelect, saveWarps, say, setOffset, setSourceStatus, slot, slotFor, state, stopTap, tap, tapping, video }) => {
   let ED = null; // lyric editor while open
+  let ocrDropped = false; // 🔠 was stopped by the user closing the editor
 
   // Text with [mm:ss] stamps on most lines is timed; anything else is plain.
   function customCandidate(text, label, id = 'custom') {
@@ -85,10 +86,11 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     const cancel = el('button', '', L('Huỷ'));
     const fromCaps = el('button', '', L('📝 Lấy khung từ phụ đề'));
     fromCaps.title = L('Điền lời từ phụ đề YouTube kèm thời gian, bạn chỉ cần sửa chữ (hoặc thay bằng lời dịch)');
-    fromCaps.hidden = !api.hasCaptions?.();
+    // (A tool for lining lyrics up with the captions: shown only with that setting on.)
+    fromCaps.hidden = !BYL.settings.value.captionSync || !api.hasCaptions?.();
     const del = el('button', '', L('🗑 Xoá bản của bạn'));
     del.hidden = c?.source !== 'custom';
-    const fromOcr = el('button', '', L('🔠 Đọc chữ trên video'));
+    const fromOcr = el('button', '', BYL.ocr.busy() ? L('⏹ Dừng đọc') : L('🔠 Đọc chữ trên video'));
     fromOcr.title = L('Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.');
     row.append(save, cancel, fromCaps, fromOcr, del);
     // Top to bottom, the order the user asked for: the times (which line,
@@ -182,6 +184,8 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
       if (!v) return;
       fromOcr.textContent = L('⏹ Dừng đọc');
       const song = state.song || {};
+      const vid = state.videoId;
+      ocrDropped = false;
       // Japanese, Korean, Chinese, Thai: read with that language's model
       // (fetched once, about 2 MB).
       const lang = BYL.ocr.langOf([document.querySelector('ytd-watch-metadata h1, h1.title')?.textContent, song.title, song.artist].join(' '));
@@ -189,19 +193,22 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
       try {
         const lines = await BYL.ocr.scan(
           v,
-          (p) => ED?.ta === ta && say(L('🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)', Math.round(p * 100))),
+          (p) => ED && say(L('🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)', Math.round(p * 100))),
           [song.title, song.artist, [song.title, song.artist].filter(Boolean).join(' - ')],
           lang
         );
-        if (ED?.ta !== ta) return;
+        if (ocrDropped || state.videoId !== vid) return;
         if (!lines.length) return say(L('Không đọc được dòng chữ nào trên video này.'));
-        ta.value = BYL.ocr.toLrc(lines);
+        // The editor was rebuilt meanwhile: open it again for the result.
+        if (!ED) openEditor();
+        ED.ta.value = BYL.ocr.toLrc(lines);
         paintEditor();
-        say(L('🔠 Đọc được {0} dòng. Sửa chữ đọc sai (nếu có) rồi bấm 💾 Lưu lời. Thời gian là lúc dòng chữ hiện ra, lệch thì chỉnh "Lệch" hoặc ghim 📍.', lines.length));
+        preview(true);
+        say(L('🔠 Đọc được {0} dòng, đã hiện thử trên video. Sửa chữ đọc sai (nếu có) rồi bấm 💾 Lưu lời. Giờ mỗi dòng là lúc chữ hiện ra; dòng nào lệch thì đặt lại bằng ⏵ / ⏹ ở trên.', lines.length));
       } catch (err) {
         say(L('Không đọc được chữ trên video: {0}', err?.message || err));
       } finally {
-        fromOcr.textContent = L('🔠 Đọc chữ trên video');
+        if (fromOcr.isConnected) fromOcr.textContent = L('🔠 Đọc chữ trên video');
       }
     }
     fromOcr.addEventListener('click', readVideo);
@@ -236,8 +243,14 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     });
   }
 
-  function closeEditor() {
-    BYL.ocr.stop();
+  // keep.ocr: the panel is only being rebuilt (🌐): 🔠 goes on and reopens
+  // the editor with what it read. Otherwise (Huỷ, ✏️ again, another video…)
+  // reading stops and its result is dropped.
+  function closeEditor(keep) {
+    if (!keep?.ocr && BYL.ocr.busy()) {
+      ocrDropped = true;
+      BYL.ocr.stop();
+    }
     // The preview goes; the lyrics playing before come back (or the saved ones, right after).
     if (ED && state.current?.preview) {
       state.current = ED.orig;

@@ -178,7 +178,7 @@ BYL.ui = (() => {
   // place, with the same song, lyrics, chips and timing.
   function relang() {
     if (!panelHost) return;
-    closeEditor();
+    closeEditor({ ocr: true });
     endTap();
     const old = panelHost;
     const collapsed = P.wrap.classList.contains('collapsed');
