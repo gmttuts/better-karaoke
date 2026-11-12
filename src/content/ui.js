@@ -389,8 +389,10 @@ BYL.ui = (() => {
     const swapBtn = el('button', '', '⇅');
     swapBtn.title = L('Đổi chỗ lời chính và lời dịch');
     rowT.append(el('span', 'muted', L('🌐 Song ngữ')), transSel, swapBtn);
-    // 文A Dịch lời: its own row near the top (both modes), so it is easy to find.
+    // 文A Dịch lời: its own row near the top of 🎤 Hát (with 🌐 Song ngữ, which
+    // shows the translation under each line), so it is easy to find.
     const rowTr = el('div', 'row tr');
+    rowTr.dataset.m = 'sing';
     const trBtn = el('button', '', L('文A Dịch lời'));
     trBtn.title = L('Dịch lời đang hiện sang ngôn ngữ đã chọn, giữ đúng giờ từng dòng. Bản dịch hiện dưới lời chính và được lưu thành bản lời thứ 2 của bạn. Lời được gửi tới Google Dịch.');
     const trLang = el('select');
