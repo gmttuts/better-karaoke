@@ -337,6 +337,7 @@
   "🔍 Tìm theo tên": "🔍 Cari berdasarkan nama",
   "🔎 Tìm trong lời (gõ không dấu cũng được)…": "🔎 Cari di lirik…",
   "🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)": "🔠 Membaca teks di video: {0}%… (klik ⏹ untuk berhenti)",
+  "🔠 Đang đọc chữ trên video ({0}). Lần đầu cần tải bộ đọc ngôn ngữ này, khoảng 2 MB…": "🔠 Membaca teks di video ({0}). Pertama kali, pembaca bahasa ini diunduh, sekitar 2 MB…",
   "🔠 Đang đọc chữ trên video…": "🔠 Membaca teks di video…",
   "🔠 Đọc chữ trên video": "🔠 Baca teks di video",
   "🔠 Đọc được {0} dòng. Sửa chữ đọc sai (nếu có) rồi bấm 💾 Lưu lời. Thời gian là lúc dòng chữ hiện ra, lệch thì chỉnh \"Lệch\" hoặc ghim 📍.": "🔠 {0} baris terbaca. Perbaiki kata yang salah baca (jika ada), lalu klik 💾 Simpan lirik. Waktunya adalah saat tiap baris muncul; jika meleset, atur \"Offset\" atau sematkan 📍.",

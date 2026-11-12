@@ -337,6 +337,7 @@
   "🔍 Tìm theo tên": "🔍 Buscar por nome",
   "🔎 Tìm trong lời (gõ không dấu cũng được)…": "🔎 Buscar na letra (pode digitar sem acentos)…",
   "🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)": "🔠 Lendo o texto do vídeo: {0}%… (clique em ⏹ para parar)",
+  "🔠 Đang đọc chữ trên video ({0}). Lần đầu cần tải bộ đọc ngôn ngữ này, khoảng 2 MB…": "🔠 Lendo o texto do vídeo ({0}). Na primeira vez, o leitor deste idioma é baixado, cerca de 2 MB…",
   "🔠 Đang đọc chữ trên video…": "🔠 Lendo o texto do vídeo…",
   "🔠 Đọc chữ trên video": "🔠 Ler texto do vídeo",
   "🔠 Đọc được {0} dòng. Sửa chữ đọc sai (nếu có) rồi bấm 💾 Lưu lời. Thời gian là lúc dòng chữ hiện ra, lệch thì chỉnh \"Lệch\" hoặc ghim 📍.": "🔠 {0} linhas lidas. Corrija as palavras lidas errado (se houver) e clique em 💾 Salvar letra. Os tempos são o momento em que cada linha aparece; se estiverem fora, ajuste \"Deslocamento\" ou fixe 📍.",

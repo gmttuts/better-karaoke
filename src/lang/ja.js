@@ -337,6 +337,7 @@
   "🔍 Tìm theo tên": "🔍 名前で検索",
   "🔎 Tìm trong lời (gõ không dấu cũng được)…": "🔎 歌詞内を検索（声調記号なしでも可）…",
   "🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)": "🔠 動画内の文字を読み取り中：{0}%…（⏹ で停止）",
+  "🔠 Đang đọc chữ trên video ({0}). Lần đầu cần tải bộ đọc ngôn ngữ này, khoảng 2 MB…": "🔠 動画の文字を読み取り中（{0}）。初回はこの言語の読み取りデータ（約 2 MB）をダウンロードします…",
   "🔠 Đang đọc chữ trên video…": "🔠 動画内の文字を読み取り中…",
   "🔠 Đọc chữ trên video": "🔠 動画内の文字を読み取る",
   "🔠 Đọc được {0} dòng. Sửa chữ đọc sai (nếu có) rồi bấm 💾 Lưu lời. Thời gian là lúc dòng chữ hiện ra, lệch thì chỉnh \"Lệch\" hoặc ghim 📍.": "🔠 {0} 行を読み取りました。誤読があれば修正してから 💾 歌詞を保存 をクリックしてください。時間は各行が表示された瞬間です。ずれている場合は「オフセット」を調整するか、📍 でピン留めしてください。",

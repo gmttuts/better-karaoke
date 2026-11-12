@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
   // 🔠 Đọc chữ trên video: one frame at a time, to Tesseract.
   if (msg?.type === 'ocr') {
-    ocr(msg.image)
+    ocr(msg.image, msg.lang)
       .then((lines) => sendResponse({ lines }))
       .catch((err) => sendResponse({ error: String(err?.message || err) }));
     return true;
@@ -65,8 +65,8 @@ chrome.runtime.onInstalled.addListener(async () => {
 // Chrome, opened the first time and kept while frames keep coming. Firefox
 // has no offscreen documents but loads ocr.js into its background page.
 let offscreen = null;
-async function ocr(image) {
-  if (self.BYL_OCR) return self.BYL_OCR.recognize(image);
+async function ocr(image, lang) {
+  if (self.BYL_OCR) return self.BYL_OCR.recognize(image, lang);
   offscreen ||= chrome.offscreen
     .createDocument({ url: 'src/ocr/ocr.html', reasons: ['WORKERS'], justification: 'Read lyrics shown in video frames (OCR)' })
     .catch((err) => {
@@ -77,7 +77,7 @@ async function ocr(image) {
       }
     });
   await offscreen;
-  const res = await chrome.runtime.sendMessage({ target: 'ocr', image });
+  const res = await chrome.runtime.sendMessage({ target: 'ocr', image, lang });
   if (res?.error) throw new Error(res.error);
   return res?.lines || [];
 }

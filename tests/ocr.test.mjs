@@ -98,5 +98,24 @@ eq('scrolling list: time when the line reaches the middle', BYL.ocr.assemble(f3)
   eq('stray re-read dropped', BYL.ocr.assemble(fs).map((l) => l.text), ['Chỉ vừa như mới hôm nào', 'Giờ thì không còn nữa']);
 }
 
+// Japanese, Korean, Chinese, Thai: the model follows the video's title.
+eq('langOf: Japanese title', BYL.ocr.langOf('練習用カラオケ♬ 雲を抜け風下へ私だけ - ヨルシカ'), 'jpn');
+eq('langOf: Korean title', BYL.ocr.langOf('아이유 - 밤편지 노래방'), 'kor');
+eq('langOf: Chinese title', BYL.ocr.langOf('周杰倫 晴天 卡拉OK'), 'chi_tra');
+eq('langOf: Vietnamese title', BYL.ocr.langOf('Như Trong Phim - Emily'), 'vie');
+// Tesseract's Japanese has spaces between the characters.
+eq('keeps a Japanese line, spaces gone', BYL.ocr.keep({ text: '突 風 一 吹 き 、 晴 れ', conf: 70 }, 'jpn'), '突風一吹き、晴れ');
+eq('drops the guide melody\'s dashes', BYL.ocr.keep({ text: 'ーー そ の 風 下 、 お 前 だ け', conf: 70 }, 'jpn'), 'その風下、お前だけ');
+eq('drops Japanese noise', BYL.ocr.keep({ text: '■ ー ・', conf: 70 }, 'jpn'), null);
+// Furigana over the words: small lines, dropped.
+{
+  const big = (text, y) => ({ text, conf: 80, box: [100, y, 600, y + 80] });
+  const small = (text, y) => ({ text, conf: 80, box: [100, y, 400, y + 25] });
+  const fr = [];
+  for (let t = 0; t < 4; t++) fr.push({ t, lines: [small('とっ ぷう ひと ふ', 100), big('突風一吹き、晴れ', 130), small('わたし みち うえ', 250), big('私は道の上', 280)] });
+  for (let t = 4; t < 8; t++) fr.push({ t, lines: [big('雲を抜け風下へ', 130)] });
+  eq('Japanese karaoke: furigana dropped', BYL.ocr.assemble(fr, [], 'jpn').map((l) => l.text), ['突風一吹き、晴れ', '私は道の上', '雲を抜け風下へ']);
+}
+
 if (fail) process.exit(1);
 console.log('ocr: ok');

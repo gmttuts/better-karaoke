@@ -337,6 +337,7 @@
   "🔍 Tìm theo tên": "🔍 按名称搜索",
   "🔎 Tìm trong lời (gõ không dấu cũng được)…": "🔎 在歌词中查找（不带声调也可以）…",
   "🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)": "🔠 正在识别视频中的文字：{0}%…（点击 ⏹ 停止）",
+  "🔠 Đang đọc chữ trên video ({0}). Lần đầu cần tải bộ đọc ngôn ngữ này, khoảng 2 MB…": "🔠 正在读取视频中的文字（{0}）。首次需要下载该语言的识别数据，约 2 MB…",
   "🔠 Đang đọc chữ trên video…": "🔠 正在识别视频中的文字…",
   "🔠 Đọc chữ trên video": "🔠 识别视频中的文字",
   "🔠 Đọc được {0} dòng. Sửa chữ đọc sai (nếu có) rồi bấm 💾 Lưu lời. Thời gian là lúc dòng chữ hiện ra, lệch thì chỉnh \"Lệch\" hoặc ghim 📍.": "🔠 识别出 {0} 行。如有识别错误的文字请修改，然后点击 💾 保存歌词。时间为该行文字出现的时刻；如果不同步，请调整“偏移”或固定 📍。",

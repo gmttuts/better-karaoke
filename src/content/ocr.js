@@ -19,8 +19,47 @@ BYL.ocr = (() => {
     /^[("'“]?[\p{L}\d][\p{L}\d'’-]*[)"'”.,!?…:;]*$/u.test(w) &&
     ((w.match(/\p{L}/gu) || []).length >= 2 || /^[aàáạoôơởeêyiuùưừI][.,!?]?$/iu.test(w));
 
+  // Which Tesseract model reads a video, from its title: Japanese, Korean,
+  // Chinese and Thai need their own; Vietnamese reads Latin text (English…).
+  function langOf(text) {
+    text = String(text || '');
+    if (/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(text)) return 'jpn';
+    if (/\p{Script=Hangul}/u.test(text)) return 'kor';
+    if (/\p{Script=Thai}/u.test(text)) return 'tha';
+    if (/\p{Script=Han}/u.test(text)) return /[們這個為來說時國愛裡沒會讓經過還對開關風雲倫聽見夢戀淚遠結與從後無記憶歲願邊燈]/u.test(text) ? 'chi_tra' : 'chi_sim';
+    return 'vie';
+  }
+  const LANGS = { jpn: '日本語', kor: '한국어', chi_sim: '中文', chi_tra: '中文', tha: 'ไทย' };
+  const wide = (lang) => ['jpn', 'kor', 'chi_sim', 'chi_tra', 'tha'].includes(lang);
+
+  // A line in Japanese, Chinese or Korean: Tesseract puts spaces between the
+  // characters; there are no "words" to judge, only letters against junk.
+  function keepWide(line) {
+    let text = String(line.text || '')
+      .replace(/[|_~^`"“”«»<>{}[\]\\©®™•●▶►♪♫¬]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      // Dashes standing alone: the bars of a karaoke guide melody, read as ー.
+      // (Two or more anywhere; one only at the ends: ー and 一 are letters too.)
+      .split(' ')
+      .filter((w, i, all) => !/^[ー一ｰ\-_.・]{2,}$/u.test(w) && !((i === 0 || i === all.length - 1) && /^[ー一ｰ\-_.・]$/u.test(w)))
+      .join(' ');
+    // No spaces between two CJK characters (or a CJK one and its punctuation).
+    text = text.replace(/(?<=[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u3000-\u303f\uff00-\uffef]) (?=[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u3000-\u303f\uff00-\uffef])/gu, '');
+    // Stray marks at the ends.
+    text = text.replace(/^[^\p{L}\d(（「『]+|[^\p{L}\d)）」』、。！？!?…]+$/gu, '');
+    const letters = (text.match(/[\p{L}\p{M}]/gu) || []).length;
+    // Letters of the song's own script (not Latin noise like "wa aa").
+    const own = (text.match(/(?![\p{Script=Latin}])\p{L}/gu) || []).length;
+    // (Tesseract is less sure of itself on these scripts: a lower bar.)
+    if (line.conf < 25 || letters < 2 || own < 2 || letters / text.replace(/\s/g, '').length < 0.6) return null;
+    if (/^(www\.|https?:)|\.(com|jp|kr|cn|net)\b|subscribe|karaoke|official|カラオケ|チャンネル登録/i.test(text)) return null;
+    return text;
+  }
+
   // One OCR line -> cleaned text, or null for noise, logos, timestamps…
-  function keep(line) {
+  function keep(line, lang) {
+    if (wide(lang)) return keepWide(line);
     const words = String(line.text || '')
       .replace(/[|_~^`"“”«»<>{}[\]\\©®™•●▶►♪♫¬]+/g, ' ')
       .split(/\s+/)
@@ -82,11 +121,19 @@ BYL.ocr = (() => {
   // lyrics scroll up as a list with the line being sung in the middle: there
   // it's when the line reaches the middle of the block of text.
   // skip: texts known not to be lyrics (the song title, the artist).
-  function assemble(frames, skip = []) {
+  function assemble(frames, skip = [], lang = 'vie') {
     const done = [];
     let open = [];
     // Readable pieces of text in each frame.
-    const seenIn = frames.map((f) => f.lines.flatMap(pieces).map((raw) => ({ raw, text: keep(raw) })).filter((x) => x.text));
+    const seenIn = frames.map((f) => {
+      let kept = f.lines.flatMap(pieces).map((raw) => ({ raw, text: keep(raw, lang) })).filter((x) => x.text);
+      // Furigana: the small reading over the words, half their height or less.
+      if (wide(lang)) {
+        const tall = Math.max(0, ...kept.filter((x) => x.raw.box).map((x) => x.raw.box[3] - x.raw.box[1]));
+        kept = kept.filter((x) => !x.raw.box || x.raw.box[3] - x.raw.box[1] > tall * 0.55);
+      }
+      return kept;
+    });
     // Text on screen in most of the frames is the title, the
     // artist or a watermark, even when it blinks in and out.
     const groups = [];
@@ -219,7 +266,8 @@ BYL.ocr = (() => {
     return s / a.length;
   };
 
-  function snapshot(video, cv) {
+  function snapshot(video, cv, lang) {
+    if (wide(lang)) return inked(video, cv);
     // Lyrics are big text: 960 px wide reads them as well as full size, faster.
     const w = Math.min(960, video.videoWidth || 960);
     cv.width = w;
@@ -228,8 +276,31 @@ BYL.ocr = (() => {
     return cv.toDataURL('image/jpeg', 0.85);
   }
 
-  async function read(image) {
-    const res = await chrome.runtime.sendMessage({ type: 'ocr', image });
+  // Japanese, Chinese, Korean, Thai karaoke: coloured letters with thick
+  // outlines, small furigana over them. Tesseract reads them far better
+  // large (1920 px) and in black and white: what is bright (any colour) is
+  // ink, the dark sky behind is paper; on a light picture, the other way round.
+  function inked(video, cv) {
+    const w = 1920;
+    cv.width = w;
+    cv.height = Math.round((w * (video.videoHeight || 720)) / (video.videoWidth || 1280));
+    const g = cv.getContext('2d', { willReadFrequently: true });
+    g.drawImage(video, 0, 0, cv.width, cv.height);
+    const img = g.getImageData(0, 0, cv.width, cv.height);
+    const p = img.data;
+    let sum = 0;
+    for (let i = 0; i < p.length; i += 64) sum += (p[i] * 3 + p[i + 1] * 6 + p[i + 2]) / 10;
+    const light = sum / (p.length / 64) > 140;
+    for (let i = 0; i < p.length; i += 4) {
+      const ink = light ? Math.min(p[i], p[i + 1], p[i + 2]) < 70 : Math.max(p[i], p[i + 1], p[i + 2]) > 200;
+      p[i] = p[i + 1] = p[i + 2] = ink ? 0 : 255;
+    }
+    g.putImageData(img, 0, 0);
+    return cv.toDataURL('image/png');
+  }
+
+  async function read(image, lang) {
+    const res = await chrome.runtime.sendMessage({ type: 'ocr', image, lang });
     if (res?.error) throw new Error(res.error);
     return res?.lines || [];
   }
@@ -237,7 +308,7 @@ BYL.ocr = (() => {
   // Scans the video playing on the page. onProgress(share 0..1, linesSoFar).
   // Resolves with [{ t, text }]; stop() ends it early with what was read.
   // skip: the song title / artist, which lyric videos show beside the words.
-  async function scan(video, onProgress, skip = []) {
+  async function scan(video, onProgress, skip = [], lang = 'vie') {
     if (job) throw new Error('busy');
     const me = (job = { stop: false });
     const ad = BYL.adShowing;
@@ -248,10 +319,12 @@ BYL.ocr = (() => {
       throw new Error(L('video chưa tải xong, thử lại sau ít giây'));
     }
     // play() is cut short when YouTube swaps the source; try a few times.
+    // (play() can also never settle while the player has no source: give up
+    // on it after a few seconds, or ⏹ would wait forever.)
     const play = async () => {
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 5 && !me.stop; i++) {
         try {
-          return await video.play();
+          return await Promise.race([video.play(), sleep(3000).then(() => Promise.reject(new Error('play timeout')))]);
         } catch {
           await sleep(400);
         }
@@ -293,7 +366,7 @@ BYL.ocr = (() => {
           samples.push({ t, p: last });
         } else {
           prev = sig;
-          const p = (last = read(snapshot(video, big)).catch(() => []));
+          const p = (last = read(snapshot(video, big, lang), lang).catch(() => []));
           samples.push({ t, p });
           inflight.add(p);
           p.finally(() => inflight.delete(p));
@@ -308,7 +381,7 @@ BYL.ocr = (() => {
       }
       const frames = [];
       for (const s of samples) frames.push({ t: s.t, lines: await s.p });
-      return assemble(frames, skip);
+      return assemble(frames, skip, lang);
     } finally {
       video.playbackRate = before.rate;
       video.muted = before.muted;
@@ -324,5 +397,5 @@ BYL.ocr = (() => {
   const stop = () => job && (job.stop = true);
   const busy = () => !!job;
 
-  return { keep, assemble, toLrc, scan, stop, busy };
+  return { keep, assemble, toLrc, scan, stop, busy, langOf, LANGS };
 })();

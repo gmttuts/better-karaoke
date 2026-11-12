@@ -46,7 +46,7 @@ Extension Chrome giúp hát karaoke ngay trên YouTube: tự tìm lời bài há
 - **Lệch ±0.5s** (giữ Shift: ±0.1s) dời cả bài. Bấm vào số lệch để về 0 và bỏ các mốc.
 - **Video không có phụ đề** và lời không có thời gian: bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.
 - **Tab "Tìm bản Karaoke"**: danh sách bản karaoke ngay trong panel, có nút nhanh *Tone nam / Tone nữ / Song ca / Beat* (bài Việt) hoặc *lower key / duet / instrumental* (bài quốc tế). Bấm là chuyển video, lời tự tìm lại.
-- **🔠 Đọc chữ trên video** (trong ✏️ Sửa lời, hoặc nút ngay dưới "Chưa tìm thấy lời"): cho video không có lời ở đâu, không có phụ đề, nhưng có chữ lời bài hát trên hình (video lyric, karaoke, MV có chữ). Extension tua video ×2, tắt tiếng, đọc chữ trên các khung hình bằng Tesseract (chạy ngay trên máy, có sẵn bộ chữ tiếng Việt), rồi điền vào ô sửa lời kèm thời gian: lúc dòng chữ hiện ra, hoặc với video lời cuộn thành danh sách thì lúc dòng đó lên tới giữa. Mất khoảng nửa thời lượng bài; bấm ⏹ để dừng sớm và lấy phần đã đọc. Chữ đọc sai thì sửa ngay trong ô rồi bấm 💾 Lưu lời. Tên bài, ca sĩ, logo kênh và chữ nằm yên suốt video được bỏ đi.
+- **🔠 Đọc chữ trên video** (trong ✏️ Sửa lời, hoặc nút ngay dưới "Chưa tìm thấy lời"): cho video không có lời ở đâu, không có phụ đề, nhưng có chữ lời bài hát trên hình (video lyric, karaoke, MV có chữ). Extension tua video ×2, tắt tiếng, đọc chữ trên các khung hình bằng Tesseract (chạy ngay trên máy, có sẵn bộ chữ tiếng Việt, đọc được cả tiếng Anh). Video có tên tiếng Nhật, Hàn, Trung hoặc Thái thì dùng bộ chữ của ngôn ngữ đó: lần đầu tải khoảng 1–2 MB từ jsDelivr (dữ liệu tessdata của Tesseract), sau đó giữ lại trên máy. Chữ karaoke kiểu này (màu, viền dày, furigana nhỏ phía trên) được phóng lớn và chuyển đen trắng trước khi đọc; dòng furigana bị bỏ, rồi điền vào ô sửa lời kèm thời gian: lúc dòng chữ hiện ra, hoặc với video lời cuộn thành danh sách thì lúc dòng đó lên tới giữa. Mất khoảng nửa thời lượng bài; bấm ⏹ để dừng sớm và lấy phần đã đọc. Chữ đọc sai thì sửa ngay trong ô rồi bấm 💾 Lưu lời. Tên bài, ca sĩ, logo kênh và chữ nằm yên suốt video được bỏ đi.
 - **✏️ Sửa lời / ✍ Tự nhập lời**: sửa lời đang hiện, hoặc tự gõ / dán / dịch lời khi không tìm được. Bản của bạn được nhớ riêng cho từng video và hiện trước ở lần mở sau (nguồn "✍ Lời của bạn"). Giữ `[phút:giây]` ở đầu dòng để giữ thời gian. Nút **📝 Lấy khung từ phụ đề** điền sẵn phụ đề YouTube kèm thời gian, chỉ cần sửa chữ hoặc thay bằng lời dịch.
   - Khi đang sửa: dòng đang phát được tô hồng và tự cuộn theo nhạc (tắt được bằng "Cuộn theo nhạc"). Nháy đúp một dòng có giờ để tua tới đó.
   - **🔎 Tìm trong lời**: gõ không dấu cũng tìm được, Enter / Shift+Enter để qua lại giữa các kết quả.
@@ -133,7 +133,7 @@ src/
 _locales/              Mô tả extension theo ngôn ngữ (12 ngôn ngữ)
 scripts/               build.mjs (đóng gói + kiểm tra file), smoke.mjs (test headless)
 tests/                 Test tách tên bài, thời gian từng chữ, xuất file, bài toán LRCLIB, đổi tông, bản dịch
-vendor/tesseract/       tesseract.js 5.1.1 + lõi WebAssembly + bộ chữ tiếng Việt (Apache 2.0), không tải từ CDN
+vendor/tesseract/       tesseract.js 5.1.1 + lõi WebAssembly + bộ chữ tiếng Việt (Apache 2.0); bộ chữ Nhật/Hàn/Trung/Thái tải khi cần từ cdn.jsdelivr.net
 data/pinyin.json       Cách đọc pinyin của 21 nghìn chữ Hán (Unicode Unihan, giấy phép Unicode v3)
 fonts/                 Roboto Condensed (Apache 2.0, có bộ chữ tiếng Việt) cho kiểu Karaoke
 ```

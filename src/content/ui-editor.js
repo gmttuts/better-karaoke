@@ -146,13 +146,17 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
       const v = video();
       if (!v) return;
       fromOcr.textContent = L('⏹ Dừng đọc');
-      say(L('🔠 Đang đọc chữ trên video…'));
+      const song = state.song || {};
+      // Japanese, Korean, Chinese, Thai: read with that language's model
+      // (fetched once, about 2 MB).
+      const lang = BYL.ocr.langOf([document.querySelector('ytd-watch-metadata h1, h1.title')?.textContent, song.title, song.artist].join(' '));
+      say(lang === 'vie' ? L('🔠 Đang đọc chữ trên video…') : L('🔠 Đang đọc chữ trên video ({0}). Lần đầu cần tải bộ đọc ngôn ngữ này, khoảng 2 MB…', BYL.ocr.LANGS[lang]));
       try {
-        const song = state.song || {};
         const lines = await BYL.ocr.scan(
           v,
           (p) => ED?.ta === ta && say(L('🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)', Math.round(p * 100))),
-          [song.title, song.artist, [song.title, song.artist].filter(Boolean).join(' - ')]
+          [song.title, song.artist, [song.title, song.artist].filter(Boolean).join(' - ')],
+          lang
         );
         if (ED?.ta !== ta) return;
         if (!lines.length) return say(L('Không đọc được dòng chữ nào trên video này.'));

@@ -337,6 +337,7 @@
   "🔍 Tìm theo tên": "🔍 이름으로 검색",
   "🔎 Tìm trong lời (gõ không dấu cũng được)…": "🔎 가사에서 찾기…",
   "🔠 Đang đọc chữ trên video: {0}%… (bấm ⏹ để dừng)": "🔠 영상의 글자 읽는 중: {0}%… (⏹을 눌러 중지)",
+  "🔠 Đang đọc chữ trên video ({0}). Lần đầu cần tải bộ đọc ngôn ngữ này, khoảng 2 MB…": "🔠 영상의 글자를 읽는 중 ({0}). 처음에는 이 언어의 판독 데이터(약 2 MB)를 내려받습니다…",
   "🔠 Đang đọc chữ trên video…": "🔠 영상의 글자 읽는 중…",
   "🔠 Đọc chữ trên video": "🔠 영상 속 글자 읽기",
   "🔠 Đọc được {0} dòng. Sửa chữ đọc sai (nếu có) rồi bấm 💾 Lưu lời. Thời gian là lúc dòng chữ hiện ra, lệch thì chỉnh \"Lệch\" hoặc ghim 📍.": "🔠 {0}줄을 읽었습니다. 잘못 읽은 글자가 있으면 고친 뒤 💾 가사 저장을 클릭하세요. 시간은 각 줄이 나타난 시점이며, 어긋나면 \"오프셋\"을 조정하거나 📍으로 고정하세요.",
