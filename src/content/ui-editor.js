@@ -96,13 +96,14 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     P.lines.hidden = true;
     P.grip.hidden = true;
 
-    ED = { ta, mirror, q, count, follow, stamp, stampEnd, clockBox, lineInfo, lineText, backBtn, picked: false, stamps: [], cur: -1, sel: -1, hits: [], hit: -1, quietUntil: 0, clock: '' };
+    ED = { orig: c, previewTimer: 0, ta, mirror, q, count, follow, stamp, stampEnd, clockBox, lineInfo, lineText, backBtn, picked: false, stamps: [], cur: -1, sel: -1, hits: [], hit: -1, quietUntil: 0, clock: '' };
     paintEditor();
     ta.focus();
 
     ta.addEventListener('input', () => {
       ED.quietUntil = Date.now() + 3000;
       paintEditor();
+      preview();
     });
     ta.addEventListener('scroll', () => (mirror.scrollTop = ta.scrollTop));
     ta.addEventListener('wheel', () => (ED.quietUntil = Date.now() + 5000), { passive: true });
@@ -229,6 +230,13 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
 
   function closeEditor() {
     BYL.ocr.stop();
+    // The preview goes; the lyrics playing before come back (or the saved ones, right after).
+    if (ED && state.current?.preview) {
+      state.current = ED.orig;
+      state.lastActive = -2;
+      state.transMap = null;
+    }
+    clearTimeout(ED?.previewTimer);
     ED = null;
     P.editor.hidden = true;
     P.editor.replaceChildren();
@@ -340,6 +348,25 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     ED.quietUntil = 0;
     paintEditor();
     paintSel();
+    preview(true);
+  }
+
+  // While editing timed lyrics, the video already shows the text as it is in
+  // the box (not saved: 💾 Lưu lời keeps it, Huỷ puts the old lyrics back).
+  function preview(now) {
+    clearTimeout(ED.previewTimer);
+    const run = () => {
+      if (!ED) return;
+      const c = customCandidate(ED.ta.value, L('Đang sửa'), 'preview');
+      if (!c.synced) return;
+      c.preview = true;
+      state.current = c;
+      state.lastActive = -2;
+      state.transMap = null;
+      frame();
+    };
+    if (now) run();
+    else ED.previewTimer = setTimeout(run, 400);
   }
 
   // Which line ⏵ / ⏹ change: the one the user clicked (or moved to with the
@@ -378,11 +405,12 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     if (now <= t0 + 0.2) return say(L('Giờ kết thúc ({0}) phải sau giờ bắt đầu của dòng ({1}).', BYL.fmtTime(now), BYL.fmtTime(t0)));
     const out = line.replace(END_RE, '') + BYL.lrcEnd(now);
     ta.setRangeText(out, start, end, 'preserve');
-    say(L('⏹ Dòng "{0}" giờ kết thúc lúc {1}.', line.replace(STAMP_RE, '').replace(END_RE, '').trim().slice(0, 40), BYL.fmtTime(now)));
+    say(L('⏹ Dòng "{0}" giờ kết thúc lúc {1}. Đã thấy ngay trên video; bấm 💾 Lưu lời để giữ.', line.replace(STAMP_RE, '').replace(END_RE, '').trim().slice(0, 40), BYL.fmtTime(now)));
     ta.focus();
     ED.quietUntil = 0;
     paintEditor();
     paintSel();
+    preview(true);
   }
 
   // Under the text: which line ⏵ / ⏹ will change, and its times now.

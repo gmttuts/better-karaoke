@@ -1300,7 +1300,7 @@ BYL.ui = (() => {
 
   function toggleStar() {
     const c = state.current;
-    if (!c) return;
+    if (!c || c.preview) return;
     if (state.starId === c.id) {
       state.starId = null;
       BYL.videoStore.patch(state.videoId, { star: null });
@@ -1534,7 +1534,8 @@ BYL.ui = (() => {
     return a.d + ((b.d - a.d) * (t - a.t)) / (b.t - a.t || 1);
   }
   // Video time at which a lyric time plays.
-  const effT = (t) => t + state.offset + warpAt(t);
+  // (Lyrics being previewed from the editor already have the offset folded in.)
+  const effT = (t) => (state.current?.preview ? t : t + state.offset + warpAt(t));
 
   // Caption anchors -> sync points, smoothed (median of 5) so one badly timed
   // caption line can't yank its neighbours.
