@@ -391,7 +391,7 @@ BYL.ui = (() => {
     rowT.append(el('span', 'muted', L('🌐 Song ngữ')), transSel, swapBtn);
     // 文A Dịch lời: its own row near the top (both modes), so it is easy to find.
     const rowTr = el('div', 'row tr');
-    const trBtn = el('button', 'primary', L('文A Dịch lời'));
+    const trBtn = el('button', '', L('文A Dịch lời'));
     trBtn.title = L('Dịch lời đang hiện sang ngôn ngữ đã chọn, giữ đúng giờ từng dòng. Bản dịch hiện dưới lời chính và được lưu thành bản lời thứ 2 của bạn. Lời được gửi tới Google Dịch.');
     const trLang = el('select');
     trLang.title = L('Dịch sang ngôn ngữ nào');
