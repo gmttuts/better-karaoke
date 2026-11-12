@@ -3,9 +3,10 @@
 Ảnh (chụp lại trên YouTube bằng `node scripts/store-shots.mjs`, rồi dựng bằng `node scripts/store-assets.mjs`):
 - Ảnh chụp 1280×800, tải lên theo ngôn ngữ của trang: `vi/1-hero.png` …
   `vi/5-studio.png` (tiếng Việt), `en/1-hero.png` … `en/5-studio.png` (English).
-  Nguồn: `mockups.html` dựng quanh ảnh chụp thật bản 0.24 trên YouTube ở `shots/`:
-  9 kiểu chữ ở chế độ rạp (`style-*`, 1280 rộng), panel ở chế độ Xem lời
-  (`panel-*`), chế độ Hát với lọc giọng và tông +2 (`sing-*`), bảng 🎨 với một
+  Nguồn: `mockups.html` dựng quanh ảnh chụp thật trên YouTube ở `shots/`
+  (kiểu chữ: bản 0.24; panel: bản 0.28):
+  9 kiểu chữ ở chế độ rạp (`style-*`, 1280 rộng), panel ở chế độ Hát với
+  文A Dịch lời (tiếng Việt / tiếng Tây Ban Nha) (`panel-*`), chế độ Hát với lọc giọng và tông +2 (`sing-*`), bảng 🎨 với một
   kiểu tự chỉnh (`studio-*`), các ảnh panel 1440 rộng; tất cả chụp ở độ nét 2x.
 - Ô quảng cáo nhỏ 440×280 (bắt buộc, là "thumbnail" trong danh sách Store): `promo-440x280.png`. Store chỉ cho một ô dùng chung mọi ngôn ngữ; `vi/promo-440x280.png` là bản chữ tiếng Việt nếu muốn dùng thay.
 - Ô quảng cáo, marquee và icon được vẽ bằng vector trong **`design-kit.html`** (mở bằng trình duyệt): đổi ngôn ngữ, xuất PNG 1×–8× hoặc SVG, hoặc lưu tất cả thành .zip. Nộp Store thì dùng 1×.
@@ -38,7 +39,7 @@ Better Karaoke
 (Không mở đầu bằng "YouTube" để không bị hiểu là sản phẩm của YouTube; tên cũ "Better YouTube Lyric" dễ bị từ chối vì nhãn hiệu.)
 
 ## Mô tả ngắn (≤ 132 ký tự)
-**vi:** Tìm lời bài hát ngay trên YouTube, hát karaoke trên video, song ngữ, phiên âm, xuất LRC/SRT/ASS.
+**vi:** Tìm lời bài hát ngay trên YouTube, hát karaoke trên video, dịch lời, phiên âm, xuất LRC/SRT/ASS.
 **en:** Lyrics right on YouTube: karaoke on the video, translations, romanization, LRC/SRT/ASS export.
 
 ## Mô tả chi tiết · Description
@@ -49,13 +50,14 @@ Mở một video nhạc trên YouTube là có lời bài hát ở cột bên ph�
 
 • Tự tìm lời ở nhiều nơi: mô tả video, comment, các bản đăng lại cùng bài, thư viện mở LRCLIB, Hợp âm chuẩn, Genius, phụ đề YouTube.
 • 🎤 Karaoke trên video: chữ đổi màu theo nhịp hát, cả khi toàn màn hình và trên YouTube Shorts. Tô theo từng chữ khi có thời gian từng chữ. Bật tắt bằng nút 🎤 ngay trên thanh điều khiển của YouTube.
-• 🧭 Panel gọn với 4 chế độ: Xem lời · Hát · Chỉnh lời · Karaoke (các bản karaoke của bài trên YouTube).
+• 🧭 Panel gọn với 3 chế độ: Hát · Chỉnh lời · Karaoke (các bản karaoke của bài trên YouTube). Ưu tiên lời có thời gian khớp với bài hát; ★ chọn bản tiêu biểu cho từng video.
 • 🎨 9 kiểu chữ có sẵn, 6 kiểu nền, chỉnh màu, viền, phông, lề… bấm 🎲 để thử kiểu ngẫu nhiên, ↺ để về mặc định, lưu thành preset, ghim 📌 kiểu riêng cho từng kênh.
-• 🎯 Tự canh lời theo phụ đề của video, ⏱ gõ nhịp bằng phím Space, 📍 ghim dòng đang hát để sửa lệch từng đoạn.
-• 🎚 Đổi tông (nâng / hạ nửa cung, không đổi tốc độ) và 🎤 Lọc giọng ca sĩ để hát trên bài gốc, chạy ngay trên máy.
+• ⏱ Gõ nhịp bằng phím Space, 📍 ghim dòng đang hát để sửa lệch từng đoạn, ✏️ đặt giờ bắt đầu / kết thúc từng dòng theo video, ⇆ so sánh hai bản lời và lấy từng dòng.
+• 🎚 Đổi tông (nâng / hạ nửa cung, không đổi tốc độ), 🎤 Lọc giọng ca sĩ để hát trên bài gốc, ⏩ đổi tốc độ từ 0,25× đến 3×, chạy ngay trên máy.
 • ⬇ Xuất file LRC / SRT / ASS (phụ đề karaoke đúng kiểu chữ, ghép cứng được vào video của bạn) với đúng thời gian bạn đã canh; ☁ chia sẻ lên LRCLIB (chỉ khi bạn xác nhận).
 • 📥 Nhập lại file .lrc / .srt / .ass để chia sẻ lời đã canh nhịp và kiểu chữ với bạn bè.
-• 🌐 Song ngữ: hiện lời dịch dưới mỗi dòng. 🔤 Phiên âm Latin cho lời Hàn, Nhật, Trung.
+• 文A Dịch lời sang 13 ngôn ngữ (có tiếng Việt), giữ đúng nhịp từng dòng, hiện dưới lời gốc và lưu thành bản lời thứ 2 của bạn. 🔤 Phiên âm Latin cho lời Hàn, Nhật, Trung.
+• 🔠 Đọc chữ karaoke in sẵn trên video thành lời có thời gian (chạy ngay trên máy).
 • 🎙 Chấm điểm karaoke: hát vào micro, mỗi dòng có điểm (đủ lời, đúng nốt).
 • ⧉ Cửa sổ lời nổi luôn nằm trên cùng, kể cả khi chuyển tab.
 • ✏️ Sửa hoặc tự nhập lời, 🔍 tìm lại theo tên bài, ★ bài yêu thích, lịch sử bài đã xem, phím tắt Alt + phím.
@@ -71,13 +73,14 @@ Open a music video on YouTube and the lyrics appear in the right column, with th
 
 • Finds lyrics in many places: the video description, comments, other uploads of the song, the open LRCLIB library, Hợp âm chuẩn, Genius, YouTube captions.
 • 🎤 Karaoke on the video: words change colour as they are sung, in full screen and on YouTube Shorts too. Word-by-word when the timing allows. Turn it on and off with the 🎤 button on YouTube's own control bar.
-• 🧭 A tidy panel with four modes: Lyrics · Sing · Edit · Karaoke (karaoke versions of the song on YouTube).
+• 🧭 A tidy panel with three modes: Sing · Edit · Karaoke (karaoke versions of the song on YouTube). Lyrics timed to the song come first; ★ pick the featured version for each video.
 • 🎨 9 built-in styles, 6 background shapes, colours, outline, font, padding… roll 🎲 for a random look, ↺ to go back, save it as a preset, or pin 📌 one per channel.
-• 🎯 Sync the lyrics to the video's captions, ⏱ tap along with Space, 📍 pin the line being sung to fix one part of the song.
-• 🎚 Change the key (semitones up / down, same speed) and 🎤 cut the singer's voice to sing over the original, all on your device.
+• ⏱ Tap along with Space, 📍 pin the line being sung to fix one part of the song, ✏️ set each line's start and end from the video, ⇆ compare two versions and take lines from either.
+• 🎚 Change the key (semitones up / down, same speed), 🎤 cut the singer's voice to sing over the original, ⏩ change the speed from 0.25× to 3×, all on your device.
 • ⬇ Export LRC / SRT / ASS files (styled karaoke subtitles you can burn into your own video) with your timing; ☁ share them on LRCLIB (only after you confirm).
 • 📥 Import .lrc / .srt / .ass files to share timed lyrics and styles with friends.
-• 🌐 Show a translation under each line. 🔤 Latin spelling for Korean, Japanese and Chinese lyrics.
+• 文A Translate the lyrics into 13 languages, line by line with the timing kept, shown under the original and saved as your second version. 🔤 Latin spelling for Korean, Japanese and Chinese lyrics.
+• 🔠 Read karaoke text burnt into the video into timed lyrics (on your device).
 • 🎙 Karaoke scoring: sing into your microphone and get a mark for every line (in time, in tune).
 • ⧉ A floating, always-on-top lyrics window that keeps going when you switch tabs.
 • ✏️ Edit or type lyrics, 🔍 search again by name, ★ favourites, watch history, Alt + key shortcuts.
@@ -101,15 +104,16 @@ Show song lyrics for the YouTube video being watched, in a side panel and as kar
 - **Host `https://hopamchuan.com/*`**: searches Vietnamese lyrics by song title and artist. Can be turned off in the settings.
 - **Host `https://genius.com/*`**: searches song lyrics (Vietnamese and international) by song title and artist. Can be turned off in the settings.
 - **Web accessible resources** (`src/audio/pitch-worklet.js`, `src/audio/vocal-worklet.js`, `fonts/*.woff2`, `data/pinyin.json`, `icons/icon48.png`), loaded by the content script on `https://www.youtube.com/*`: the 🎚 key change and the 🎤 vocal cut run as AudioWorklets on the video's own sound, on the device; the bundled fonts draw the karaoke styles; the pinyin table romanizes Chinese lyrics; the icon is the panel's logo.
-- **offscreen**: runs the on-device text recognition (Tesseract, WebAssembly) for "🔠 Read text in the video" in an offscreen document; nothing is sent anywhere.
-- **Remote code**: none. All code ships in the package; data/pinyin.json is a static reading table.
+- **offscreen**: runs the on-device text recognition (Tesseract, WebAssembly) for "🔠 Read text in the video" in an offscreen document; no frame is sent anywhere. The Vietnamese/English model ships in the package; for Japanese, Korean, Chinese or Thai videos the matching Tesseract language data file (`.traineddata`, data only, Apache 2.0) is downloaded once from cdn.jsdelivr.net and cached.
+- **文A Translate** (no extra permission): only when the user presses the button, the lyric lines shown are sent to Google Translate (translate.googleapis.com) and the translation comes back; nothing else is sent.
+- **Remote code**: none. All code ships in the package; data/pinyin.json is a static reading table and the OCR `.traineddata` files are model data, not code.
 
 ## Remote code · Mã từ xa
-No, I am not using remote code.
+No, I am not using remote code. (OCR language data for Japanese / Korean / Chinese / Thai is fetched from cdn.jsdelivr.net as `.traineddata` model files, never JavaScript or WebAssembly; all code and the WASM engine ship in the package.)
 
 ## Dữ liệu người dùng · Data usage (form)
 Tick only **Website content**, then tick all three certifications.
-- Collects: **Website content** only in the sense that song titles taken from the YouTube page are sent to lrclib.net / hopamchuan.com / genius.com to search for lyrics. No personally identifiable information, health, financial, authentication, personal communications, location, web history or user activity is collected.
+- Collects: **Website content** only in the sense that song titles taken from the YouTube page are sent to lrclib.net / hopamchuan.com / genius.com to search for lyrics, and, when the user presses 文A Translate, the lyric lines are sent to Google Translate. No personally identifiable information, health, financial, authentication, personal communications, location, web history or user activity is collected.
 - Not sold to third parties; not used for purposes unrelated to the single purpose; not used for credit-worthiness or lending.
 
 ## Chính sách quyền riêng tư · Privacy policy URL

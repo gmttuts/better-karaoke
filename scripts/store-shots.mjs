@@ -2,7 +2,7 @@
 // from (scripts/store-assets.mjs), on youtube.com with the unpacked extension,
 // at 2× for sharp text:
 //   style-<key>.png      each subtitle style, theater mode, dark (1280 wide)
-//   panel-<lang>.png     👀 Xem lời, lyrics on the video and 🎤 on the player
+//   panel-<lang>.png     🎤 Hát with 文A Dịch lời (vi → Tiếng Việt, en → Español), lyrics on the video and 🎤 on the player
 //   sing-<lang>.png      🎤 Hát with the key up 2 and the vocal cut on
 //   studio-<lang>.png    🎨 open with a look of one's own   (1440 wide)
 //   node scripts/store-shots.mjs [styles] [panels]     (both by default)
@@ -130,7 +130,7 @@ const mode = (m) => `(${R}.querySelector('nav button[data-mode=${m}]').click(), 
 const studioBtn = `[...${R}.querySelectorAll('.row button')].find((b) => b.textContent === '🎨')`;
 const CUSTOM = { font: '"BYL Condensed", "Arial Narrow"', weight: 900, text: '#ffffff', textGrad: false, dim: 100, upper: true, tracking: 2, sung: '#00e5ff', sung2: '#c77dff', mark: '',
   glow: true, stroke: '#101010', sstroke: '#101010', strokeW: 12, shadow: true, shape: 'none', bg: '#000000', bgAlpha: 60, layout: 'center2', nextScale: 70, scale: 135, margin: 12, wipe: 'word' };
-const BASE = { panelMode: 'view', karaokeAuto: true, overlayPosition: 'bottom', overlayStyle: 'red', panelCollapsed: false };
+const BASE = { panelMode: 'sing', karaokeAuto: true, overlayPosition: 'bottom', overlayStyle: 'red', panelCollapsed: false };
 const LINE = 58.6; // "Never gonna tell a lie and hurt you", half sung
 const SHORT = 43.9; // "Never gonna give you up": "Chữ lớn" fits
 
@@ -153,16 +153,23 @@ if (doStyles) {
 
 if (doPanels)
   for (const lang of ['vi', 'en']) {
-    // 👀 Xem lời, then 🎤 Hát with the key and the vocal cut.
+    // 🎤 Hát with a translation under each line, then with the key and the vocal cut.
     let b = await browser(1440, 1500);
     try {
       await b.setStorage({ ...BASE, uiLang: lang, overlayStyle: 'focus' }, { overlayLook: null, channelStyles: {} });
       await b.cookies([['PREF', 'hl=en'], ['wide', '0']]);
       await b.go(VIDEO);
       console.log(`  ${lang} lyrics:`, await b.evaluate(PREP.replace('HIDE_CONTROLS', 'false')));
+      console.log(`  ${lang} translation:`, await b.evaluate(`(async () => {
+        const row = ${R}.querySelector('.row.tr');
+        row.querySelector('select').value = '${lang === 'vi' ? 'vi' : 'es'}';
+        row.querySelector('button').click();
+        for (let i = 0; i < 30 && !${R}.querySelector('.lines .tr'); i++) await new Promise((x) => setTimeout(x, 500));
+        ${R}.querySelector('.status .msg, .msg')?.remove();
+        return ${R}.querySelector('.lines .tr')?.textContent;
+      })()`));
       await b.evaluate(at(LINE));
       await b.shot('panel-' + lang);
-      await b.evaluate(mode('sing'));
       await b.click(400, 300); // a click lets the page start its sound
       await sleep(600);
       await b.evaluate(`(async () => {
@@ -172,7 +179,7 @@ if (doPanels)
         await new Promise((x) => setTimeout(x, 300));
         btn('♯').click();
         await new Promise((x) => setTimeout(x, 500));
-        btn('🎤').click();
+        r.querySelectorAll('.row.fx')[1].querySelector('button').click(); // Bật lọc giọng
         await new Promise((x) => setTimeout(x, 800));
         return true;
       })()`);
@@ -184,7 +191,7 @@ if (doPanels)
     // 🎨 open, with a look of one's own already saved.
     b = await browser(1440, 1500);
     try {
-      await b.setStorage({ ...BASE, uiLang: lang, panelMode: 'sing', overlayStyle: 'focus' }, { overlayLook: CUSTOM, channelStyles: {} });
+      await b.setStorage({ ...BASE, uiLang: lang, panelMode: 'edit', overlayStyle: 'focus' }, { overlayLook: CUSTOM, channelStyles: {} });
       await b.cookies([['PREF', 'hl=en'], ['wide', '0']]);
       await b.go(VIDEO);
       await b.evaluate(PREP.replace('HIDE_CONTROLS', 'false'));
