@@ -71,6 +71,8 @@ BYL.PANEL_CSS = `
   .cmp .ccols span:last-child { grid-column: 4; }
   .cmp .cgrid { overflow: auto; padding: 6px 0; }
   .cmp .crow.diff { background: var(--cd); }
+  .cmp .crow.chg input { border-color: #e8212b; }
+  .cmp .crow.chg button.use { color: #e8212b; border-color: #e8212b; font-size: 17px; line-height: 1; padding: 3px 0 5px; }
   .cmp .ct { font-variant-numeric: tabular-nums; color: var(--cm); font-size: 12px; }
   .cmp input { font: inherit; width: 100%; padding: 5px 7px; border-radius: 6px; border: 1px solid var(--cl); background: var(--cb); color: var(--cf); }
   .cmp .cr { line-height: 1.35; }

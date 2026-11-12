@@ -68,44 +68,72 @@ BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, ren
     const foot = el('div', 'cfoot');
     const save = el('button', 'primary', L('💾 Lưu bản đã sửa'));
     const cancel = el('button', '', L('Huỷ'));
-    foot.append(el('span', 'muted', L('Dòng khác nhau được tô màu. Bấm ⇐ để lấy chữ của bản bên phải mà vẫn giữ thời gian của bản bên trái.')), cancel, save);
+    const takeAll = el('button', '', L('⇐ Lấy hết bên phải'));
+    takeAll.title = L('Lấy chữ của bản bên phải cho mọi dòng, giữ thời gian của bản bên trái');
+    const undoAll = el('button', '', L('↺ Trả lại hết'));
+    undoAll.title = L('Bỏ mọi chỗ đã đổi, về như lúc mở');
+    foot.append(el('span', 'muted', L('Dòng khác nhau được tô màu. Bấm ⇐ để lấy chữ của bản bên phải mà vẫn giữ thời gian của bản bên trái, bấm ↺ để trả lại chữ cũ.')), takeAll, undoAll, cancel, save);
     dlg.append(head, cols, grid, foot);
     box.append(dlg);
 
-    // The left column: the playing lyrics, as rows the user edits.
+    // The left column: the playing lyrics, as rows the user edits. Each row
+    // keeps what it started with: ⇐ takes the right-hand words, then the same
+    // button turns into ↺ and gives the old words back.
     let rows = [];
+    const paintAll = () => {
+      takeAll.disabled = !rows.some((row) => row.r && row.l?.text !== row.r.text) && !rows.some((row) => !row.r && row.l?.text);
+      undoAll.disabled = !rows.some((row) => (row.l?.text ?? '') !== row.orig);
+    };
     const draw = () => {
       const other = others.find((c) => c.id === pick.value);
       cols.lastChild.textContent = name(other);
       rows = pair(sung(cur).map((l) => ({ ...l })), sung(other));
       grid.replaceChildren();
       for (const row of rows) {
+        row.orig = row.l?.text ?? '';
         const t = el('span', 'ct', row.l && typeof row.l.t === 'number' ? BYL.fmtTime(effT(row.l.t)) : '');
         const input = el('input');
         input.type = 'text';
-        input.value = row.l?.text ?? '';
+        input.value = row.orig;
         input.placeholder = row.l ? '' : L('(không có dòng này)');
-        input.addEventListener('input', () => {
-          if (!row.l) row.l = { text: '', added: true };
-          row.l.text = input.value;
-          mark();
-        });
         const use = el('button', 'use', '⇐');
-        use.title = L('⇐ dùng chữ bên phải, giữ thời gian');
-        use.disabled = !row.r;
-        use.addEventListener('click', () => {
-          if (!row.l) row.l = { text: '', added: true };
-          row.l.text = input.value = row.r.text;
-          mark();
-        });
         const r = el('span', 'cr', row.r?.text ?? '');
         const line = el('div', 'crow');
-        const mark = () => line.classList.toggle('diff', !!row.r !== !!row.l?.text || (row.l?.text && row.r && alike(row.l.text, row.r.text) < 0.95));
+        const mark = () => {
+          const changed = (row.l?.text ?? '') !== row.orig;
+          line.classList.toggle('diff', !!row.r !== !!row.l?.text || !!(row.l?.text && row.r && alike(row.l.text, row.r.text) < 0.95));
+          line.classList.toggle('chg', changed);
+          use.textContent = changed ? '↺' : '⇐';
+          use.title = changed ? L('↺ Trả lại chữ cũ của dòng này') : L('⇐ dùng chữ bên phải, giữ thời gian');
+          use.disabled = !changed && !row.r;
+        };
+        row.set = (text) => {
+          if (!row.l) row.l = { text: '', added: true };
+          row.l.text = input.value = text;
+          mark();
+        };
+        input.addEventListener('input', () => {
+          row.set(input.value);
+          paintAll();
+        });
+        use.addEventListener('click', () => {
+          row.set((row.l?.text ?? '') !== row.orig ? row.orig : row.r.text);
+          paintAll();
+        });
         line.append(t, input, use, r);
         mark();
         grid.append(line);
       }
+      paintAll();
     };
+    takeAll.addEventListener('click', () => {
+      for (const row of rows) row.set(row.r ? row.r.text : '');
+      paintAll();
+    });
+    undoAll.addEventListener('click', () => {
+      for (const row of rows) row.set(row.orig);
+      paintAll();
+    });
     draw();
     pick.addEventListener('change', draw);
     x.addEventListener('click', close);
