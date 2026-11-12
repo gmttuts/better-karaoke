@@ -389,9 +389,9 @@ BYL.ui = (() => {
     const swapBtn = el('button', '', '⇅');
     swapBtn.title = L('Đổi chỗ lời chính và lời dịch');
     rowT.append(el('span', 'muted', L('🌐 Song ngữ')), transSel, swapBtn);
-    // 🌐 Dịch lời: its own row near the top (both modes), so it is easy to find.
+    // 文A Dịch lời: its own row near the top (both modes), so it is easy to find.
     const rowTr = el('div', 'row tr');
-    const trBtn = el('button', 'primary', L('🌐 Dịch lời'));
+    const trBtn = el('button', 'primary', L('文A Dịch lời'));
     trBtn.title = L('Dịch lời đang hiện sang ngôn ngữ đã chọn, giữ đúng giờ từng dòng. Bản dịch hiện dưới lời chính và được lưu thành bản lời thứ 2 của bạn. Lời được gửi tới Google Dịch.');
     const trLang = el('select');
     trLang.title = L('Dịch sang ngôn ngữ nào');
@@ -2102,7 +2102,7 @@ BYL.ui = (() => {
     const used = (s) => state.candidates.find((x) => baseId(x) === s && !x.tlang);
     const slot = mainSlot ? CUSTOM_SLOTS.find((s) => s !== mainSlot) : used('custom') ? 'custom2' : 'custom';
     if (slot !== mainSlot && used(slot) && !confirm(L('Bản dịch sẽ thay chỗ "{0}" bạn đã lưu cho video này. Tiếp tục?', used(slot).label))) return renderTransSelect();
-    say(L('🌐 Đang dịch lời sang {0}…', name));
+    say(L('文A Đang dịch lời sang {0}…', name));
     P.transSel.disabled = P.trBtn.disabled = P.trLang.disabled = true;
     let r = null;
     try {
@@ -2131,7 +2131,7 @@ BYL.ui = (() => {
     renderTransSelect();
     say(
       (r.from && r.from === tl.split('-')[0] ? L('Lời này có vẻ đã là {0}. ', name) : '') +
-        L('🌐 Đã dịch sang {0} và lưu thành bản lời thứ 2 của bạn ("{1}"), hiện dưới từng dòng. Bấm ⇅ để đổi chỗ, hoặc chọn bản này rồi ✏️ Sửa lời để chỉnh câu chữ.', name, label)
+        L('文A Đã dịch sang {0} và lưu thành bản lời thứ 2 của bạn ("{1}"), hiện dưới từng dòng. Bấm ⇅ để đổi chỗ, hoặc chọn bản này rồi ✏️ Sửa lời để chỉnh câu chữ.', name, label)
     );
   }
 

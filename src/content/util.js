@@ -16,7 +16,7 @@ BYL.DEFAULTS = {
   srcGenius: true,
   srcTranscript: true,
   preferSynced: true, // lyrics timed to the singing come first
-  transLang: '', // 🌐 Dịch lời: the language picked last ('' = the browser's)
+  transLang: '', // 文A Dịch lời: the language picked last ('' = the browser's)
   captionSync: false, // 🎯 line lyrics up with YouTube's captions (button + automatically); off and hidden by default
   commentPages: 5,
   overlayFontSize: 34,

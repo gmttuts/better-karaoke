@@ -1,6 +1,6 @@
 'use strict';
 
-// 🌐 Dịch lời: the lyrics' lines in another language, line for line, so the
+// 文A Dịch lời: the lyrics' lines in another language, line for line, so the
 // translation keeps the original's timing (a second version of the lyrics).
 // Google Translate's public endpoint (no key): the lines go in blocks, each
 // line on its own line, so the song's context helps the wording; if a block
