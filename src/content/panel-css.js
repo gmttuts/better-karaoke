@@ -48,6 +48,9 @@ BYL.PANEL_CSS = `
   :host-context(html[dark]) select option, :host-context(html[dark]) select optgroup { color: #f1f1f1; background: #272727; }
   /* Sources on two lines at most (+N for the rest): the one in use first,
      then those with lyrics, the empty ones last (order from ui.js). */
+  .srchead { display: flex; align-items: center; gap: 6px; padding: 0 12px 6px; font-size: 12px; }
+  .srchead .muted { flex: 1; font-weight: 600; }
+  .srchead button { padding: 3px 9px; font-size: 12px; }
   .status { display: flex; flex-wrap: wrap; gap: 5px 4px; padding: 0 12px 8px; }
   .status .chip { flex: none; white-space: nowrap; }
   .status .chip[hidden] { display: none; }
@@ -87,7 +90,7 @@ BYL.PANEL_CSS = `
   .picks .phead { font-size: 12px; color: var(--fg2); padding: 4px 8px 6px; }
   .picks button { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; text-align: left; background: transparent; padding: 7px 10px; border-radius: 8px; }
   .picks button:hover { background: var(--chip); }
-  .picks button.on { background: var(--chip); }
+  .picks button.on { background: var(--chip); color: var(--fg); box-shadow: inset 3px 0 0 var(--accent, #e8212b); }
   .picks button b { font-size: 13px; }
   .picks button .muted { font-size: 11.5px; font-weight: 400; }
   .chip { font: inherit; font-size: 12px; font-weight: 400; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--fg2);

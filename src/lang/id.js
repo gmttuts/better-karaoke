@@ -286,6 +286,7 @@
   "Ưu tiên lời có thời gian": "Utamakan lirik bertanda waktu",
   "↶ Lùi": "↶ Mundur",
   "↺ Chấm lại từ đầu": "↺ Mulai ulang",
+  "Nguồn lời": "Sumber lirik",
   "↻ Tìm lại": "↻ Cari lagi",
   "⏱ Gõ (Space)": "⏱ Ketuk (Space)",
   "⏱ Gõ nhịp": "⏱ Ketuk waktu",

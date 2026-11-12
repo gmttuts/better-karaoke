@@ -472,7 +472,10 @@ BYL.ui = (() => {
     resetBtn.title = L('Bỏ bản bạn đã sửa cho video này và quay về lời tìm được');
     resetBtn.hidden = true;
     resetBtn.addEventListener('click', () => resetCustom());
-    row4.append(editBtn, tapBtn, cmpBtn, resetBtn, copy, exportBtn, importBtn, importPick, againBtn, open);
+    row4.append(editBtn, tapBtn, cmpBtn, resetBtn, copy, exportBtn, importBtn, importPick, open);
+    // ↻ searches every source again: it sits over the sources' chips.
+    const srcHead = el('div', 'srchead');
+    srcHead.append(el('span', 'muted', L('Nguồn lời')), againBtn);
 
     // Manual search: the title/artist typed here replace the guess from the
     // video title, are remembered for this video, and every source runs again.
@@ -545,7 +548,7 @@ BYL.ui = (() => {
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
     grip.title = L('Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)');
-    lyricTab.append(findRow, status, picks, row1, rowK, rowV, rowSp, rowSp2, rowS, rowT, row2, row4, exportRow, row3, studio, warn, note, editor, tapbar, lines, grip);
+    lyricTab.append(findRow, srcHead, status, picks, row1, rowK, rowV, rowSp, rowSp2, rowS, rowT, row2, row4, exportRow, row3, studio, warn, note, editor, tapbar, lines, grip);
     makeResizable(lines, grip);
 
     // Pages opened from ⋯, over the lyrics, with a way back.
@@ -1805,7 +1808,7 @@ BYL.ui = (() => {
     const v = video();
     const at = c.synced && v ? position(v.currentTime).i : -1;
     const node = at >= 0 ? box.querySelector(`.ln[data-i="${at}"]`) : null;
-    box.scrollTop = node ? node.offsetTop - box.clientHeight / 2 + node.clientHeight / 2 : keep;
+    box.scrollTop = node ? lineTop(box, node) : keep;
   }
 
   // ---------- timing ----------
@@ -1864,6 +1867,12 @@ BYL.ui = (() => {
   let looping = false;
   let ticks = 0;
   let lastFrame = 0;
+  // The line being sung sits a third of the way down the list, not in its
+  // middle: the list often runs past the bottom of the window.
+  function lineTop(box, node) {
+    const seen = Math.min(box.clientHeight, window.innerHeight - Math.max(0, box.getBoundingClientRect().top));
+    return node.offsetTop - Math.max(60, seen * 0.3);
+  }
   let loopGen = 0;
   function startLoop(restart) {
     if (looping && !restart) return;
@@ -1931,7 +1940,7 @@ BYL.ui = (() => {
         node.classList.add('active');
         if (Date.now() > state.userScrollUntil) {
           const box = P.lines;
-          box.scrollTo({ top: node.offsetTop - box.clientHeight / 2 + node.clientHeight / 2, behavior: 'smooth' });
+          box.scrollTo({ top: lineTop(box, node), behavior: 'smooth' });
         }
       }
       for (const R of renderers()) buildLines(R, pos);

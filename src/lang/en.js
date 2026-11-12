@@ -286,6 +286,7 @@
   "Ưu tiên lời có thời gian": "Prefer timed lyrics",
   "↶ Lùi": "↶ Back",
   "↺ Chấm lại từ đầu": "↺ Start over",
+  "Nguồn lời": "Lyrics sources",
   "↻ Tìm lại": "↻ Search again",
   "⏱ Gõ (Space)": "⏱ Tap (Space)",
   "⏱ Gõ nhịp": "⏱ Tap along",

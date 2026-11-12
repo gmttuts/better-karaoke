@@ -286,6 +286,7 @@
   "Ưu tiên lời có thời gian": "Zeitgenaue Texte bevorzugen",
   "↶ Lùi": "↶ Zurück",
   "↺ Chấm lại từ đầu": "↺ Neu beginnen",
+  "Nguồn lời": "Songtext-Quellen",
   "↻ Tìm lại": "↻ Neu suchen",
   "⏱ Gõ (Space)": "⏱ Tippen (Leertaste)",
   "⏱ Gõ nhịp": "⏱ Mittippen",

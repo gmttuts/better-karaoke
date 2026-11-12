@@ -286,6 +286,7 @@
   "Ưu tiên lời có thời gian": "Preferir letra sincronizada",
   "↶ Lùi": "↶ Voltar",
   "↺ Chấm lại từ đầu": "↺ Recomeçar",
+  "Nguồn lời": "Fontes da letra",
   "↻ Tìm lại": "↻ Buscar de novo",
   "⏱ Gõ (Space)": "⏱ Marcar (Espaço)",
   "⏱ Gõ nhịp": "⏱ Marcar ritmo",
