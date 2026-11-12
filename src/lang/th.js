@@ -318,6 +318,8 @@
   "⏵ Đặt giờ bắt đầu": "⏵ ตั้งเวลาเริ่ม",
   "⏹ Đặt giờ kết thúc": "⏹ ตั้งเวลาจบ",
   "Giờ đang phát: {0}": "กำลังเล่น: {0}",
+  "Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.": "แทนเนื้อเพลงทั้งหมดในช่องด้วยคำบรรยาย YouTube (พร้อมเวลา) หรือไม่ สิ่งที่คุณกำลังแก้จะหายไป",
+  "📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.": "📝 ใส่คำบรรยาย YouTube พร้อมเวลาแล้ว แก้คำให้ถูก (หรือใส่คำแปลแทน) คงเวลาไว้ แล้วกด 💾 บันทึก",
   "Nguồn lời": "แหล่งเนื้อเพลง",
   "↻ Tìm lại": "↻ ค้นหาอีกครั้ง",
   "⏱ Gõ (Space)": "⏱ แตะ (Space)",

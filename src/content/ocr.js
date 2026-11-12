@@ -342,14 +342,24 @@ BYL.ocr = (() => {
       video.currentTime = 0;
       video.playbackRate = SPEED;
       await play();
-      const end = (video.duration || 0) - 0.3;
+      // Stop a little before the very end: at 2× a sample is a second of
+      // video, and once it ends YouTube moves on to the next one by itself.
+      const end = (video.duration || 0) - 1.5;
+      const page = () => new URLSearchParams(location.search).get('v') || location.pathname;
+      const here = page();
+      let reached = 0; // furthest point read
       while (!me.stop && !video.ended && video.currentTime < end) {
         await sleep(EVERY);
+        // Another video (YouTube's autoplay, or the user): done with this one.
+        if (page() !== here) break;
         // YouTube puts its own speed back now and then.
         if (video.playbackRate !== SPEED) video.playbackRate = SPEED;
         video.muted = true;
         // The player restarted (it does after a long stall): back to where we were.
         const lastT = samples.length ? samples[samples.length - 1].t : 0;
+        reached = Math.max(reached, lastT, video.currentTime);
+        // Back near the start after reaching the end: the song is over.
+        if (reached >= end - 2 || video.ended) break;
         if (video.currentTime + 5 < lastT) {
           video.currentTime = lastT;
           await play();

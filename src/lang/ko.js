@@ -318,6 +318,8 @@
   "⏵ Đặt giờ bắt đầu": "⏵ 시작 지정",
   "⏹ Đặt giờ kết thúc": "⏹ 끝 지정",
   "Giờ đang phát: {0}": "재생 중: {0}",
+  "Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.": "상자의 가사를 모두 YouTube 자막(시간 포함)으로 바꿀까요? 편집 중인 내용은 사라집니다.",
+  "📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.": "📝 YouTube 자막을 시간과 함께 넣었습니다. 단어를 고치고(또는 번역으로 바꾸고) 시간은 그대로 둔 뒤 💾 저장을 누르세요.",
   "Nguồn lời": "가사 출처",
   "↻ Tìm lại": "↻ 다시 검색",
   "⏱ Gõ (Space)": "⏱ 탭 (Space)",

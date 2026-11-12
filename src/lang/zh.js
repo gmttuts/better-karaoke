@@ -318,6 +318,8 @@
   "⏵ Đặt giờ bắt đầu": "⏵ 设为开始",
   "⏹ Đặt giờ kết thúc": "⏹ 设为结束",
   "Giờ đang phát: {0}": "正在播放：{0}",
+  "Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.": "用 YouTube 字幕（含时间）替换框里的全部歌词吗？你正在编辑的内容会丢失。",
+  "📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.": "📝 已填入带时间的 YouTube 字幕。改正文字（或换成译文），时间保持不变，然后按 💾 保存。",
   "Nguồn lời": "歌词来源",
   "↻ Tìm lại": "↻ 重新搜索",
   "⏱ Gõ (Space)": "⏱ 打拍（Space）",

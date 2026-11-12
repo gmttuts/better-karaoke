@@ -318,6 +318,8 @@
   "⏵ Đặt giờ bắt đầu": "⏵ Задать начало",
   "⏹ Đặt giờ kết thúc": "⏹ Задать конец",
   "Giờ đang phát: {0}": "Сейчас: {0}",
+  "Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.": "Заменить весь текст в поле субтитрами YouTube (со временем)? Ваши правки пропадут.",
+  "📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.": "📝 Субтитры YouTube вставлены со временем. Исправьте слова (или вставьте перевод), время оставьте, затем нажмите 💾 Сохранить.",
   "Nguồn lời": "Источники текста",
   "↻ Tìm lại": "↻ Искать снова",
   "⏱ Gõ (Space)": "⏱ Отбить (Space)",

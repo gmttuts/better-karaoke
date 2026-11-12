@@ -318,6 +318,8 @@
   "⏵ Đặt giờ bắt đầu": "⏵ Start setzen",
   "⏹ Đặt giờ kết thúc": "⏹ Ende setzen",
   "Giờ đang phát: {0}": "Läuft: {0}",
+  "Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.": "Den gesamten Text im Feld durch die YouTube-Untertitel (mit Zeiten) ersetzen? Deine Änderungen gehen verloren.",
+  "📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.": "📝 YouTube-Untertitel mit Zeiten eingefügt. Wörter korrigieren (oder Übersetzung einsetzen), Zeiten behalten, dann 💾 Speichern.",
   "Nguồn lời": "Songtext-Quellen",
   "↻ Tìm lại": "↻ Neu suchen",
   "⏱ Gõ (Space)": "⏱ Tippen (Leertaste)",

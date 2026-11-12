@@ -318,6 +318,8 @@
   "⏵ Đặt giờ bắt đầu": "⏵ Fijar inicio",
   "⏹ Đặt giờ kết thúc": "⏹ Fijar fin",
   "Giờ đang phát: {0}": "Sonando: {0}",
+  "Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.": "¿Reemplazar toda la letra del cuadro por los subtítulos de YouTube (con sus tiempos)? Se perderá lo que estás editando.",
+  "📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.": "📝 Subtítulos de YouTube añadidos con sus tiempos. Corrige las palabras (o pon una traducción), conserva los tiempos y pulsa 💾 Guardar.",
   "Nguồn lời": "Fuentes de letra",
   "↻ Tìm lại": "↻ Buscar de nuevo",
   "⏱ Gõ (Space)": "⏱ Marcar (Espacio)",

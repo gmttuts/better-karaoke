@@ -318,6 +318,8 @@
   "⏵ Đặt giờ bắt đầu": "⏵ Set start",
   "⏹ Đặt giờ kết thúc": "⏹ Set end",
   "Giờ đang phát: {0}": "Playing: {0}",
+  "Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.": "Replace all the lyrics in the box with the YouTube captions (with their times)? What you are editing will be lost.",
+  "📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.": "📝 YouTube captions filled in with their times. Fix the words (or swap in a translation), keep the times, then press 💾 Save lyrics.",
   "Nguồn lời": "Lyrics sources",
   "↻ Tìm lại": "↻ Search again",
   "⏱ Gõ (Space)": "⏱ Tap (Space)",

@@ -318,6 +318,8 @@
   "⏵ Đặt giờ bắt đầu": "⏵ 開始を設定",
   "⏹ Đặt giờ kết thúc": "⏹ 終了を設定",
   "Giờ đang phát: {0}": "再生中: {0}",
+  "Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.": "ボックスの歌詞をすべて YouTube の字幕（時間付き）に置き換えますか？編集中の内容は失われます。",
+  "📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.": "📝 YouTube の字幕を時間付きで入れました。言葉を直して（または訳に置き換えて）、時間はそのままで 💾 保存 を押してください。",
   "Nguồn lời": "歌詞の出どころ",
   "↻ Tìm lại": "↻ 再検索",
   "⏱ Gõ (Space)": "⏱ タップ（Space）",

@@ -207,13 +207,17 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     fromOcr.addEventListener('click', readVideo);
     if (opts?.ocr) readVideo();
 
+    // The captions (with their times) replace the text: ask first if there is any.
+    const fill = (c) => {
+      if (ta.value.trim() && ta.value.trim() !== BYL.toLrc(c.lines).trim() && !confirm(L('Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.'))) return;
+      ta.value = BYL.toLrc(c.lines);
+      paintEditor();
+      preview(true);
+      say(L('📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.'));
+    };
     fromCaps.addEventListener('click', () => {
       const t = state.candidates.find((x) => x.source === 'transcript');
-      if (t) {
-        ta.value = BYL.toLrc(t.lines);
-        paintEditor();
-        return;
-      }
+      if (t) return fill(t);
       fromCaps.disabled = true;
       fromCaps.textContent = L('Đang tải phụ đề…');
       api.onLoadSource?.('transcript');
@@ -225,10 +229,8 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
           clearInterval(wait);
           fromCaps.disabled = false;
           fromCaps.textContent = L('📝 Lấy khung từ phụ đề');
-          if (got && ED?.ta === ta) {
-            ta.value = BYL.toLrc(got.lines);
-            paintEditor();
-          } else if (!got) say(L('Không lấy được phụ đề của video này.'));
+          if (got && ED?.ta === ta) fill(got);
+          else if (!got) say(L('Không lấy được phụ đề của video này.'));
         }
       }, 250);
     });

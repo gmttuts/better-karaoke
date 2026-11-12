@@ -318,6 +318,8 @@
   "⏵ Đặt giờ bắt đầu": "⏵ Atur awal",
   "⏹ Đặt giờ kết thúc": "⏹ Atur akhir",
   "Giờ đang phát: {0}": "Diputar: {0}",
+  "Thay toàn bộ lời trong ô bằng phụ đề YouTube (kèm thời gian)? Phần bạn đang sửa sẽ mất.": "Ganti semua lirik di kotak dengan teks YouTube (beserta waktunya)? Yang sedang kamu edit akan hilang.",
+  "📝 Đã điền phụ đề YouTube kèm thời gian. Sửa chữ cho đúng lời (hoặc thay bằng lời dịch), giờ giữ nguyên, rồi bấm 💾 Lưu lời.": "📝 Teks YouTube diisi beserta waktunya. Perbaiki kata-katanya (atau ganti dengan terjemahan), biarkan waktunya, lalu tekan 💾 Simpan.",
   "Nguồn lời": "Sumber lirik",
   "↻ Tìm lại": "↻ Cari lagi",
   "⏱ Gõ (Space)": "⏱ Ketuk (Space)",
