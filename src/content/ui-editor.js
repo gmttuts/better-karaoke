@@ -91,8 +91,9 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     const fromOcr = el('button', '', L('🔠 Đọc chữ trên video'));
     fromOcr.title = L('Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.');
     row.append(save, cancel, fromCaps, fromOcr, del);
-    // The times (which line, the clock, ⏵ / ⏹) sit over the text they change.
-    box.append(tip, search, lineInfo, tools, taWrap, row);
+    // Every control sits above the text, the text last: 💾 / Huỷ first,
+    // then the search, then the times (which line, the clock, ⏵ / ⏹).
+    box.append(row, tip, search, lineInfo, tools, taWrap);
     box.hidden = false;
     P.lines.hidden = true;
     P.grip.hidden = true;

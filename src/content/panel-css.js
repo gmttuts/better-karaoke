@@ -331,6 +331,7 @@ BYL.PANEL_CSS = `
   .grip:hover::before { background: var(--fg2); }
   .grip[hidden] { display: none; }
   .editor .row { padding: 6px 0 0; }
+  .editor > .tip { margin-top: 8px; }
   .editor .tip { font-size: 12px; color: var(--fg2); line-height: 1.45; margin-bottom: 6px; }
   .empty button { margin-top: 8px; }
 `;
