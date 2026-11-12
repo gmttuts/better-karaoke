@@ -6,43 +6,53 @@
 // Part of the panel in ui.js, which passes in the state and helpers it uses
 // (see "parts" there).
 BYL.uiParts = BYL.uiParts || {};
-BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, renderSelect, saveCustom, saveWarps, say, setSourceStatus, slotFor, state }) => {
+BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, renderSelect, saveCustom, saveWarps, say, setSourceStatus, slotFor, state, video }) => {
   let box = null;
 
   const name = (c) => `${S[c.source].icon} ${S[c.source].name} · ${c.label}${c.synced ? ' ⏱' : ''}`;
   const sung = (c) => c.lines.filter((l) => l.text && !l.section);
   const alike = (a, b) => (BYL.similarity(a, b) + BYL.similarity(b, a)) / 2;
 
-  // Lines of the two versions side by side, in order: each line on the left
-  // meets the closest of the next few on the right, the rest stand alone.
+  // Lines of the two versions side by side, in order: the pairing that
+  // matches the most alike lines over the whole song (a version may start
+  // with credits, skip a verse or repeat a chorus), the rest stand alone.
   function pair(left, right) {
-    const rows = [];
-    let j = 0;
-    for (const l of left) {
-      let best = -1;
-      let score = 0;
-      for (let k = j; k < Math.min(right.length, j + 4); k++) {
-        const s = alike(l.text, right[k].text);
-        if (s > score) (score = s), (best = k);
+    const n = left.length;
+    const m = right.length;
+    const MIN = 0.35;
+    const sim = left.map((l) => right.map((r) => alike(l.text, r.text)));
+    // best[i][j]: the best total for left[i..] against right[j..].
+    const best = Array.from({ length: n + 1 }, () => new Float64Array(m + 1));
+    for (let i = n - 1; i >= 0; i--)
+      for (let j = m - 1; j >= 0; j--) {
+        const s = sim[i][j];
+        best[i][j] = Math.max(best[i + 1][j], best[i][j + 1], s >= MIN ? s + best[i + 1][j + 1] : 0);
       }
-      if (best >= 0 && score >= 0.35) {
-        for (let k = j; k < best; k++) rows.push({ r: right[k] });
-        rows.push({ l, r: right[best], score });
-        j = best + 1;
-      } else rows.push({ l, score: 0 });
+    const rows = [];
+    let i = 0;
+    let j = 0;
+    while (i < n && j < m) {
+      const s = sim[i][j];
+      if (s >= MIN && best[i][j] === s + best[i + 1][j + 1]) rows.push({ l: left[i++], r: right[j++], score: s });
+      else if (best[i][j] === best[i + 1][j]) rows.push({ l: left[i++], score: 0 });
+      else rows.push({ r: right[j++] });
     }
-    for (let k = j; k < right.length; k++) rows.push({ r: right[k] });
+    while (i < n) rows.push({ l: left[i++], score: 0 });
+    while (j < m) rows.push({ r: right[j++] });
     return rows;
   }
 
   // The dialog lives in its own host on the page: inside the panel, YouTube's
   // side column would clip it.
   let host = null;
+  let follow = 0;
   const close = () => {
+    clearInterval(follow);
     host?.remove();
     host = box = null;
   };
 
+  let root = null;
   function openCompare() {
     const cur = state.current;
     if (!cur) return say(L('Chưa có lời để so sánh.'));
@@ -121,6 +131,7 @@ BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, ren
           paintAll();
         });
         line.append(t, input, use, r);
+        row.line = line;
         mark();
         grid.append(line);
       }
@@ -135,7 +146,35 @@ BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, ren
       paintAll();
     });
     draw();
-    pick.addEventListener('change', draw);
+    pick.addEventListener('change', () => {
+      draw();
+      shown = null;
+    });
+    // While the song plays, the line being sung is marked ♪ and kept in view
+    // (unless the user just scrolled the list or is typing); paused, nothing moves.
+    let shown = null;
+    let handsOn = 0;
+    const hands = () => (handsOn = Date.now() + 4000);
+    grid.addEventListener('wheel', hands, { passive: true });
+    grid.addEventListener('touchmove', hands, { passive: true });
+    grid.addEventListener('focusin', hands);
+    const tick = () => {
+      const v = video();
+      let now = null;
+      if (v && !v.paused && cur.synced) {
+        const t = v.currentTime;
+        for (const row of rows) if (row.l && typeof row.l.t === 'number' && !row.l.added && effT(row.l.t) <= t) now = row;
+      }
+      if (now === shown) return;
+      shown?.line.classList.remove('now');
+      shown = now;
+      if (!now) return;
+      now.line.classList.add('now');
+      if (Date.now() > handsOn && !grid.contains(root.activeElement)) {
+        grid.scrollTo({ top: now.line.offsetTop - grid.clientHeight * 0.3, behavior: 'smooth' });
+      }
+    };
+    follow = setInterval(tick, 250);
     x.addEventListener('click', close);
     cancel.addEventListener('click', close);
     box.addEventListener('click', (e) => e.target === box && close());
@@ -164,13 +203,14 @@ BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, ren
     });
     host = document.createElement('div');
     host.id = 'byl-compare-host';
-    const root = host.attachShadow({ mode: 'open' });
+    root = host.attachShadow({ mode: 'open' });
     const style = document.createElement('style');
     style.textContent = BYL.PANEL_CSS + ':host { all: initial; margin: 0; }';
     // Keys typed here must not reach YouTube's shortcuts (k, j, m, f…).
     for (const type of ['keydown', 'keypress', 'keyup']) root.addEventListener(type, (e) => e.stopPropagation());
     root.append(style, box);
     document.body.append(host);
+    tick();
   }
 
   // ↺ Về bản gốc: the edit is dropped, the best version found plays again.
@@ -180,7 +220,9 @@ BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, ren
     if (!confirm(L('Bỏ bản bạn đã sửa cho video này?'))) return;
     const slot = baseId(c);
     state.candidates = state.candidates.filter((x) => baseId(x) !== slot);
-    BYL.videoStore.patch(state.videoId, { [slot]: null, pick: null });
+    const starred = state.starId && baseId({ id: state.starId }) === slot;
+    BYL.videoStore.patch(state.videoId, { [slot]: null, pick: null, ...(starred ? { star: null } : {}) });
+    if (starred) state.starId = null;
     delete state.warps[slot];
     delete state.warps[slot + '#sync'];
     saveWarps();

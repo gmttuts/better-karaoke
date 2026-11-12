@@ -475,7 +475,11 @@ BYL.ui = (() => {
     row4.append(editBtn, tapBtn, cmpBtn, resetBtn, copy, exportBtn, importBtn, importPick, open);
     // ↻ searches every source again: it sits over the sources' chips.
     const srcHead = el('div', 'srchead');
-    srcHead.append(el('span', 'muted', L('Nguồn lời')), againBtn);
+    // ★ the version the user calls the right one: it opens with the video next time.
+    const starBtn = el('button', 'star', '');
+    starBtn.hidden = true;
+    starBtn.addEventListener('click', () => toggleStar());
+    srcHead.append(el('span', 'muted', L('Nguồn lời')), starBtn, againBtn);
 
     // Manual search: the title/artist typed here replace the guess from the
     // video title, are remembered for this video, and every source runs again.
@@ -632,7 +636,7 @@ BYL.ui = (() => {
 
     Object.assign(P, { wrap, songTitle, songArtist, status, picks, autoBtn, resetBtn, khint, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
       row2, row3, row4, favBtn, hlist, hAll, hFav, historyTab, nav, modeBtns, lyricTab, karaokeTab, menu, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
-      tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt, speedBtns, speedRange, speedLabel });
+      tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt, speedBtns, speedRange, speedLabel, starBtn });
     editBtn.addEventListener('click', () => openEditor());
     tapBtn.addEventListener('click', () => (tapping() ? stopTap(false) : startTap()));
     transSel.addEventListener('change', () => {
@@ -1115,6 +1119,7 @@ BYL.ui = (() => {
       sourceCount: {},
       karaokeLoadedFor: null,
       lastActive: -2,
+      starId: saved?.star?.id || null,
       waitingFor: null, // source the user clicked to load
     });
     applyTheme();
@@ -1136,7 +1141,13 @@ BYL.ui = (() => {
     renderLines();
     // The user's own lyrics come back first, then whatever they last picked.
     const mine = CUSTOM_SLOTS.filter((id) => saved?.[id]?.text).map((id) => customCandidate(saved[id].text, saved[id].label, id));
+    // ★ The version the user marked plays first; their own edit, if that's it, as last saved.
+    let star = saved?.star ? mine.find((m) => m.id === saved.star.id) || saved.star : null;
+    if (star && !mine.includes(star)) {
+      star.lines = star.lines.map((l) => (l.text?.includes('>>') ? { ...l, text: BYL.makeLine(l.text).text } : l));
+    }
     for (const m of mine) if (baseId(saved.pick) !== m.id) state.candidates.push(m);
+    if (star && !state.candidates.includes(star) && star.id !== saved?.pick?.id) state.candidates.push(star);
     if (saved?.trans) {
       state.trans = mine.find((m) => m.id === saved.trans.id) || saved.trans;
       if (!state.candidates.some((x) => x.id === state.trans.id)) state.candidates.push(state.trans);
@@ -1145,8 +1156,9 @@ BYL.ui = (() => {
       // Picks saved before ">>" (caption speaker marks) were cleaned out.
       saved.pick.lines = saved.pick.lines.map((l) => (l.text?.includes('>>') ? { ...l, text: BYL.makeLine(l.text).text } : l));
       state.candidates.push(saved.pick);
+      if (star?.id === saved.pick.id) star = saved.pick;
     }
-    const first = saved?.pick || mine[0];
+    const first = star || saved?.pick || mine[0];
     renderSelect();
     if (first) {
       choose(first, false);
@@ -1184,7 +1196,7 @@ BYL.ui = (() => {
       P.status.append(chip);
     }
     const s = S[key];
-    chip.className = 'chip ' + status + (state.current?.source === key ? ' cur' : '');
+    chip.className = 'chip ' + status + (state.current?.source === key ? ' cur' : '') + (bestTimed()?.source === key ? ' best' : '');
     const tail = { ok: ` ${count}`, none: ' –', error: ' ⚠', idle: ' ▸' }[status] || '';
     chip.textContent = `${s.icon} ${s.name}${tail}`;
     // The user asked for this source (onChip): tell them how it went.
@@ -1283,10 +1295,38 @@ BYL.ui = (() => {
     box.hidden = false;
   }
 
-  // ★: the version timed to the singing that ranks first.
-  const bestTimed = () => state.candidates.find((c) => c.synced);
+  // ★: the version the user marked, or else the one timed to the singing that ranks first.
+  const bestTimed = () => (state.starId && state.candidates.find((c) => c.id === state.starId)) || state.candidates.find((c) => c.synced);
+
+  function toggleStar() {
+    const c = state.current;
+    if (!c) return;
+    if (state.starId === c.id) {
+      state.starId = null;
+      BYL.videoStore.patch(state.videoId, { star: null });
+      say(L('Đã bỏ đánh dấu ★. Lần sau mở video sẽ tự chọn bản phù hợp nhất.'));
+    } else {
+      state.starId = c.id;
+      BYL.videoStore.patch(state.videoId, { star: c, pick: c });
+      say(L('★ Đã đánh dấu bản này là bản tiêu biểu: lần sau mở video này sẽ phát bản này.'));
+    }
+    renderSelect();
+    markChips();
+  }
+
+  function paintStar() {
+    const b = P.starBtn;
+    const c = state.current;
+    b.hidden = !c;
+    if (!c) return;
+    const on = state.starId === c.id;
+    b.classList.toggle('on', on);
+    b.textContent = on ? L('★ Bản tiêu biểu') : L('☆ Chọn làm tiêu biểu');
+    b.title = on ? L('Bản này mở cùng video lần sau. Bấm để bỏ đánh dấu.') : L('Đánh dấu bản đang phát là bản đúng nhất: lần sau mở video này sẽ phát bản này');
+  }
 
   function markChips() {
+    paintStar();
     const best = bestTimed();
     for (const chip of P.status.querySelectorAll('[data-k]')) {
       chip.classList.toggle('cur', state.current?.source === chip.dataset.k);

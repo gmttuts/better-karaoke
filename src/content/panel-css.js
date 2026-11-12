@@ -51,6 +51,8 @@ BYL.PANEL_CSS = `
   .srchead { display: flex; align-items: center; gap: 6px; padding: 0 12px 6px; font-size: 12px; }
   .srchead .muted { flex: 1; font-weight: 600; }
   .srchead button { padding: 3px 9px; font-size: 12px; }
+  .srchead button.star.on { background: #fff4c2; color: #8a5a00; }
+  :host-context(html[dark]) .srchead button.star.on { background: #4a3b12; color: #ffd75e; }
   .status { display: flex; flex-wrap: wrap; gap: 5px 4px; padding: 0 12px 8px; }
   .status .chip { flex: none; white-space: nowrap; }
   .status .chip[hidden] { display: none; }
@@ -74,6 +76,10 @@ BYL.PANEL_CSS = `
   .cmp .ccols span:last-child { grid-column: 4; }
   .cmp .cgrid { overflow: auto; padding: 6px 0; }
   .cmp .crow.diff { background: var(--cd); }
+  .cmp .cgrid { position: relative; }
+  .cmp .crow.now { box-shadow: inset 4px 0 0 #e8212b; background: rgba(232,33,43,.08); }
+  .cmp .crow.now .ct { color: #e8212b; font-weight: 700; }
+  .cmp .crow.now .ct::before { content: '♪ '; }
   .cmp .crow.chg input { border-color: #e8212b; }
   .cmp .crow.chg button.use { color: #e8212b; border-color: #e8212b; font-size: 17px; line-height: 1; padding: 3px 0 5px; }
   .cmp .ct { font-variant-numeric: tabular-nums; color: var(--cm); font-size: 12px; }
