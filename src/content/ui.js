@@ -403,10 +403,7 @@ BYL.ui = (() => {
     const offWrap = el('span', 'offwrap');
     const pinCount = el('span', 'muted', '');
     offWrap.append(pinCount, el('span', 'muted', L('Lệch')), minus, offLabel, plus);
-    // (🎯 is no longer shown: picking lyrics lines them up with the captions,
-    // and clicking the line being sung tries again. It stays as the flag
-    // "captions can be used" that paintSync keeps.)
-    row2.append(offWrap);
+    row2.append(syncBtn, offWrap);
 
     const row3 = el('div', 'row');
     row3.dataset.m = 'edit';
@@ -649,6 +646,7 @@ BYL.ui = (() => {
     });
     swapBtn.addEventListener('click', () => state.trans && choose(state.trans, true));
 
+    syncBtn.addEventListener('click', () => state.current && syncNow(state.current));
     header.addEventListener('click', () => {
       wrap.classList.toggle('collapsed');
       BYL.settings.set({ panelCollapsed: wrap.classList.contains('collapsed') });
@@ -1405,7 +1403,50 @@ BYL.ui = (() => {
   // 🎯 shows once the video's captions are known (they often come after the lyrics).
   function paintSync() {
     const c = state.current;
-    P.syncBtn.hidden = !c || c.source === 'transcript' || !api.hasCaptions?.();
+    // (Off unless turned on in the settings: most users time the lyrics part by part.)
+    P.syncBtn.hidden = !BYL.settings.value.captionSync || !c || c.source === 'transcript' || !api.hasCaptions?.();
+  }
+
+  // 🎯 pressed: while timed lyrics play, line up the part being sung (it can
+  // drift later in a song while the start was right), so each press fixes
+  // the spot the user is at; otherwise the whole song.
+  async function syncNow(c) {
+    const v = video();
+    if (c.synced && v && !v.paused && v.currentTime > 8 && api.captionWordsFor && api.hasCaptions?.()) {
+      P.syncBtn.disabled = true;
+      let done = null;
+      try {
+        done = await syncHere(c, v.currentTime);
+      } catch (err) {
+        console.debug('[Better Karaoke] sync here', err);
+      }
+      P.syncBtn.disabled = false;
+      if (done) return;
+    }
+    return autoSync(c, false);
+  }
+
+  async function syncHere(c, now) {
+    const words = (await api.captionWordsFor(c.lines)) || [];
+    const heard = words.filter((w) => w.t >= now - 15 && w.t <= now + 3);
+    const near = singable(c.lines).filter((i) => Math.abs(effT(c.lines[i].t) - now) <= 20);
+    if (heard.length < 6 || near.length < 2 || state.current !== c) return null;
+    const r = BYL.alignLyrics(near.map((i) => c.lines[i]), heard);
+    if (!r?.anchors?.length) return null;
+    // The matched line closest to now, pinned where the captions have it.
+    const a = r.anchors.reduce((x, y) => (y.t > x.t ? y : x));
+    const li = near[a.li];
+    const t = c.lines[li].t;
+    const d = Math.round((a.t - state.offset - t) * 100) / 100;
+    const pts = (state.warps[c.id] || []).filter((p) => Math.abs(p.t - t) > 0.3);
+    pts.push({ t, d });
+    pts.sort((x, y) => x.t - y.t);
+    state.warps[c.id] = pts;
+    saveWarps();
+    state.lastActive = -2;
+    state.userScrollUntil = 0;
+    say(L('🎯 Đã canh lại đoạn đang hát: "{0}" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.', c.lines[li].text, BYL.fmtTime(a.t)));
+    return true;
   }
 
   // Line the current lyrics up with the video's captions. Plain lyrics get a
@@ -1429,7 +1470,7 @@ BYL.ui = (() => {
     P.syncBtn.disabled = false;
     if (state.current !== c) return;
     if (!words?.length) {
-      return tell(L('Chưa lấy được phụ đề của video. Bấm lại vào dòng đang hát sau khi video đã phát một lúc.'));
+      return tell(L('Chưa lấy được phụ đề của video. Thử bấm "🎯 Tự canh theo phụ đề" lại sau khi video đã phát.'));
     }
     if (!r) {
       return tell(
@@ -1654,7 +1695,10 @@ BYL.ui = (() => {
     if (!c?.synced) return null;
     return c.lines.map((l) => ({ ...l, t: typeof l.t === 'number' ? Math.round(effT(l.t) * 100) / 100 : undefined }));
   }
-  const noTiming = () => L('Lời này chưa có thời gian từng dòng. Bấm vào dòng đang hát để canh theo phụ đề, hoặc dùng "⏱ Gõ nhịp", rồi xuất.');
+  const noTiming = () =>
+    BYL.settings.value.captionSync
+      ? L('Lời này chưa có thời gian từng dòng. Bấm "🎯 Tự canh theo phụ đề" hoặc "⏱ Gõ nhịp" trước rồi xuất.')
+      : L('Lời này chưa có thời gian từng dòng. Dùng "⏱ Gõ nhịp" hoặc ✏️ Sửa lời để đặt giờ, rồi xuất.');
 
   function exportFile(kind) {
     const lines = timedLines();
@@ -1780,8 +1824,10 @@ BYL.ui = (() => {
     }
     if (!c.synced) {
       box.append(
-        el('div', 'empty', api.hasCaptions?.()
-            ? L('Lời này chưa có thời gian. Bấm vào dòng đang hát: lời sẽ tự canh theo phụ đề của video.')
+        el('div', 'empty', !BYL.settings.value.captionSync
+            ? L('Lời này chưa có thời gian. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng; hoặc dùng "⏱ Gõ nhịp".')
+            : api.hasCaptions?.()
+            ? L('Lời này chưa có thời gian. Bấm "🎯 Tự canh theo phụ đề", hoặc bấm vào dòng đang hát để lời tự cuộn.')
             : L('Lời này chưa có thời gian và video không có phụ đề. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng.'))
       );
     }
@@ -1858,12 +1904,8 @@ BYL.ui = (() => {
     if (c.synced) {
       v.currentTime = Math.max(0, effT(c.lines[i].t));
     } else {
-      // Lyrics without times: this is the line being sung. Right away the
-      // lines scroll on at an estimated pace; with captions, the whole song is
-      // lined up with them (once per click, so a failure isn't repeated each frame).
       state.anchor = { i, time: v.currentTime - state.offset };
       P.lines.classList.add('synced');
-      if (!P.syncBtn.hidden && !c.syncing) autoSync(c, false);
     }
     state.userScrollUntil = 0;
     state.lastActive = -2;

@@ -16,6 +16,7 @@ BYL.DEFAULTS = {
   srcGenius: true,
   srcTranscript: true,
   preferSynced: true, // lyrics timed to the singing come first
+  captionSync: false, // 🎯 line lyrics up with YouTube's captions (button + automatically); off and hidden by default
   commentPages: 5,
   overlayFontSize: 34,
   overlayStyle: 'classic',

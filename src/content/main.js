@@ -158,6 +158,10 @@
         BYL.ui.hide();
       }
     }
+    if (changes.captionSync) {
+      BYL.settings.value.captionSync = !!changes.captionSync.newValue;
+      BYL.ui.captionsReady?.();
+    }
     if (changes.karaokeAuto) {
       const on = !!changes.karaokeAuto.newValue;
       BYL.settings.value.karaokeAuto = on;

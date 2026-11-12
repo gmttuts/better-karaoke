@@ -13,13 +13,14 @@ const DEFAULTS = {
   srcGenius: true,
   srcTranscript: true,
   preferSynced: true,
+  captionSync: false,
   karaokeAuto: false,
   commentPages: 5,
 };
 
 document.getElementById('ver').textContent = 'v' + chrome.runtime.getManifest().version;
 
-const LIVE = ['enabled', 'karaokeAuto'];
+const LIVE = ['enabled', 'karaokeAuto', 'captionSync'];
 const saved = document.getElementById('saved');
 let timer;
 
