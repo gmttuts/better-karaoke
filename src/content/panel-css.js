@@ -180,6 +180,9 @@ BYL.PANEL_CSS = `
   .row.fx { flex-wrap: nowrap; }
   .fx > * { flex: none; white-space: nowrap; }
   .row.speed button { padding-left: 9px; padding-right: 9px; }
+  .row.speed .off { min-width: 44px; text-align: right; cursor: pointer; font-variant-numeric: tabular-nums; }
+  .row.speed.steps { margin-top: -4px; }
+  .row.speed.steps button { flex: 1 1 0; min-width: 0; padding-left: 4px; padding-right: 4px; }
   button.mic { background: var(--accent, #e8212b); color: #fff; }
   button.mic:hover { background: var(--accent, #e8212b); filter: brightness(1.08); }
   .row.fx { min-width: 0; }

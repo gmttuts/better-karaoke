@@ -342,15 +342,37 @@ BYL.ui = (() => {
     rowSp.dataset.m = 'sing';
     rowSp.title = L('Tốc độ phát, lời chạy theo');
     rowSp.append(el('span', 'muted', L('⏩ Tốc độ')));
-    const speedBtns = [0.75, 0.9, 1, 1.1, 1.25].map((r) => {
+    // Like YouTube's own: 0.25× to 3×, dragged or nudged by 0.05, with the usual steps a tap away.
+    const setRate = (r) => {
+      const v = video();
+      if (v) v.playbackRate = Math.round(Math.min(3, Math.max(0.25, r)) * 100) / 100;
+      paintSpeed();
+    };
+    const speedDown = el('button', '', '−');
+    speedDown.title = L('Chậm lại');
+    const speedRange = el('input');
+    speedRange.type = 'range';
+    speedRange.min = '0.25';
+    speedRange.max = '3';
+    speedRange.step = '0.05';
+    speedRange.value = '1';
+    speedRange.title = L('Tốc độ phát, lời chạy theo');
+    const speedUp = el('button', '', '+');
+    speedUp.title = L('Nhanh lên');
+    const speedLabel = el('span', 'off', '1×');
+    speedLabel.title = L('Bấm để về tốc độ thường');
+    speedDown.addEventListener('click', () => setRate((video()?.playbackRate || 1) - 0.05));
+    speedUp.addEventListener('click', () => setRate((video()?.playbackRate || 1) + 0.05));
+    speedRange.addEventListener('input', () => setRate(Number(speedRange.value)));
+    speedLabel.addEventListener('click', () => setRate(1));
+    rowSp.append(speedDown, speedRange, speedUp, speedLabel);
+    const rowSp2 = el('div', 'row fx speed steps');
+    rowSp2.dataset.m = 'sing';
+    const speedBtns = [0.5, 0.75, 1, 1.25, 1.5, 2].map((r) => {
       const b = el('button', '', String(r).replace('.', BYL.lang === 'vi' ? ',' : '.') + '×');
       b.dataset.rate = r;
-      b.addEventListener('click', () => {
-        const v = video();
-        if (v) v.playbackRate = r;
-        paintSpeed();
-      });
-      rowSp.append(b);
+      b.addEventListener('click', () => setRate(r));
+      rowSp2.append(b);
       return b;
     });
     keyDown.addEventListener('click', () => setKey(BYL.fx.semis - 1, true));
@@ -522,7 +544,7 @@ BYL.ui = (() => {
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
     grip.title = L('Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)');
-    lyricTab.append(findRow, status, picks, row1, rowK, rowV, rowSp, rowS, rowT, row2, row4, exportRow, row3, studio, warn, note, editor, tapbar, lines, grip);
+    lyricTab.append(findRow, status, picks, row1, rowK, rowV, rowSp, rowSp2, rowS, rowT, row2, row4, exportRow, row3, studio, warn, note, editor, tapbar, lines, grip);
     makeResizable(lines, grip);
 
     // Pages opened from ⋯, over the lyrics, with a way back.
@@ -606,7 +628,7 @@ BYL.ui = (() => {
 
     Object.assign(P, { wrap, songTitle, songArtist, status, picks, autoBtn, resetBtn, khint, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
       row2, row3, row4, favBtn, hlist, hAll, hFav, historyTab, nav, modeBtns, lyricTab, karaokeTab, menu, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
-      tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt, speedBtns });
+      tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt, speedBtns, speedRange, speedLabel });
     editBtn.addEventListener('click', () => openEditor());
     tapBtn.addEventListener('click', () => (tapping() ? stopTap(false) : startTap()));
     transSel.addEventListener('change', () => {
@@ -1573,6 +1595,10 @@ BYL.ui = (() => {
   function paintSpeed() {
     const r = video()?.playbackRate || 1;
     for (const b of P.speedBtns) b.classList.toggle('on', Math.abs(Number(b.dataset.rate) - r) < 0.01);
+    if (!P.speedRange.matches(':active')) P.speedRange.value = r;
+    P.speedRange.style.setProperty('--fill', ((Math.min(3, Math.max(0.25, r)) - 0.25) / 2.75) * 100 + '%');
+    P.speedLabel.textContent = (Math.round(r * 100) / 100).toFixed(2).replace('.', BYL.lang === 'vi' ? ',' : '.') + '×';
+    P.speedLabel.classList.toggle('on', Math.abs(r - 1) > 0.001);
   }
 
   function paintFx() {
