@@ -120,6 +120,7 @@ BYL.PANEL_CSS = `
   .chip.loading { cursor: progress; }
   .chip.loading::after { content: ' …'; }
   .row { display: flex; align-items: center; gap: 6px; padding: 0 12px 10px; flex-wrap: wrap; }
+  .row[hidden] { display: none !important; }
   select { flex: 1; min-width: 0; font: inherit; font-size: 13px; color: var(--fg); background: var(--chip);
     border: 0; border-radius: 10px; padding: 7px 8px; cursor: pointer; outline: none; }
   select.look { min-width: 140px; }

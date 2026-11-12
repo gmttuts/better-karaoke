@@ -392,6 +392,9 @@ BYL.ui = (() => {
 
     const row2 = el('div', 'row');
     row2.dataset.m = 'edit';
+    // 🎯 and "Lệch" belong to lining lyrics up with the captions: hidden
+    // from the start unless that setting is on.
+    row2.hidden = !BYL.settings.value.captionSync;
     const syncBtn = el('button', 'sync', L('🎯 Tự canh theo phụ đề'));
     syncBtn.title = L('Khớp lời với phụ đề YouTube. Đang hát mà lời lệch thì bấm lại: canh lại đúng đoạn đang hát');
     const minus = el('button', '', '−0.5s');
@@ -1405,6 +1408,7 @@ BYL.ui = (() => {
     const c = state.current;
     // (Off unless turned on in the settings: most users time the lyrics part by part.)
     P.syncBtn.hidden = !BYL.settings.value.captionSync || !c || c.source === 'transcript' || !api.hasCaptions?.();
+    P.row2.hidden = !BYL.settings.value.captionSync;
   }
 
   // 🎯 pressed: while timed lyrics play, line up the part being sung (it can
