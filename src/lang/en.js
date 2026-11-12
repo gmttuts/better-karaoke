@@ -65,7 +65,7 @@
   "Dòng kế ({0}/{1}): {2}": "Next line ({0}/{1}): {2}",
   "Dòng phụ": "Next line size",
   "Dòng vừa rồi: {0} · {1}": "Last line: {0} · {1}",
-  "Dùng cuối cùng, khi các nguồn khác không có": "Used last, when the other sources have nothing",
+  "Tự dùng khi không nguồn nào có lời chạy theo nhạc: phụ đề đi theo nhịp hát, chỉ chữ có thể sai": "Used by itself when no source has lyrics timed to the song: captions follow the singing, only the words may be off",
   "Dùng tên tự đoán": "Use the detected name",
   "Dưới": "Bottom",
   "Dải ngang": "Band",

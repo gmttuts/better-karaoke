@@ -65,7 +65,7 @@
   "Dòng kế ({0}/{1}): {2}": "Nächste Zeile ({0}/{1}): {2}",
   "Dòng phụ": "Größe nächste Zeile",
   "Dòng vừa rồi: {0} · {1}": "Letzte Zeile: {0} · {1}",
-  "Dùng cuối cùng, khi các nguồn khác không có": "Zuletzt genutzt, wenn die anderen Quellen nichts haben",
+  "Tự dùng khi không nguồn nào có lời chạy theo nhạc: phụ đề đi theo nhịp hát, chỉ chữ có thể sai": "Wird automatisch genutzt, wenn keine Quelle zeitlich passenden Text hat: Untertitel folgen dem Gesang, nur die Wörter können falsch sein",
   "Dùng tên tự đoán": "Erkannten Namen verwenden",
   "Dưới": "Unten",
   "Dải ngang": "Band",

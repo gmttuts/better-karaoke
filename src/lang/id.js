@@ -65,7 +65,7 @@
   "Dòng kế ({0}/{1}): {2}": "Baris berikutnya ({0}/{1}): {2}",
   "Dòng phụ": "Ukuran baris berikutnya",
   "Dòng vừa rồi: {0} · {1}": "Baris terakhir: {0} · {1}",
-  "Dùng cuối cùng, khi các nguồn khác không có": "Dipakai terakhir, jika sumber lain tidak punya",
+  "Tự dùng khi không nguồn nào có lời chạy theo nhạc: phụ đề đi theo nhịp hát, chỉ chữ có thể sai": "Dipakai otomatis jika tidak ada sumber dengan lirik berwaktu: teks mengikuti nyanyian, hanya katanya mungkin keliru",
   "Dùng tên tự đoán": "Pakai nama yang terdeteksi",
   "Dưới": "Bawah",
   "Dải ngang": "Pita",

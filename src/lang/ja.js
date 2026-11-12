@@ -65,7 +65,7 @@
   "Dòng kế ({0}/{1}): {2}": "次の行（{0}/{1}）：{2}",
   "Dòng phụ": "次の行のサイズ",
   "Dòng vừa rồi: {0} · {1}": "直前の行：{0} · {1}",
-  "Dùng cuối cùng, khi các nguồn khác không có": "他のソースにない場合に最後に使用",
+  "Tự dùng khi không nguồn nào có lời chạy theo nhạc: phụ đề đi theo nhịp hát, chỉ chữ có thể sai": "時間付きの歌詞がどのソースにもないとき自動で使います：字幕は歌に合っていて、言葉だけ違うことがあります",
   "Dùng tên tự đoán": "推定された名前を使う",
   "Dưới": "下",
   "Dải ngang": "バー",

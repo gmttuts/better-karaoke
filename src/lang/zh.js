@@ -65,7 +65,7 @@
   "Dòng kế ({0}/{1}): {2}": "下一行（{0}/{1}）：{2}",
   "Dòng phụ": "下一行大小",
   "Dòng vừa rồi: {0} · {1}": "上一行：{0} · {1}",
-  "Dùng cuối cùng, khi các nguồn khác không có": "最后使用，当其他来源都没有时",
+  "Tự dùng khi không nguồn nào có lời chạy theo nhạc: phụ đề đi theo nhịp hát, chỉ chữ có thể sai": "没有任何来源有带时间的歌词时自动使用：字幕跟着演唱的节奏，只是文字可能有误",
   "Dùng tên tự đoán": "使用识别出的名称",
   "Dưới": "下",
   "Dải ngang": "横条",

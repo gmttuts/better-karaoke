@@ -65,7 +65,7 @@
   "Dòng kế ({0}/{1}): {2}": "Ligne suivante ({0}/{1}) : {2}",
   "Dòng phụ": "Taille ligne suivante",
   "Dòng vừa rồi: {0} · {1}": "Dernière ligne : {0} · {1}",
-  "Dùng cuối cùng, khi các nguồn khác không có": "Utilisé en dernier, si les autres sources n'ont rien",
+  "Tự dùng khi không nguồn nào có lời chạy theo nhạc: phụ đề đi theo nhịp hát, chỉ chữ có thể sai": "Utilisés d'office quand aucune source n'a de paroles synchronisées : les sous-titres suivent le chant, seuls les mots peuvent être faux",
   "Dùng tên tự đoán": "Utiliser le nom détecté",
   "Dưới": "Bas",
   "Dải ngang": "Bandeau",

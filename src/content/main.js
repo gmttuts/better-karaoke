@@ -118,12 +118,14 @@
     const main = Object.keys(BYL.SOURCES).filter((k) => k !== 'transcript' && enabled(k));
     await Promise.all(main.map(runSource));
     if (!alive() || !enabled('transcript')) return;
-    // Captions are the last resort: load them by themselves only when nothing
-    // else turned up, otherwise leave a chip to load them on demand.
+    // Captions are the fallback for timing: they follow the singing, only
+    // their words may be off. Load them by themselves when no source found
+    // lyrics timed to the song (the timed captions then win over untimed
+    // lyrics, unless the user picked); otherwise leave a chip to load them.
     if (cached.has('transcript')) return;
     // No caption track at all: nothing to offer.
     if (!tracks.length) BYL.ui.setSourceStatus('transcript', 'none');
-    else if (BYL.ui.state.candidates.length) BYL.ui.setSourceStatus('transcript', 'idle');
+    else if (BYL.ui.state.candidates.some((c) => c.synced)) BYL.ui.setSourceStatus('transcript', 'idle');
     else runSource('transcript');
   }
 

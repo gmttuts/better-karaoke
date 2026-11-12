@@ -65,7 +65,7 @@
   "Dòng kế ({0}/{1}): {2}": "다음 줄 ({0}/{1}): {2}",
   "Dòng phụ": "다음 줄 크기",
   "Dòng vừa rồi: {0} · {1}": "방금 줄: {0} · {1}",
-  "Dùng cuối cùng, khi các nguồn khác không có": "다른 소스에 없을 때 마지막으로 사용",
+  "Tự dùng khi không nguồn nào có lời chạy theo nhạc: phụ đề đi theo nhịp hát, chỉ chữ có thể sai": "시간이 맞춰진 가사가 어느 출처에도 없으면 자동으로 씁니다: 자막은 노래 박자를 따르고 단어만 틀릴 수 있습니다",
   "Dùng tên tự đoán": "추정한 이름 사용",
   "Dưới": "아래",
   "Dải ngang": "가로 띠",

@@ -65,7 +65,7 @@
   "Dòng kế ({0}/{1}): {2}": "Próxima linha ({0}/{1}): {2}",
   "Dòng phụ": "Tamanho da próxima linha",
   "Dòng vừa rồi: {0} · {1}": "Última linha: {0} · {1}",
-  "Dùng cuối cùng, khi các nguồn khác không có": "Usada por último, quando as outras fontes não têm nada",
+  "Tự dùng khi không nguồn nào có lời chạy theo nhạc: phụ đề đi theo nhịp hát, chỉ chữ có thể sai": "Usada sozinha quando nenhuma fonte tem letra sincronizada: as legendas seguem o canto, só as palavras podem estar erradas",
   "Dùng tên tự đoán": "Usar o nome detectado",
   "Dưới": "Abaixo",
   "Dải ngang": "Faixa",
