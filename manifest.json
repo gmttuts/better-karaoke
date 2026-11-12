@@ -65,6 +65,7 @@
         "src/content/ui-tap.js",
         "src/content/ui-tabs.js",
         "src/content/ui-compare.js",
+        "src/content/translate.js",
         "src/content/ui.js",
         "src/content/export.js",
         "src/content/keys.js",

@@ -645,6 +645,7 @@ BYL.ui = (() => {
     transSel.addEventListener('change', () => {
       const id = transSel.value;
       if (id === 'roman') return state.current && romanTrans(state.current, true);
+      if (id.startsWith('tr:')) return translateTo(id.slice(3));
       setTrans(state.candidates.find((x) => x.id === id) || (state.trans?.id === id ? state.trans : null), true);
     });
     swapBtn.addEventListener('click', () => state.trans && choose(state.trans, true));
@@ -1143,7 +1144,7 @@ BYL.ui = (() => {
     parts.compare?.closeCompare();
     renderLines();
     // The user's own lyrics come back first, then whatever they last picked.
-    const mine = CUSTOM_SLOTS.filter((id) => saved?.[id]?.text).map((id) => customCandidate(saved[id].text, saved[id].label, id));
+    const mine = CUSTOM_SLOTS.filter((id) => saved?.[id]?.text).map((id) => Object.assign(customCandidate(saved[id].text, saved[id].label, id), saved[id].lang ? { tlang: saved[id].lang } : {}));
     // ★ The version the user marked plays first; their own edit, if that's it, as last saved.
     let star = saved?.star ? mine.find((m) => m.id === saved.star.id) || saved.star : null;
     if (star && !mine.includes(star)) {
@@ -1161,7 +1162,8 @@ BYL.ui = (() => {
       state.candidates.push(saved.pick);
       if (star?.id === saved.pick.id) star = saved.pick;
     }
-    const first = star || saved?.pick || mine[0];
+    // (A translation is never picked by itself: it shows under the lyrics.)
+    const first = star || saved?.pick || mine.find((m) => !m.tlang);
     renderSelect();
     if (first) {
       choose(first, false);
@@ -1299,7 +1301,7 @@ BYL.ui = (() => {
   }
 
   // ★: the version the user marked, or else the one timed to the singing that ranks first.
-  const bestTimed = () => (state.starId && state.candidates.find((c) => c.id === state.starId)) || state.candidates.find((c) => c.synced);
+  const bestTimed = () => (state.starId && state.candidates.find((c) => c.id === state.starId)) || state.candidates.find((c) => c.synced && !c.tlang);
 
   function toggleStar() {
     const c = state.current;
@@ -1339,6 +1341,7 @@ BYL.ui = (() => {
   }
 
   const rank = (c) => [
+    c.tlang ? 1 : 0, // a translation the user made goes under the lyrics, not in their place
     BYL.settings.value.preferSynced && !c.synced ? 1 : 0,
     S[c.source]?.priority ?? 9,
     -(c.score || 0),
@@ -1358,11 +1361,12 @@ BYL.ui = (() => {
   }
 
   function maybeAutoPick() {
-    if (state.manual || !state.candidates.length) {
-      if (!state.candidates.length && Object.values(state.sourceStatus).every((s) => s !== 'loading')) renderLines();
+    // (Translations the user made are never picked by themselves.)
+    const best = state.candidates.find((c) => !c.tlang);
+    if (state.manual || !best) {
+      if (!best && Object.values(state.sourceStatus).every((s) => s !== 'loading')) renderLines();
       return;
     }
-    const best = state.candidates[0];
     if (best !== state.current) choose(best, false);
   }
 
@@ -2066,9 +2070,65 @@ BYL.ui = (() => {
     const list = state.candidates.filter((c) => c !== state.current && c.id !== 'tap');
     if (state.trans && state.trans.source !== 'roman' && !list.includes(state.trans)) list.unshift(state.trans);
     list.forEach(add);
+    // 🌐 Translate the lyrics playing into one of these (kept as the user's second version).
+    if (cur && singable(cur.lines).length) {
+      const g = el('optgroup');
+      g.label = L('🌐 Dịch sang…');
+      for (const [code, name] of BYL.translate.TARGETS) {
+        const o = el('option', '', '🌐 ' + name);
+        o.value = 'tr:' + code;
+        g.append(o);
+      }
+      sel.append(g);
+    }
     sel.value = state.trans?.source === 'roman' ? 'roman' : state.trans?.id || '';
-    P.rowT.style.display = state.current && (list.length || script) ? '' : 'none';
+    P.rowT.style.display = state.current ? '' : 'none';
     P.swapBtn.hidden = !state.trans;
+  }
+
+  // 🌐 The lyrics playing, translated line for line (times kept), saved as the
+  // user's second version and shown under each line. The slot: the one not
+  // holding the user's own lyrics (a translation made before is replaced).
+  async function translateTo(tl) {
+    const c = state.current;
+    if (!c) return;
+    const name = BYL.translate.nameOf(tl);
+    const idx = singable(c.lines);
+    const mainSlot = c.source === 'custom' ? baseId(c) : null;
+    const used = (s) => state.candidates.find((x) => baseId(x) === s && !x.tlang);
+    const slot = mainSlot ? CUSTOM_SLOTS.find((s) => s !== mainSlot) : used('custom') ? 'custom2' : 'custom';
+    if (slot !== mainSlot && used(slot) && !confirm(L('Bản dịch sẽ thay chỗ "{0}" bạn đã lưu cho video này. Tiếp tục?', used(slot).label))) return renderTransSelect();
+    say(L('🌐 Đang dịch lời sang {0}…', name));
+    P.transSel.disabled = true;
+    let r = null;
+    try {
+      r = await BYL.translate.lines(idx.map((i) => c.lines[i].text), tl);
+    } catch (err) {
+      say(L('Không dịch được lời: {0}', err?.message || err));
+    }
+    P.transSel.disabled = false;
+    if (!r || state.current !== c) return renderTransSelect();
+    // Times on the video's clock (offset folded in), like any lyrics the user saves.
+    const at = new Map(idx.map((i, k) => [i, r.lines[k]]));
+    const lines = c.lines.map((l, i) => {
+      const text = at.has(i) ? at.get(i) || l.text : l.text;
+      if (typeof l.t !== 'number') return { text, section: l.section };
+      return { text, t: effT(l.t), ...(l.e > l.t ? { e: effT(l.e) } : {}) };
+    });
+    const text = c.synced ? BYL.toLrc(lines) : lines.map((l) => l.text).join('\n');
+    const label = L('Bản dịch {0}', name);
+    BYL.videoStore.patch(state.videoId, { [slot]: { text, label, lang: tl } });
+    const t = Object.assign(customCandidate(text, label, slot), { tlang: tl });
+    state.candidates = state.candidates.filter((x) => baseId(x) !== slot);
+    state.candidates.push(t);
+    setSourceStatus('custom', 'ok', state.candidates.filter((x) => x.source === 'custom').length);
+    renderSelect();
+    setTrans(t, true);
+    renderTransSelect();
+    say(
+      (r.from && r.from === tl.split('-')[0] ? L('Lời này có vẻ đã là {0}. ', name) : '') +
+        L('🌐 Đã dịch sang {0} và lưu thành bản lời thứ 2 của bạn ("{1}"), hiện dưới từng dòng. Bấm ⇅ để đổi chỗ, hoặc chọn bản này rồi ✏️ Sửa lời để chỉnh câu chữ.', name, label)
+    );
   }
 
   // The current lyrics spelt in Latin letters, as a second-language candidate.
