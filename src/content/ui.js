@@ -389,6 +389,19 @@ BYL.ui = (() => {
     const swapBtn = el('button', '', '⇅');
     swapBtn.title = L('Đổi chỗ lời chính và lời dịch');
     rowT.append(el('span', 'muted', L('🌐 Song ngữ')), transSel, swapBtn);
+    // 🌐 Dịch lời: its own row near the top (both modes), so it is easy to find.
+    const rowTr = el('div', 'row tr');
+    const trBtn = el('button', 'primary', L('🌐 Dịch lời'));
+    trBtn.title = L('Dịch lời đang hiện sang ngôn ngữ đã chọn, giữ đúng giờ từng dòng. Bản dịch hiện dưới lời chính và được lưu thành bản lời thứ 2 của bạn. Lời được gửi tới Google Dịch.');
+    const trLang = el('select');
+    trLang.title = L('Dịch sang ngôn ngữ nào');
+    for (const [code, name] of BYL.translate.TARGETS) {
+      const o = el('option', '', name);
+      o.value = code;
+      trLang.append(o);
+    }
+    trLang.value = BYL.translate.defaultLang(BYL.settings.value.transLang);
+    rowTr.append(trBtn, el('span', 'muted', L('sang')), trLang, el('span', 'new', L('Mới')));
 
     const row2 = el('div', 'row');
     row2.dataset.m = 'edit';
@@ -555,7 +568,7 @@ BYL.ui = (() => {
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
     grip.title = L('Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)');
-    lyricTab.append(findRow, srcHead, status, picks, row1, rowK, rowV, rowSp, rowSp2, rowS, rowT, row2, row4, exportRow, row3, studio, warn, note, editor, tapbar, lines, grip);
+    lyricTab.append(findRow, srcHead, status, picks, row1, rowTr, rowK, rowV, rowSp, rowSp2, rowS, rowT, row2, row4, exportRow, row3, studio, warn, note, editor, tapbar, lines, grip);
     makeResizable(lines, grip);
 
     // Pages opened from ⋯, over the lyrics, with a way back.
@@ -638,17 +651,18 @@ BYL.ui = (() => {
     root.append(wrap);
 
     Object.assign(P, { wrap, songTitle, songArtist, status, picks, autoBtn, resetBtn, khint, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
-      row2, row3, row4, favBtn, hlist, hAll, hFav, historyTab, nav, modeBtns, lyricTab, karaokeTab, menu, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn,
+      row2, row3, row4, favBtn, hlist, hAll, hFav, historyTab, nav, modeBtns, lyricTab, karaokeTab, menu, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn, rowTr, trBtn, trLang,
       tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt, speedBtns, speedRange, speedLabel, starBtn });
     editBtn.addEventListener('click', () => openEditor());
     tapBtn.addEventListener('click', () => (tapping() ? stopTap(false) : startTap()));
     transSel.addEventListener('change', () => {
       const id = transSel.value;
       if (id === 'roman') return state.current && romanTrans(state.current, true);
-      if (id.startsWith('tr:')) return translateTo(id.slice(3));
       setTrans(state.candidates.find((x) => x.id === id) || (state.trans?.id === id ? state.trans : null), true);
     });
     swapBtn.addEventListener('click', () => state.trans && choose(state.trans, true));
+    trBtn.addEventListener('click', () => translateTo(trLang.value));
+    trLang.addEventListener('change', () => BYL.settings.set({ transLang: trLang.value }));
 
     syncBtn.addEventListener('click', () => state.current && syncNow(state.current));
     header.addEventListener('click', () => {
@@ -2070,20 +2084,10 @@ BYL.ui = (() => {
     const list = state.candidates.filter((c) => c !== state.current && c.id !== 'tap');
     if (state.trans && state.trans.source !== 'roman' && !list.includes(state.trans)) list.unshift(state.trans);
     list.forEach(add);
-    // 🌐 Translate the lyrics playing into one of these (kept as the user's second version).
-    if (cur && singable(cur.lines).length) {
-      const g = el('optgroup');
-      g.label = L('🌐 Dịch sang…');
-      for (const [code, name] of BYL.translate.TARGETS) {
-        const o = el('option', '', '🌐 ' + name);
-        o.value = 'tr:' + code;
-        g.append(o);
-      }
-      sel.append(g);
-    }
     sel.value = state.trans?.source === 'roman' ? 'roman' : state.trans?.id || '';
     P.rowT.style.display = state.current ? '' : 'none';
     P.swapBtn.hidden = !state.trans;
+    P.rowTr.hidden = !(cur && singable(cur.lines).length);
   }
 
   // 🌐 The lyrics playing, translated line for line (times kept), saved as the
@@ -2099,14 +2103,14 @@ BYL.ui = (() => {
     const slot = mainSlot ? CUSTOM_SLOTS.find((s) => s !== mainSlot) : used('custom') ? 'custom2' : 'custom';
     if (slot !== mainSlot && used(slot) && !confirm(L('Bản dịch sẽ thay chỗ "{0}" bạn đã lưu cho video này. Tiếp tục?', used(slot).label))) return renderTransSelect();
     say(L('🌐 Đang dịch lời sang {0}…', name));
-    P.transSel.disabled = true;
+    P.transSel.disabled = P.trBtn.disabled = P.trLang.disabled = true;
     let r = null;
     try {
       r = await BYL.translate.lines(idx.map((i) => c.lines[i].text), tl);
     } catch (err) {
       say(L('Không dịch được lời: {0}', err?.message || err));
     }
-    P.transSel.disabled = false;
+    P.transSel.disabled = P.trBtn.disabled = P.trLang.disabled = false;
     if (!r || state.current !== c) return renderTransSelect();
     // Times on the video's clock (offset folded in), like any lyrics the user saves.
     const at = new Map(idx.map((i, k) => [i, r.lines[k]]));

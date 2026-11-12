@@ -301,6 +301,9 @@ BYL.PANEL_CSS = `
     border: 1px solid transparent; border-radius: 999px; padding: 7px 12px; outline: none; }
   .studio .presets input[type=text]:focus { border-color: var(--accent); }
   button.primary { background: var(--accent); color: #fff; }
+  .row.tr button.primary { background: var(--accent, #e8212b); color: #fff; font-weight: 600; }
+  .row.tr button.primary:disabled { opacity: .6; cursor: progress; }
+  .row.tr .new { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 1px 6px; border-radius: 9px; background: #ffd400; color: #111; }
   button.primary:hover { background: #e8114f; }
   button.danger { color: #e5484d; background: transparent; }
   .editor { margin: 0 12px 8px; }

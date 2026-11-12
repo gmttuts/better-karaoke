@@ -68,5 +68,14 @@ BYL.translate = (() => {
   }
 
   const nameOf = (tl) => TARGETS.find(([c]) => c === tl)?.[1] || tl;
-  return { TARGETS, lines, nameOf };
+  // The language picked last, else the panel's own (Chinese: 繁體 for zh-TW / HK
+  // browsers), else English.
+  function defaultLang(saved) {
+    if (TARGETS.some(([c]) => c === saved)) return saved;
+    const nav = (navigator.language || '').toLowerCase();
+    const ui = BYL.lang || nav.split('-')[0];
+    if (ui === 'zh') return /tw|hk|mo|hant/.test(nav) ? 'zh-TW' : 'zh-CN';
+    return TARGETS.find(([c]) => c === ui)?.[0] || 'en';
+  }
+  return { TARGETS, lines, nameOf, defaultLang };
 })();
