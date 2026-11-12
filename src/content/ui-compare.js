@@ -74,13 +74,14 @@ BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, ren
     head.append(el('b', '', L('⇆ So sánh lời')), el('span', 'muted', L('So với')), pick, x);
     // ⏵ / ⏹ from the video's clock, for the row clicked.
     const clock = el('div', 'cclock');
-    const goStart = el('button', '', '');
-    const goEnd = el('button', '', '');
+    const clockBox = el('span', 'clock', '');
+    const goStart = el('button', '', L('⏵ Đặt giờ bắt đầu'));
+    const goEnd = el('button', '', L('⏹ Đặt giờ kết thúc'));
     goStart.title = L('Lấy giờ đang phát làm giờ BẮT ĐẦU của dòng đang chọn');
     goEnd.title = L('Lấy giờ đang phát làm giờ KẾT THÚC của dòng đang chọn: chữ cuối của câu chạy xong đúng lúc đó');
     goStart.addEventListener('click', () => stampRow('ts'));
     goEnd.addEventListener('click', () => stampRow('te'));
-    clock.append(goStart, goEnd, el('span', 'muted', L('Bấm vào một dòng, phát hoặc dừng video đúng chỗ câu bắt đầu / kết thúc, rồi bấm ⏵ / ⏹. Ô giờ cũng gõ tay được.')));
+    clock.append(clockBox, goStart, goEnd, el('span', 'muted', L('Bấm vào một dòng, phát hoặc dừng video đúng chỗ câu bắt đầu / kết thúc, rồi bấm ⏵ / ⏹: dòng đó lấy giờ đang phát. Ô giờ cũng gõ tay được.')));
     clock.hidden = !cur.synced;
     dlg.classList.toggle('timed', !!cur.synced);
     let clockLabel = '';
@@ -88,8 +89,7 @@ BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, ren
       const label = BYL.fmtTime(t) + '.' + String(Math.floor((t % 1) * 10));
       if (label === clockLabel) return;
       clockLabel = label;
-      goStart.textContent = L('⏵ Bắt đầu = {0}', label);
-      goEnd.textContent = L('⏹ Kết thúc = {0}', label);
+      clockBox.textContent = L('Giờ đang phát: {0}', label);
     };
     const cols = el('div', 'ccols');
     cols.append(el('span', '', L('Bản đang phát (sửa được)')), el('span', ''), el('span', '', ''));

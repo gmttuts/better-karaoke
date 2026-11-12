@@ -313,6 +313,10 @@ BYL.PANEL_CSS = `
   .mirror .now { background: rgba(255,46,99,.22); border-radius: 3px; box-shadow: -4px 0 0 rgba(255,46,99,.22), 4px 0 0 rgba(255,46,99,.22); }
   .mirror .sel { box-shadow: inset 0 0 0 1.5px #3ea6ff; border-radius: 3px; }
   .mirror .now.sel { box-shadow: inset 0 0 0 1.5px #3ea6ff, -4px 0 0 rgba(255,46,99,.22), 4px 0 0 rgba(255,46,99,.22); }
+  .clock { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 12.5px; padding: 5px 9px; border-radius: 8px; background: rgba(62,166,255,.14); color: #0b6bcb; white-space: nowrap; }
+  :host-context(html[dark]) .clock { color: #7cc4ff; }
+  .lineinfo button.link[hidden] { display: none; }
+  .lineinfo button.link { background: none; border: 0; padding: 0; color: #0b6bcb; font-size: 12px; cursor: pointer; text-decoration: underline; }
   .editor .lineinfo { font-size: 12px; padding: 6px 2px 0; line-height: 1.4; }
   .mirror mark { color: transparent; background: rgba(255,184,0,.45); border-radius: 2px; }
   .mirror mark.cur { background: rgba(255,120,0,.9); }

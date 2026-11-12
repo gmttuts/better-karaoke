@@ -59,17 +59,26 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     // pause where it starts / ends, press ⏵ or ⏹.
     const tools = el('div', 'row');
     const stamp = el('button', '', '');
-    stamp.title = L('Ghi thời gian video hiện tại làm giờ BẮT ĐẦU của dòng có con trỏ rồi xuống dòng kế. Vừa nghe vừa bấm để canh lời (phím tắt: Ctrl/⌘ + Enter)');
+    stamp.title = L('Ghi thời gian video hiện tại làm giờ BẮT ĐẦU của dòng đang phát (hoặc dòng bạn bấm vào) rồi xuống dòng kế. Vừa nghe vừa bấm để canh lời (phím tắt: Ctrl/⌘ + Enter)');
     const stampEnd = el('button', '', '');
-    stampEnd.title = L('Ghi thời gian video hiện tại làm giờ KẾT THÚC của dòng có con trỏ: chữ cuối của câu chạy xong đúng lúc đó (phím tắt: Ctrl/⌘ + Shift + Enter)');
-    const lineInfo = el('div', 'lineinfo muted', '');
+    stampEnd.title = L('Ghi thời gian video hiện tại làm giờ KẾT THÚC của dòng đang phát (hoặc dòng bạn bấm vào): chữ cuối của câu chạy xong đúng lúc đó (phím tắt: Ctrl/⌘ + Shift + Enter)');
+    const lineInfo = el('div', 'lineinfo muted');
+    const lineText = el('span', '', '');
+    const backBtn = el('button', 'link', L('↺ Theo dòng đang phát'));
+    backBtn.title = L('⏵ / ⏹ lại áp vào dòng đang phát');
+    backBtn.hidden = true;
+    lineInfo.append(lineText, ' ', backBtn);
     const followBox = el('label');
     const follow = el('input');
     follow.type = 'checkbox';
     follow.checked = true;
     followBox.append(follow, L('Cuộn theo nhạc'));
     followBox.title = L('Tô và cuộn tới dòng đang phát');
-    tools.append(stamp, stampEnd, followBox, el('span', 'muted', L('Nháy đúp một dòng có giờ để tua tới đó')));
+    const clockBox = el('span', 'clock', '');
+    clockBox.title = L('Giờ đang phát của video: hai nút bên cạnh lấy đúng giờ này');
+    stamp.textContent = L('⏵ Đặt giờ bắt đầu');
+    stampEnd.textContent = L('⏹ Đặt giờ kết thúc');
+    tools.append(clockBox, stamp, stampEnd, followBox, el('span', 'muted', L('Nháy đúp một dòng có giờ để tua tới đó')));
 
     const row = el('div', 'row');
     const save = el('button', 'on', L('💾 Lưu lời'));
@@ -87,7 +96,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     P.lines.hidden = true;
     P.grip.hidden = true;
 
-    ED = { ta, mirror, q, count, follow, stamp, stampEnd, lineInfo, stamps: [], cur: -1, sel: -1, hits: [], hit: -1, quietUntil: 0, clock: '' };
+    ED = { ta, mirror, q, count, follow, stamp, stampEnd, clockBox, lineInfo, lineText, backBtn, picked: false, stamps: [], cur: -1, sel: -1, hits: [], hit: -1, quietUntil: 0, clock: '' };
     paintEditor();
     ta.focus();
 
@@ -105,7 +114,17 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
         else stampLine();
       }
     });
-    for (const type of ['keyup', 'click', 'select', 'focus']) ta.addEventListener(type, paintSel);
+    // A click or a key in the text picks that line for ⏵ / ⏹ (focus alone doesn't).
+    const pickLine = () => {
+      ED.picked = true;
+      paintSel();
+    };
+    ta.addEventListener('mouseup', pickLine);
+    ta.addEventListener('keyup', (e) => !(e.ctrlKey || e.metaKey) && pickLine());
+    backBtn.addEventListener('click', () => {
+      ED.picked = false;
+      paintSel();
+    });
     ta.addEventListener('dblclick', () => {
       const i = ta.value.slice(0, ta.selectionStart).split('\n').length - 1;
       const t = ED.stamps[i];
@@ -299,21 +318,39 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     const ta = ED.ta;
     const v = video();
     if (!v) return;
-    const text = ta.value;
-    const start = text.lastIndexOf('\n', ta.selectionStart - 1) + 1;
-    let end = text.indexOf('\n', start);
-    if (end < 0) end = text.length;
-    let line = BYL.lrcStamp(v.currentTime) + ' ' + text.slice(start, end).replace(STAMP_RE, '');
+    const now = v.currentTime;
+    const { start, end, line: was, i } = target();
+    // A start earlier than the line above is almost always the wrong line.
+    const above = ED.stamps.slice(0, i).filter((t) => t != null);
+    const prev = above.length ? Math.max(...above) : null;
+    if (prev !== null && now < prev - 0.05) {
+      const at = ED.stamps.reduce((b, t, k) => (t != null && t <= now && (b < 0 || t >= ED.stamps[b]) ? k : b), -1);
+      return say(L('Giờ {0} sớm hơn dòng phía trên ({1}): có lẽ nhầm dòng. Dòng đang chọn là dòng {2}; lúc {0} là dòng {3}. Bấm vào đúng dòng rồi bấm lại.', BYL.fmtTime(now), BYL.fmtTime(prev), i + 1, at + 1));
+    }
+    let line = BYL.lrcStamp(now) + ' ' + was.replace(STAMP_RE, '');
     // An end before the new start no longer means anything.
     const e = secs(line.match(END_RE));
-    if (e !== null && e <= v.currentTime + 0.2) line = line.replace(END_RE, '');
+    if (e !== null && e <= now + 0.2) line = line.replace(END_RE, '');
     ta.setRangeText(line, start, end, 'end');
+    // On to the next line: press again as it starts (timing a whole song).
     const next = Math.min(ta.value.length, start + line.length + 1);
     ta.focus();
     ta.setSelectionRange(next, next);
+    ED.picked = true;
     ED.quietUntil = 0;
     paintEditor();
     paintSel();
+  }
+
+  // Which line ⏵ / ⏹ change: the one the user clicked (or moved to with the
+  // keyboard), else the one playing now.
+  function target() {
+    if (!ED.picked && ED.cur >= 0) {
+      const rows = ED.ta.value.split('\n');
+      const start = rows.slice(0, ED.cur).reduce((n, r) => n + r.length + 1, 0);
+      return { start, end: start + rows[ED.cur].length, line: rows[ED.cur], i: ED.cur };
+    }
+    return cursorLine();
   }
 
   // The line the cursor is on: [start] text <end>.
@@ -334,13 +371,14 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     const ta = ED.ta;
     const v = video();
     if (!v) return;
-    const { start, end, line } = cursorLine();
+    const { start, end, line } = target();
     const t0 = secs(line.match(STAMP_RE));
     const now = v.currentTime;
     if (t0 === null) return say(L('Dòng này chưa có giờ bắt đầu: bấm ⏵ Bắt đầu trước.'));
     if (now <= t0 + 0.2) return say(L('Giờ kết thúc ({0}) phải sau giờ bắt đầu của dòng ({1}).', BYL.fmtTime(now), BYL.fmtTime(t0)));
     const out = line.replace(END_RE, '') + BYL.lrcEnd(now);
     ta.setRangeText(out, start, end, 'preserve');
+    say(L('⏹ Dòng "{0}" giờ kết thúc lúc {1}.', line.replace(STAMP_RE, '').replace(END_RE, '').trim().slice(0, 40), BYL.fmtTime(now)));
     ta.focus();
     ED.quietUntil = 0;
     paintEditor();
@@ -350,13 +388,14 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
   // Under the text: which line ⏵ / ⏹ will change, and its times now.
   function paintSel() {
     if (!ED) return;
-    const { line, i } = cursorLine();
+    const { line, i } = target();
     const t0 = secs(line.match(STAMP_RE));
     const t1 = secs(line.match(END_RE));
+    ED.backBtn.hidden = !ED.picked || ED.cur < 0;
     const words = line.replace(STAMP_RE, '').replace(END_RE, '').trim();
     const fmt = (t) => BYL.fmtTime(t) + '.' + String(Math.floor((t % 1) * 10));
-    ED.lineInfo.textContent = words || t0 !== null
-      ? L('Dòng {0}: "{1}" · bắt đầu {2} · kết thúc {3}', i + 1, words.length > 48 ? words.slice(0, 46) + '…' : words, t0 === null ? '—' : fmt(t0), t1 === null ? L('tự (lúc câu sau bắt đầu)') : fmt(t1))
+    ED.lineText.textContent = words || t0 !== null
+      ? (ED.picked || ED.cur < 0 ? L('Dòng bạn chọn') : L('♪ Dòng đang phát')) + ' · ' + L('Dòng {0}: "{1}" · bắt đầu {2} · kết thúc {3}', i + 1, words.length > 48 ? words.slice(0, 46) + '…' : words, t0 === null ? '—' : fmt(t0), t1 === null ? L('tự (lúc câu sau bắt đầu)') : fmt(t1))
       : L('Đặt con trỏ vào một dòng để chỉnh giờ của dòng đó.');
     if (ED.sel !== i) {
       ED.mirror.children[ED.sel]?.classList.remove('sel');
@@ -372,8 +411,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     const label = BYL.fmtTime(t) + '.' + String(Math.floor((t % 1) * 10));
     if (!force && label === ED.clock) return;
     ED.clock = label;
-    ED.stamp.textContent = L('⏵ Bắt đầu = {0}', label);
-    ED.stampEnd.textContent = L('⏹ Kết thúc = {0}', label);
+    ED.clockBox.textContent = L('Giờ đang phát: {0}', label);
   }
 
   // Called every frame while the editor is open: mark the line playing now.
@@ -387,6 +425,7 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     if (best === ED.cur) return;
     ED.mirror.children[ED.cur]?.classList.remove('now');
     ED.cur = best;
+    if (!ED.picked) paintSel();
     if (best < 0) return;
     ED.mirror.children[best]?.classList.add('now');
     if (ED.follow.checked && Date.now() > ED.quietUntil) scrollEditorTo(best);
