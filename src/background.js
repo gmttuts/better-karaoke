@@ -61,6 +61,24 @@ chrome.runtime.onInstalled.addListener(async () => {
   await chrome.storage.sync.remove(keys);
 });
 
+// 0.28: "Lệch" (the offset) and the 📍 / 🎯 sync points are hidden now,
+// so any left over from before would shift lyrics with no visible way to
+// undo it: clear them once in every video's saved state. The lyrics picked,
+// the user's own edits and ★ stay.
+chrome.runtime.onInstalled.addListener(async () => {
+  const FLAG = 'offsetsCleared028';
+  if ((await chrome.storage.local.get(FLAG))[FLAG]) return;
+  const all = await chrome.storage.local.get(null);
+  const fixed = {};
+  for (const [k, v] of Object.entries(all)) {
+    if (!k.startsWith('v:') || !v || typeof v !== 'object') continue;
+    if (!v.offset && !(v.warps && Object.keys(v.warps).length)) continue;
+    const { offset, warps, ...rest } = v;
+    fixed[k] = rest;
+  }
+  await chrome.storage.local.set({ ...fixed, [FLAG]: true });
+});
+
 // Tesseract needs a page (workers, WebAssembly): an offscreen document in
 // Chrome, opened the first time and kept while frames keep coming. Firefox
 // has no offscreen documents but loads ocr.js into its background page.
