@@ -154,10 +154,8 @@ BYL.sources = (() => {
         synced,
         lines: synced ? BYL.parseLrc(r.syncedLyrics) : BYL.plainLines(r.plainLyrics),
         score: Math.round(score),
-        warn:
-          synced && diff > 3
-            ? L('Bản này dài {0}, video dài {1}. Nếu lời chạy lệch, chỉnh "Lệch" bên dưới.', BYL.fmtTime(r.duration), BYL.fmtTime(duration))
-            : '',
+        // A release of another length: the panel says so (with 📍 to fix it).
+        lenDiff: synced && diff > 3 ? [r.duration, duration] : null,
       };
     });
   }

@@ -327,6 +327,7 @@
   "Bật: hiện nút 🎯 và tự khớp lời với phụ đề YouTube khi chọn bản lời. Tắt: tự canh từng đoạn trong ✏️ Sửa lời": "Aktif: tampilkan tombol 🎯 dan cocokkan lirik dengan teks YouTube saat memilih versi. Nonaktif: atur per bagian di ✏️ Edit",
   "Lời này chưa có thời gian từng dòng. Dùng \"⏱ Gõ nhịp\" hoặc ✏️ Sửa lời để đặt giờ, rồi xuất.": "Lirik ini belum punya waktu per baris. Pakai \"⏱ Ketuk waktu\" atau ✏️ Edit untuk mengatur waktunya, lalu ekspor.",
   "Lời này chưa có thời gian. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng; hoặc dùng \"⏱ Gõ nhịp\".": "Lirik ini belum punya waktu. Klik baris yang sedang dinyanyikan, lirik akan bergulir dengan tempo perkiraan; atau pakai \"⏱ Ketuk waktu\".",
+  "📍 Bản này dài {0}, video dài {1}. Nếu lời chạy lệch: rê chuột lên dòng đang hát, bấm 📍 để ghim lời vào đúng lúc đó. Đoạn sau còn lệch thì ghim thêm một dòng ở đoạn đó.": "📍 Versi ini berdurasi {0}, videonya {1}. Jika lirik meleset: arahkan kursor ke baris yang dinyanyikan lalu tekan 📍 untuk menyematkannya pada saat itu. Jika bagian berikutnya masih meleset, sematkan juga satu baris di sana.",
   "Nguồn lời": "Sumber lirik",
   "↻ Tìm lại": "↻ Cari lagi",
   "⏱ Gõ (Space)": "⏱ Ketuk (Space)",

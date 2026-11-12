@@ -327,6 +327,7 @@
   "Bật: hiện nút 🎯 và tự khớp lời với phụ đề YouTube khi chọn bản lời. Tắt: tự canh từng đoạn trong ✏️ Sửa lời": "开启：显示 🎯 按钮，选择版本时按 YouTube 字幕对齐歌词。关闭：在 ✏️ 编辑 中逐段调整",
   "Lời này chưa có thời gian từng dòng. Dùng \"⏱ Gõ nhịp\" hoặc ✏️ Sửa lời để đặt giờ, rồi xuất.": "这份歌词还没有逐行时间。用「⏱ 打拍」或 ✏️ 编辑 设置时间，然后再导出。",
   "Lời này chưa có thời gian. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng; hoặc dùng \"⏱ Gõ nhịp\".": "这份歌词没有时间。点击正在唱的行，会按估计的节奏滚动；或使用「⏱ 打拍」。",
+  "📍 Bản này dài {0}, video dài {1}. Nếu lời chạy lệch: rê chuột lên dòng đang hát, bấm 📍 để ghim lời vào đúng lúc đó. Đoạn sau còn lệch thì ghim thêm một dòng ở đoạn đó.": "📍 这个版本长 {0}，视频长 {1}。如果歌词跑偏：把鼠标移到正在唱的行，按 📍 把它钉在这一刻。后面还偏的话，在那一段再钉一行。",
   "Nguồn lời": "歌词来源",
   "↻ Tìm lại": "↻ 重新搜索",
   "⏱ Gõ (Space)": "⏱ 打拍（Space）",

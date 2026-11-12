@@ -327,6 +327,7 @@
   "Bật: hiện nút 🎯 và tự khớp lời với phụ đề YouTube khi chọn bản lời. Tắt: tự canh từng đoạn trong ✏️ Sửa lời": "켜기: 🎯 버튼을 보이고 버전을 고를 때 YouTube 자막에 가사를 맞춥니다. 끄기: ✏️ 가사 수정에서 부분별로 맞춥니다",
   "Lời này chưa có thời gian từng dòng. Dùng \"⏱ Gõ nhịp\" hoặc ✏️ Sửa lời để đặt giờ, rồi xuất.": "이 가사에는 아직 줄별 시간이 없습니다. \"⏱ 탭으로 맞추기\" 또는 ✏️ 가사 수정으로 시간을 넣은 뒤 내보내세요.",
   "Lời này chưa có thời gian. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng; hoặc dùng \"⏱ Gõ nhịp\".": "이 가사에는 시간이 없습니다. 부르고 있는 줄을 클릭하면 추정 속도로 넘어갑니다. 또는 \"⏱ 탭으로 맞추기\"을 쓰세요.",
+  "📍 Bản này dài {0}, video dài {1}. Nếu lời chạy lệch: rê chuột lên dòng đang hát, bấm 📍 để ghim lời vào đúng lúc đó. Đoạn sau còn lệch thì ghim thêm một dòng ở đoạn đó.": "📍 이 버전은 {0}, 영상은 {1} 입니다. 가사가 어긋나면 부르고 있는 줄에 마우스를 올리고 📍 를 눌러 그 순간에 고정하세요. 뒷부분이 계속 어긋나면 그곳에서도 한 줄을 고정하세요.",
   "Nguồn lời": "가사 출처",
   "↻ Tìm lại": "↻ 다시 검색",
   "⏱ Gõ (Space)": "⏱ 탭 (Space)",

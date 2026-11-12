@@ -327,6 +327,7 @@
   "Bật: hiện nút 🎯 và tự khớp lời với phụ đề YouTube khi chọn bản lời. Tắt: tự canh từng đoạn trong ✏️ Sửa lời": "On: shows the 🎯 button and matches lyrics to the YouTube captions when you pick a version. Off: time them part by part in ✏️ Edit",
   "Lời này chưa có thời gian từng dòng. Dùng \"⏱ Gõ nhịp\" hoặc ✏️ Sửa lời để đặt giờ, rồi xuất.": "These lyrics have no line times yet. Use \"⏱ Tap along\" or ✏️ Edit to set the times, then export.",
   "Lời này chưa có thời gian. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng; hoặc dùng \"⏱ Gõ nhịp\".": "These lyrics have no timing. Click the line being sung and they scroll on at an estimated pace; or use \"⏱ Tap along\".",
+  "📍 Bản này dài {0}, video dài {1}. Nếu lời chạy lệch: rê chuột lên dòng đang hát, bấm 📍 để ghim lời vào đúng lúc đó. Đoạn sau còn lệch thì ghim thêm một dòng ở đoạn đó.": "📍 This version is {0} long, the video {1}. If the lyrics drift: hover the line being sung and press 📍 to pin it to that moment. If a later part still drifts, pin a line there too.",
   "Nguồn lời": "Lyrics sources",
   "↻ Tìm lại": "↻ Search again",
   "⏱ Gõ (Space)": "⏱ Tap (Space)",

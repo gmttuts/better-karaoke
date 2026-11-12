@@ -327,6 +327,7 @@
   "Bật: hiện nút 🎯 và tự khớp lời với phụ đề YouTube khi chọn bản lời. Tắt: tự canh từng đoạn trong ✏️ Sửa lời": "オン：🎯 ボタンを表示し、版を選ぶと YouTube の字幕に歌詞を合わせます。オフ：✏️ 編集 で部分ごとに合わせます",
   "Lời này chưa có thời gian từng dòng. Dùng \"⏱ Gõ nhịp\" hoặc ✏️ Sửa lời để đặt giờ, rồi xuất.": "この歌詞にはまだ行ごとの時間がありません。「⏱ タップ」か ✏️ 編集 で時間を入れてから書き出してください。",
   "Lời này chưa có thời gian. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng; hoặc dùng \"⏱ Gõ nhịp\".": "この歌詞には時間がありません。歌っている行をクリックすると推定のテンポで進みます。または「⏱ タップ」を使ってください。",
+  "📍 Bản này dài {0}, video dài {1}. Nếu lời chạy lệch: rê chuột lên dòng đang hát, bấm 📍 để ghim lời vào đúng lúc đó. Đoạn sau còn lệch thì ghim thêm một dòng ở đoạn đó.": "📍 この版の長さは {0}、動画は {1} です。歌詞がずれたら、歌っている行にマウスを乗せて 📍 を押し、その時点に固定します。後の部分がまだずれていれば、そこでも 1 行固定してください。",
   "Nguồn lời": "歌詞の出どころ",
   "↻ Tìm lại": "↻ 再検索",
   "⏱ Gõ (Space)": "⏱ タップ（Space）",

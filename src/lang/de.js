@@ -327,6 +327,7 @@
   "Bật: hiện nút 🎯 và tự khớp lời với phụ đề YouTube khi chọn bản lời. Tắt: tự canh từng đoạn trong ✏️ Sửa lời": "An: zeigt den 🎯-Knopf und gleicht den Text beim Auswählen mit den YouTube-Untertiteln ab. Aus: Abschnittsweise in ✏️ Bearbeiten timen",
   "Lời này chưa có thời gian từng dòng. Dùng \"⏱ Gõ nhịp\" hoặc ✏️ Sửa lời để đặt giờ, rồi xuất.": "Dieser Text hat noch keine Zeilenzeiten. Nutze „⏱ Mittippen“ oder ✏️ Bearbeiten, um Zeiten zu setzen, dann exportieren.",
   "Lời này chưa có thời gian. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng; hoặc dùng \"⏱ Gõ nhịp\".": "Dieser Text hat kein Timing. Klicke auf die gesungene Zeile, dann läuft er im geschätzten Tempo weiter; oder nutze „⏱ Mittippen“.",
+  "📍 Bản này dài {0}, video dài {1}. Nếu lời chạy lệch: rê chuột lên dòng đang hát, bấm 📍 để ghim lời vào đúng lúc đó. Đoạn sau còn lệch thì ghim thêm một dòng ở đoạn đó.": "📍 Diese Version dauert {0}, das Video {1}. Läuft der Text daneben: mit der Maus über die gesungene Zeile und 📍 drücken, um sie auf diesen Moment zu heften. Läuft ein späterer Teil daneben, dort ebenfalls eine Zeile heften.",
   "Nguồn lời": "Songtext-Quellen",
   "↻ Tìm lại": "↻ Neu suchen",
   "⏱ Gõ (Space)": "⏱ Tippen (Leertaste)",

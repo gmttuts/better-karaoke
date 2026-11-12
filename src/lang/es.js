@@ -327,6 +327,7 @@
   "Bật: hiện nút 🎯 và tự khớp lời với phụ đề YouTube khi chọn bản lời. Tắt: tự canh từng đoạn trong ✏️ Sửa lời": "Activado: muestra el botón 🎯 y ajusta la letra a los subtítulos de YouTube al elegir una versión. Desactivado: ajústala por partes en ✏️ Editar",
   "Lời này chưa có thời gian từng dòng. Dùng \"⏱ Gõ nhịp\" hoặc ✏️ Sửa lời để đặt giờ, rồi xuất.": "Esta letra aún no tiene tiempos por línea. Usa \"⏱ Marcar ritmo\" o ✏️ Editar para poner los tiempos y luego exporta.",
   "Lời này chưa có thời gian. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng; hoặc dùng \"⏱ Gõ nhịp\".": "Esta letra no tiene tiempos. Haz clic en la línea que suena y seguirá a un ritmo estimado; o usa \"⏱ Marcar ritmo\".",
+  "📍 Bản này dài {0}, video dài {1}. Nếu lời chạy lệch: rê chuột lên dòng đang hát, bấm 📍 để ghim lời vào đúng lúc đó. Đoạn sau còn lệch thì ghim thêm một dòng ở đoạn đó.": "📍 Esta versión dura {0} y el vídeo {1}. Si la letra se desfasa: pasa el ratón por la línea que suena y pulsa 📍 para fijarla en ese momento. Si una parte posterior sigue desfasada, fija también una línea allí.",
   "Nguồn lời": "Fuentes de letra",
   "↻ Tìm lại": "↻ Buscar de nuevo",
   "⏱ Gõ (Space)": "⏱ Marcar (Espacio)",

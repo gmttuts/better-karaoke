@@ -1383,7 +1383,7 @@ BYL.ui = (() => {
     // A Latin spelling follows the lyrics it was made from.
     if (state.trans?.romanOf && state.trans.romanOf !== c.id) romanTrans(c, false);
     renderTransSelect();
-    P.warn.textContent = c.warn || '';
+    P.warn.textContent = warnOf(c);
     P.note.textContent = '';
     P.open.hidden = !c.url;
     P.resetBtn.hidden = c.source !== 'custom';
@@ -1401,6 +1401,19 @@ BYL.ui = (() => {
       c.autoTried = true;
       autoSync(c, true);
     }
+  }
+
+  // LRCLIB timed to a release of another length. (Results saved before
+  // 0.28 carry the old sentence: its two times are reused.)
+  function warnOf(c) {
+    let len = c.lenDiff;
+    if (!len && c.warn) {
+      const m = c.warn.match(/\d+:\d\d/g);
+      if (m?.length === 2) len = m;
+    }
+    if (!len) return c.warn || '';
+    const t = (x) => (typeof x === 'number' ? BYL.fmtTime(x) : x);
+    return L('📍 Bản này dài {0}, video dài {1}. Nếu lời chạy lệch: rê chuột lên dòng đang hát, bấm 📍 để ghim lời vào đúng lúc đó. Đoạn sau còn lệch thì ghim thêm một dòng ở đoạn đó.', t(len[0]), t(len[1]));
   }
 
   // 🎯 shows once the video's captions are known (they often come after the lyrics).

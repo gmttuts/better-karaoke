@@ -327,6 +327,7 @@
   "Bật: hiện nút 🎯 và tự khớp lời với phụ đề YouTube khi chọn bản lời. Tắt: tự canh từng đoạn trong ✏️ Sửa lời": "Activé : affiche le bouton 🎯 et cale les paroles sur les sous-titres YouTube quand vous choisissez une version. Désactivé : calez-les par parties dans ✏️ Modifier",
   "Lời này chưa có thời gian từng dòng. Dùng \"⏱ Gõ nhịp\" hoặc ✏️ Sửa lời để đặt giờ, rồi xuất.": "Ces paroles n'ont pas encore de temps par ligne. Utilisez « ⏱ Synchro manuelle » ou ✏️ Modifier pour les régler, puis exportez.",
   "Lời này chưa có thời gian. Bấm vào dòng đang hát, lời sẽ tự cuộn theo nhịp ước lượng; hoặc dùng \"⏱ Gõ nhịp\".": "Ces paroles n'ont pas de minutage. Cliquez sur la ligne chantée : elles défilent à un rythme estimé ; ou utilisez « ⏱ Synchro manuelle ».",
+  "📍 Bản này dài {0}, video dài {1}. Nếu lời chạy lệch: rê chuột lên dòng đang hát, bấm 📍 để ghim lời vào đúng lúc đó. Đoạn sau còn lệch thì ghim thêm một dòng ở đoạn đó.": "📍 Cette version dure {0}, la vidéo {1}. Si les paroles décalent : survolez la ligne chantée et appuyez sur 📍 pour l'épingler à ce moment. Si une partie plus loin décale encore, épinglez aussi une ligne là.",
   "Nguồn lời": "Sources des paroles",
   "↻ Tìm lại": "↻ Relancer",
   "⏱ Gõ (Space)": "⏱ Top (Espace)",
