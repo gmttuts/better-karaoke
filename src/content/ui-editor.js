@@ -91,14 +91,17 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     const fromOcr = el('button', '', L('🔠 Đọc chữ trên video'));
     fromOcr.title = L('Video có chữ lời bài hát trên hình? Tua nhanh video (tắt tiếng) và đọc chữ trên từng khung hình, kèm thời gian. Mất khoảng nửa thời lượng bài.');
     row.append(save, cancel, fromCaps, fromOcr, del);
-    box.append(tip, search, taWrap, lineInfo, tools, row);
+    // The times (which line, the clock, ⏵ / ⏹) sit over the text they change.
+    box.append(tip, search, lineInfo, tools, taWrap, row);
     box.hidden = false;
     P.lines.hidden = true;
     P.grip.hidden = true;
 
     ED = { orig: c, previewTimer: 0, ta, mirror, q, count, follow, stamp, stampEnd, clockBox, lineInfo, lineText, backBtn, picked: false, stamps: [], cur: -1, sel: -1, hits: [], hit: -1, quietUntil: 0, clock: '' };
     paintEditor();
-    ta.focus();
+    // (Caret at the top, not the end: focusing must not scroll to the last line.)
+    ta.setSelectionRange(0, 0);
+    ta.focus({ preventScroll: true });
 
     ta.addEventListener('input', () => {
       ED.quietUntil = Date.now() + 3000;
@@ -339,13 +342,15 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     // An end before the new start no longer means anything.
     const e = secs(line.match(END_RE));
     if (e !== null && e <= now + 0.2) line = line.replace(END_RE, '');
+    const top = ta.scrollTop;
     ta.setRangeText(line, start, end, 'end');
     // On to the next line: press again as it starts (timing a whole song).
     const next = Math.min(ta.value.length, start + line.length + 1);
-    ta.focus();
+    ta.focus({ preventScroll: true });
     ta.setSelectionRange(next, next);
+    keepScroll(top, i + 1);
     ED.picked = true;
-    ED.quietUntil = 0;
+    ED.quietUntil = Date.now() + 4000;
     paintEditor();
     paintSel();
     preview(true);
@@ -398,19 +403,33 @@ BYL.uiParts.editor = ({ P, S, addCandidates, api, baseId, choose, effT, el, fram
     const ta = ED.ta;
     const v = video();
     if (!v) return;
-    const { start, end, line } = target();
+    const { start, end, line, i } = target();
     const t0 = secs(line.match(STAMP_RE));
     const now = v.currentTime;
     if (t0 === null) return say(L('Dòng này chưa có giờ bắt đầu: bấm ⏵ Bắt đầu trước.'));
     if (now <= t0 + 0.2) return say(L('Giờ kết thúc ({0}) phải sau giờ bắt đầu của dòng ({1}).', BYL.fmtTime(now), BYL.fmtTime(t0)));
     const out = line.replace(END_RE, '') + BYL.lrcEnd(now);
+    const top = ta.scrollTop;
     ta.setRangeText(out, start, end, 'preserve');
     say(L('⏹ Dòng "{0}" giờ kết thúc lúc {1}. Đã thấy ngay trên video; bấm 💾 Lưu lời để giữ.', line.replace(STAMP_RE, '').replace(END_RE, '').trim().slice(0, 40), BYL.fmtTime(now)));
-    ta.focus();
-    ED.quietUntil = 0;
+    ta.focus({ preventScroll: true });
+    keepScroll(top, i);
+    ED.quietUntil = Date.now() + 4000;
     paintEditor();
     paintSel();
     preview(true);
+  }
+
+  // After ⏵ / ⏹ the text stays where it was, so the user carries on from
+  // there; it only moves if the line worked on would be out of sight.
+  function keepScroll(top, row) {
+    const { ta, mirror } = ED;
+    ta.scrollTop = top;
+    const lh = parseFloat(getComputedStyle(ta).lineHeight) || 21;
+    const d = mirror.children[row];
+    const y = d ? d.offsetTop : row * lh;
+    if (y < top || y + lh > top + ta.clientHeight) ta.scrollTop = Math.max(0, y - ta.clientHeight / 3);
+    mirror.scrollTop = ta.scrollTop;
   }
 
   // Under the text: which line ⏵ / ⏹ will change, and its times now.
