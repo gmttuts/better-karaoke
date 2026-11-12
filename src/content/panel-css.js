@@ -165,6 +165,8 @@ BYL.PANEL_CSS = `
   .pin { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 13px; padding: 0 4px;
     border-radius: 4px; opacity: 0; }
   .ln:hover .pin { opacity: .8; }
+  .ln.pinned .pin { opacity: 1; background: rgba(255,46,99,.12); }
+  .ln.pinned { box-shadow: inset 3px 0 0 rgba(255,46,99,.55); }
   .pin:hover { opacity: 1; background: var(--line); }
   .ln .tr { font-size: 13px; font-weight: 400; color: var(--fg2); }
   .ln.active .tr { color: var(--fg); opacity: .75; }
@@ -203,6 +205,7 @@ BYL.PANEL_CSS = `
   .row.fx { flex-wrap: nowrap; }
   .fx > * { flex: none; white-space: nowrap; }
   .row.speed button { padding-left: 9px; padding-right: 9px; }
+  .row.speed button.round { width: 30px; height: 30px; padding: 0; border-radius: 50%; display: inline-grid; place-items: center; font-size: 17px; line-height: 1; flex: none; }
   .row.speed .off { min-width: 44px; text-align: right; cursor: pointer; font-variant-numeric: tabular-nums; }
   .row.speed.steps { margin-top: -4px; }
   .row.speed.steps button { flex: 1 1 0; min-width: 0; padding-left: 4px; padding-right: 4px; }

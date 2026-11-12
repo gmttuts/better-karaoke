@@ -349,7 +349,7 @@ BYL.ui = (() => {
       if (v) v.playbackRate = Math.round(Math.min(3, Math.max(0.25, r)) * 100) / 100;
       paintSpeed();
     };
-    const speedDown = el('button', '', '−');
+    const speedDown = el('button', 'round', '−');
     speedDown.title = L('Chậm lại');
     const speedRange = el('input');
     speedRange.type = 'range';
@@ -358,7 +358,7 @@ BYL.ui = (() => {
     speedRange.step = '0.05';
     speedRange.value = '1';
     speedRange.title = L('Tốc độ phát, lời chạy theo');
-    const speedUp = el('button', '', '+');
+    const speedUp = el('button', 'round', '+');
     speedUp.title = L('Nhanh lên');
     const speedLabel = el('span', 'off', '1×');
     speedLabel.title = L('Bấm để về tốc độ thường');
@@ -1579,6 +1579,15 @@ BYL.ui = (() => {
   function showPins() {
     const pts = state.current && state.warps[state.current.id];
     const mine = pts ? pts.filter((p) => !p.auto).length : 0;
+    // Lines pinned by the user keep their 📍 in view (click it to unpin).
+    const c = state.current;
+    for (const n of P.lines.querySelectorAll('.ln[data-i]')) {
+      const l = c?.lines[n.dataset.i];
+      const p = l && pts?.find((q) => !q.auto && Math.abs(q.t - l.t) < 0.01);
+      n.classList.toggle('pinned', !!p);
+      const pin = n.querySelector('.pin');
+      if (pin) pin.title = p ? L('📍 Đã ghim dòng này vào {0}. Bấm để bỏ ghim.', BYL.fmtTime(l.t + p.d + state.offset)) : L('Đang hát dòng này: canh lời ngay theo dòng này');
+    }
     P.pinCount.textContent = !pts?.length ? '' : mine ? L('📍{0} mốc', mine) : L('🎯 theo phụ đề');
     P.pinCount.title = pts?.length ? L('{0} điểm canh trong bài. Bấm số lệch để bỏ hết.', pts.length) : '';
   }
@@ -1631,6 +1640,16 @@ BYL.ui = (() => {
     if (!c || !v) return;
     if (!c.synced) return onLineClick(i);
     const t = c.lines[i].t;
+    // Pinned already: 📍 takes the pin off.
+    const had = (state.warps[c.id] || []).find((p) => !p.auto && Math.abs(p.t - t) < 0.01);
+    if (had) {
+      state.warps[c.id] = state.warps[c.id].filter((p) => p !== had);
+      if (!state.warps[c.id].length) delete state.warps[c.id];
+      saveWarps();
+      state.lastActive = -2;
+      showPins();
+      return say(L('Đã bỏ ghim dòng "{0}".', c.lines[i].text.slice(0, 40)));
+    }
     const d = Math.round((v.currentTime - state.offset - t) * 100) / 100;
     // A hand-placed point overrides caption guesses near it.
     const pts = (state.warps[c.id] || []).filter((p) => Math.abs(p.t - t) > (p.auto ? 12 : 0.3));
@@ -1638,11 +1657,13 @@ BYL.ui = (() => {
     pts.sort((a, b) => a.t - b.t);
     state.warps[c.id] = pts;
     saveWarps();
+    showPins();
     state.userScrollUntil = 0;
     const n = pts.filter((p) => !p.auto).length;
     say(
       L('📍 Đã ghim dòng này vào {0} (mốc {1}). ', BYL.fmtTime(v.currentTime), n) +
-        (n === 1 ? L('Cả bài dời theo. Nếu đoạn sau vẫn lệch, ghim thêm một dòng ở đoạn đó: chỉ phần giữa hai mốc co giãn, phần đã đúng giữ nguyên.') : L('Các dòng giữa các mốc tự co giãn theo.'))
+        (n === 1 ? L('Cả bài dời theo. Nếu đoạn sau vẫn lệch, ghim thêm một dòng ở đoạn đó: chỉ phần giữa hai mốc co giãn, phần đã đúng giữ nguyên.') : L('Các dòng giữa các mốc tự co giãn theo.')) +
+        ' ' + L('Dòng đã ghim luôn hiện 📍; bấm vào đó để bỏ ghim.')
     );
   }
 
@@ -1867,6 +1888,7 @@ BYL.ui = (() => {
       if (tr) d.append(el('div', 'tr', tr));
       box.append(d);
     });
+    if (box === P.lines) showPins();
     // Another version opens at the line being sung, or where the reader was,
     // never back at the top.
     const v = video();
