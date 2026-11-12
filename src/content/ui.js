@@ -345,6 +345,7 @@ BYL.ui = (() => {
     // Like YouTube's own: 0.25× to 3×, dragged or nudged by 0.05, with the usual steps a tap away.
     const setRate = (r) => {
       const v = video();
+      speedUntil = 0; // the user's choice, kept
       if (v) v.playbackRate = Math.round(Math.min(3, Math.max(0.25, r)) * 100) / 100;
       paintSpeed();
     };
@@ -1592,6 +1593,22 @@ BYL.ui = (() => {
   // ---------- 🎚 key, 🎤 vocal cut ----------
 
   const fmtKey = (n) => (n > 0 ? '+' + n : n < 0 ? '−' + -n : '0');
+  // YouTube carries the last speed over to the next video; each song starts
+  // at 1× instead. For a moment after a new video (not an ad) starts, any
+  // other speed is put back to 1×; the user's own choice after that stays.
+  let speedSrc = '';
+  let speedUntil = 0;
+  function normalSpeed(v) {
+    const src = v.currentSrc;
+    if (src && src !== speedSrc && !document.querySelector('#movie_player.ad-showing')) {
+      speedSrc = src;
+      speedUntil = performance.now() + 2500;
+    }
+    if (performance.now() < speedUntil && v.playbackRate !== 1 && !BYL.ocr?.busy()) {
+      v.playbackRate = 1;
+      paintSpeed();
+    }
+  }
   function paintSpeed() {
     const r = video()?.playbackRate || 1;
     for (const b of P.speedBtns) b.classList.toggle('on', Math.abs(Number(b.dataset.rate) - r) < 0.01);
@@ -1869,6 +1886,7 @@ BYL.ui = (() => {
           lastFrame = t;
           frame();
         }
+        if (v) normalSpeed(v);
         if (++ticks % 30 === 0) {
           placeFloat(); // Shorts: follow the video if the layout shifts
           shortsLift();
