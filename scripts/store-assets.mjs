@@ -1,7 +1,7 @@
 // Renders the Chrome Web Store images in headless Chrome:
 //   store/{vi,en}/1-hero.png … 5-studio.png (1280×800) from store/mockups.html,
 //   around the real screenshots in store/shots/. (The promo tile and the
-//   marquee come from store/design-kit.html, drawn as vectors.)
+//   marquee come from store/design-kit.html, drawn there and saved here too.)
 // Each page is drawn at twice the size from the 2× screenshots, kept in
 // store/2x/, and brought down to the size the Store takes (it refuses any
 // other) with Chrome's high-quality resampling, so small text stays sharp.
@@ -80,6 +80,21 @@ try {
     writeFileSync(join(root, 'store', name + '.png'), Buffer.from(await shrink(shot.result.data, w, hgt), 'base64'));
     console.log(`✓ store/${name}.png (${w}×${hgt}) + store/2x/${name}.png`);
   }
+  // The promo tile and the marquee, drawn by store/design-kit.html at 1× and 2×.
+  await send('Emulation.setDeviceMetricsOverride', { width: 1400, height: 900, deviceScaleFactor: 1, mobile: false }, sessionId);
+  await send('Page.navigate', { url: pathToFileURL(join(root, 'store', 'design-kit.html')).href }, sessionId);
+  await sleep(2500);
+  const art = [['promo', 'en', 'promo-440x280'], ['promo', 'vi', 'vi/promo-440x280'], ['marquee', 'vi', 'vi/marquee-1400x560'], ['marquee', 'en', 'en/marquee-1400x560']];
+  for (const [key, lang, name] of art)
+    for (const [sc, dir] of [[1, ''], [2, '2x/']]) {
+      const r = await send('Runtime.evaluate', {
+        expression: `(async () => { const b = await window.__bk.png('${key}', '${lang}', ${sc}); const u = new Uint8Array(await b.arrayBuffer()); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); })()`,
+        awaitPromise: true,
+        returnByValue: true,
+      }, sessionId);
+      writeFileSync(join(root, 'store', dir + name + '.png'), Buffer.from(r.result.result.value, 'base64'));
+      console.log(`✓ store/${dir}${name}.png`);
+    }
 } finally {
   chrome.kill();
   await sleep(300);
