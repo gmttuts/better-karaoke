@@ -504,7 +504,7 @@ BYL.ui = (() => {
     // shows the translation under each line), so it is easy to find.
     const rowTr = el('div', 'row tr');
     rowTr.dataset.m = 'sing';
-    const trBtn = el('button', '', L('文A Dịch lời'));
+    const trBtn = el('button', '', L('文A Dịch lời').replace(/^文A\s*/, ''));
     trBtn.title = L('Dịch lời đang hiện sang ngôn ngữ đã chọn, giữ đúng giờ từng dòng. Bản dịch hiện dưới lời chính và được lưu thành bản lời thứ 2 của bạn. Lời được gửi tới Google Dịch.');
     const trLang = el('select');
     trLang.title = L('Dịch sang ngôn ngữ nào');
@@ -976,7 +976,7 @@ BYL.ui = (() => {
         p.style.height = Math.min(440, w.height - 16) + 'px';
         showSetTab('look');
       }
-      if (p === popTrans) popTrans.replaceChildren(el('h4', '', L('🌐 Song ngữ')), rowT, rowTr);
+      if (p === popTrans) popTrans.replaceChildren(el('h4', '', L('🌐 Song ngữ')), rowTr);
       placePop(p, anchor, where);
     }
     function closePop() {

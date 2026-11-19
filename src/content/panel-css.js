@@ -529,6 +529,8 @@ BYL.PANEL_CSS = `
   .tile.on { color: var(--primary); font-weight: 600; }
   .tile .tn { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .transpop .row { flex-wrap: wrap; }
+  .transpop { width: min(420px, calc(100% - 16px)); }
+  .transpop .row.tr { padding-bottom: 0; }
     select { border-radius: 8px; background: transparent; border: 1px solid var(--outline-var); }
   button.on { background: var(--sec-cont); color: var(--on-sec-cont); }
   .row.speed.steps button.on { background: var(--sec-cont); color: var(--on-sec-cont); }
