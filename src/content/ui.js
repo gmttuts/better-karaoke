@@ -793,7 +793,7 @@ BYL.ui = (() => {
     const side = el('div', 'side');
     const sideHead = el('div', 'colhead');
     const syncIcon = el('button', 'iconbtn syncbtn');
-    syncIcon.append(ico('offset', 20));
+    syncIcon.append(ico('tune', 20));
     syncIcon.setAttribute('aria-haspopup', 'dialog');
     // ↻ search every source again, next to the timing (offset) button.
     const againIcon = el('button', 'iconbtn again');

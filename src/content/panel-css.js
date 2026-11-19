@@ -662,6 +662,6 @@ BYL.PANEL_CSS = `
   .editbtn.on, .byl[data-mode=edit] .editbtn { background: var(--sec-cont); color: var(--primary); }
   /* folded: only the song, lyrics on video, ⋯ and unfold */
   .byl.collapsed .kara { display: none; }
-  .colhead .again { width: 32px; height: 32px; margin: -6px 2px -6px 0; color: var(--fg2); }
+  .colhead .again { width: 32px; height: 32px; margin: -6px -2px -6px 0; color: var(--fg2); }
   .colhead .again:hover { color: var(--fg); }
 `;
