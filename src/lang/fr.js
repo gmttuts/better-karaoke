@@ -491,4 +491,10 @@
   "{0} dòng": "{0} lignes",
   "🎯 Đã canh lại đoạn đang hát: \"{0}\" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.": "🎯 Partie en cours recalée : « {0} » sur les sous-titres à {1}. Une autre partie décalée ? Rappuyez pendant qu’elle passe.",
   "✓ Đang lọc giọng": "✓ Voix enlevée",
+  "👇 Bật nút này để lời hiện to trên video": "👇 Activez pour afficher les paroles en grand sur la vidéo",
+  "Bỏ chỉnh lệch và các mốc 📍": "Réinitialiser le décalage et les repères 📍",
+  "Hát cùng": "Chanter",
+  "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Afficher les outils de chant : vitesse, voix coupée, tonalité, micro",
+  "Bỏ ghim": "Retirer le repère",
+  "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Aucun repère. Survolez la ligne chantée et cliquez sur 📍 (Alt K).",
 };

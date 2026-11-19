@@ -13,6 +13,40 @@ BYL.ui = (() => {
     return n;
   };
 
+  // Material Symbols (outlined, 24px grid) used by the panel. Fixed strings,
+  // so building them with innerHTML is safe.
+  const ICONS = {"mic": "M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z", "search": "M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z", "more": "M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z", "down": "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z", "up": "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z", "note": "M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z", "speed": "M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44zm-9.79 6.84a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z", "eq": "M7 18h2V6H7v12zm4 4h2V2h-2v20zm-8-8h2v-4H3v4zm12 4h2V6h-2v12zm4-8v4h2v-4h-2z", "minus": "M19 13H5v-2h14v2z", "plus": "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z", "tune": "M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z", "check": "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z", "close": "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z", "edit": "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z", "history": "M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.95 8.95 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z", "pip": "M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z", "sync": "M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z", "download": "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z", "star": "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z", "starB": "M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z", "subt": "M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 12h4v2H4v-2zm10 6H4v-2h10v2zm6 0h-4v-2h4v2zm0-4H10v-2h10v2z", "kbd": "M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z", "back": "M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z", "video": "M21 3H3c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5a2 2 0 0 0-2-2zm0 14H3V5h18v12zm-5-6l-7 4V7z", "palette": "M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z", "pin": "M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z", "translate": "M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z", "refresh": "M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z", "upload": "M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z", "language": "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.92 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.08 16zm2.95-8H5.08a7.99 7.99 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2s.07-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"};
+  ICONS.boxOff = 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z';
+  ICONS.boxOn = 'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z';
+  // The panel's own words go without emoji (the icons are drawn); lyrics,
+  // notes, video titles and the editor keep theirs.
+  const EMOJI = /(?:\p{Extended_Pictographic}|[\u2190-\u21FF\u2300-\u23FF\u25A0-\u27BF\u2B00-\u2BFF\u2600-\u26FF]|文A)\uFE0F?\s?/gu;
+  const KEEP = '.lines, .note, .warn, .stale, .editor, .tapbar, .cmp, .klist, .kitem, .tile .sample';
+  const deEmoji = (s) => s.replace(EMOJI, '').replace(/\s{2,}/g, ' ');
+  function cleanText(root) {
+    const scan = (n) => {
+      if (n.nodeType === 3) {
+        const p = n.parentElement;
+        if (!p || p.closest(KEEP) || p.closest('svg')) return;
+        const t = n.nodeValue;
+        const c = deEmoji(t);
+        if (c !== t && c.trim()) n.nodeValue = /^\s/.test(t) && !/^\s/.test(c) ? ' ' + c : c;
+        return;
+      }
+      if (n.nodeType === 1) {
+        if (n.matches?.(KEEP)) return;
+        if (n.tagName === 'OPTGROUP' && n.label) n.label = deEmoji(n.label).trim();
+        n.childNodes.forEach(scan);
+      }
+    };
+    scan(root);
+  }
+  const ico = (name, size = 20) => {
+    const s = el('span', 'ico');
+    s.innerHTML = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true"><path d="${ICONS[name]}"/></svg>`;
+    return s;
+  };
+
   const state = {
     videoId: null,
     song: null,
@@ -87,7 +121,26 @@ BYL.ui = (() => {
       }, timeout);
     });
 
+  // The panel's typeface: Google Sans Flex (bundled, OFL), loaded from bytes
+  // through FontFace so YouTube's CSP doesn't apply.
+  let uiFont = null;
+  function loadUiFont() {
+    if (uiFont) return;
+    const files = [
+      ['gsf-latin', 'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD'],
+      ['gsf-latin-ext', 'U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF'],
+      ['gsf-vietnamese', 'U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB'],
+    ];
+    uiFont = Promise.all(
+      files.map(async ([f, range]) => {
+        const buf = await fetch(chrome.runtime.getURL(`fonts/${f}.woff2`)).then((r) => r.arrayBuffer());
+        document.fonts.add(await new FontFace('BYL Sans', buf, { weight: '400 700', unicodeRange: range }).load());
+      })
+    ).catch((err) => console.debug('[Better Karaoke] ui font', err));
+  }
+
   async function mount() {
+    loadUiFont();
     const shorts = BYL.isShorts();
     const parent = shorts
       ? (await waitFor('#shorts-player')) && document.body
@@ -95,6 +148,15 @@ BYL.ui = (() => {
     if (!parent) return false;
     if (!panelHost) buildPanel();
     panelHost.toggleAttribute('data-float', shorts);
+    // A clear gap under the panel: YouTube's own CSS on the side column (or a
+    // negative margin on what follows) can't eat it.
+    panelHost.style.setProperty('margin', shorts ? '0' : '0 0 32px', 'important');
+    if (!document.getElementById('byl-gap-style')) {
+      const css = el('style');
+      css.id = 'byl-gap-style';
+      css.textContent = '#byl-panel-host:not([data-float]) + * { margin-top: 0 !important; }';
+      document.head.append(css);
+    }
     if (shorts) {
       if (panelHost.parentElement !== parent) parent.append(panelHost);
       placeFloat();
@@ -239,7 +301,8 @@ BYL.ui = (() => {
     });
     // 🌐 Interface language, at the top, changed on the spot (main.js
     // rebuilds the panel).
-    const lang = el('span', 'lang', '🌐 ' + BYL.lang.toUpperCase());
+    const lang = el('span', 'lang');
+    lang.append(ico('language', 20), el('span', 'mt', BYL.LANGS.find(([c]) => c === BYL.lang)?.[1] || BYL.lang.toUpperCase()));
     const langSel = el('select');
     langSel.title = 'Language · ' + (BYL.LANGS.find(([c]) => c === BYL.lang)?.[1] || '');
     langSel.append(new Option('Auto (GMT+7 → Tiếng Việt, other → English)', 'auto'), ...BYL.LANGS.map(([c, n]) => new Option(n, c)));
@@ -248,27 +311,34 @@ BYL.ui = (() => {
     lang.addEventListener('click', (e) => e.stopPropagation());
     langSel.addEventListener('change', () => BYL.settings.set({ uiLang: langSel.value }));
     // 🎤 Karaoke on the video: one switch at the top, whatever the mode.
-    const overlayBtn = el('button', 'ksw');
-    overlayBtn.append(el('span', 'kt', '🎤 Karaoke'), el('span', 'sw'));
+    const overlayBtn = el('button', 'lytg');
+    overlayBtn.append(ico('subt', 22));
     overlayBtn.title = L('Hiện lời chữ to trên video (dùng được cả khi toàn màn hình)') + ' (Alt L)';
-    const menuBtn = el('button', 'more', '⋯');
+    overlayBtn.setAttribute('role', 'switch');
+    // The same switch in the header, for when the panel is folded.
+    const overlayBtnH = el('button', 'lytg head');
+    overlayBtnH.append(ico('subt', 22));
+    overlayBtnH.title = overlayBtn.title;
+    overlayBtnH.setAttribute('role', 'switch');
+    const menuBtn = el('button', 'iconbtn more');
+    menuBtn.append(ico('more', 22));
     menuBtn.title = L('Thêm');
     const logo = el('img', 'logo');
     logo.src = chrome.runtime.getURL('icons/icon48.png');
     logo.alt = '';
     // Thu gọn / Mở: the whole header folds the panel, this says so.
-    const fold = el('span', 'fold');
+    const fold = el('button', 'iconbtn fold');
     fold.title = L('Thu gọn hoặc mở panel (bấm vào thanh tiêu đề cũng được)');
     const ft = el('span', 'ft');
     ft.dataset.open = L('Thu gọn');
     ft.dataset.closed = L('Mở');
-    fold.append(ft, el('span', 'chev', '▾'));
-    header.append(logo, song, lang, overlayBtn, menuBtn, fold);
+    fold.append(ico('down', 22));
+    void ft;
     // First time here: point at the 🎤 Karaoke switch, until it's used once.
     const khint = el('div', 'khint');
     const khintX = el('button', '', '✕');
     khintX.title = L('Đã hiểu');
-    khint.append(el('span', '', L('👆 Bật 🎤 Karaoke để lời hiện to trên video')), khintX);
+    khint.append(el('span', '', L('👇 Bật nút này để lời hiện to trên video')), khintX);
     khint.hidden = !!BYL.settings.value.karaokeHintDone || !!BYL.settings.value.karaokeAuto;
     khintX.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -443,9 +513,11 @@ BYL.ui = (() => {
       });
       posBtn.append(b);
     }
-    const studioBtn = el('button', '', '🎨');
+    const studioBtn = el('button', 'iconbtn');
+    studioBtn.append(ico('palette', 20));
     studioBtn.title = L('Tuỳ chỉnh màu, phông, viền, nền… và lưu thành preset');
-    const chanBtn = el('button', 'chan', '📌');
+    const chanBtn = el('button', 'iconbtn chan');
+    chanBtn.append(ico('pin', 20));
     row3.append(el('span', 'muted', L('Kiểu chữ')), lookSel, fontDown, fontUp, posBtn, studioBtn, chanBtn);
 
     const studio = el('div', 'studio');
@@ -570,7 +642,7 @@ BYL.ui = (() => {
     const lines = el('div', 'lines');
     const grip = el('div', 'grip');
     grip.title = L('Kéo để thu gọn / mở rộng khung lời (nháy đúp để về mặc định)');
-    lyricTab.append(findRow, srcHead, status, picks, row1, rowTr, rowK, rowV, rowSp, rowSp2, rowS, rowT, row2, row4, exportRow, row3, studio, warn, note, editor, tapbar, lines, grip);
+    void srcHead;
     makeResizable(lines, grip);
 
     // Pages opened from ⋯, over the lyrics, with a way back.
@@ -582,16 +654,16 @@ BYL.ui = (() => {
       return h;
     };
     // 🎬 Karaoke mode
-    const karaokeTab = el('div');
+    const karaokeTab = el('div', 'ktab');
     karaokeTab.hidden = true;
-    const kchips = el('div', 'row');
+    const kchips = el('div', 'row kchips');
     const klist = el('div', 'klist');
     karaokeTab.append(kchips, klist);
 
     // History tab
-    const historyTab = el('div');
+    const historyTab = el('div', 'ktab');
     historyTab.hidden = true;
-    const hFilter = el('div', 'row');
+    const hFilter = el('div', 'row kchips');
     const hAll = el('button', 'on', L('Tất cả'));
     const hFav = el('button', '', L('★ Yêu thích'));
     const hClear = el('button', 'danger', L('Xoá lịch sử'));
@@ -617,12 +689,7 @@ BYL.ui = (() => {
     // Whether 🎤 Karaoke comes on by itself for each video (off at first);
     // the switch at the top only covers the video being watched.
     const autoBtn = item('', () => BYL.settings.set({ karaokeAuto: !BYL.settings.value.karaokeAuto }).then(paintAuto));
-    menu.append(
-      favBtn,
-      autoBtn,
-      item('🕘 ' + L('Đã xem'), () => showPage('history')),
-      findBtn
-    );
+    // (menu items: see the layout block below)
     menuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       menu.hidden = !menu.hidden;
@@ -649,9 +716,265 @@ BYL.ui = (() => {
       e.preventDefault();
       importFile(file);
     });
-    wrap.append(header, khint, menu, body);
+    // ---------- v3 layout ----------
+    // Header: song · Karaoke versions · ⋯ · fold. Body: lyrics on the left,
+    // sources on the right (a bar over the lyrics when the column is narrow).
+    // Dock: Hát cùng (singing tools) · lyrics on the video · ⚙. Speed, vocal
+    // cut, sync and settings open as popovers over the panel.
+    const back = el('button', 'iconbtn back');
+    back.append(ico('back', 22));
+    back.title = L('Quay lại');
+    back.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!historyTab.hidden) showPage(null);
+      else setMode('sing', true);
+    });
+    const avatar = el('div', 'avatar');
+    avatar.append(logo);
+    const karaBtn = el('button', 'outline kara');
+    karaBtn.append(ico('search', 18), el('span', '', 'Karaoke'));
+    karaBtn.title = '🎬 Karaoke';
+    karaBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setMode('karaoke', true);
+    });
+    for (const b of [overlayBtnH, fold]) b.addEventListener('click', (e) => b === overlayBtnH && e.stopPropagation());
+    header.append(back, avatar, song, karaBtn, overlayBtnH, menuBtn, fold);
+
+    // Sources column
+    const side = el('div', 'side');
+    const sideHead = el('div', 'colhead');
+    const syncIcon = el('button', 'iconbtn syncbtn');
+    syncIcon.append(ico('sync', 20));
+    syncIcon.setAttribute('aria-haspopup', 'dialog');
+    sideHead.append(el('span', 'ct', L('Nguồn lời')), syncIcon);
+    const trRow = el('div', 'trrow');
+    const transChip = el('button', 'chip2 trchip');
+    transChip.title = L('Hiện thêm một bản lời khác (thường là lời dịch) dưới mỗi dòng');
+    trRow.append(el('span', 'muted', L('🌐 Song ngữ')), transChip);
+    side.append(sideHead, status, trRow);
+    const main = el('div', 'main');
+    // ⧉ Floating window, top right of the lyrics, shown while the pointer is over them.
+    const lwrap = el('div', 'lwrap');
+    const pipFab = el('button', 'iconbtn pipfab');
+    pipFab.append(ico('pip', 20));
+    pipFab.title = pipBtn.title + ' (Alt P)';
+    pipFab.setAttribute('aria-label', pipFab.title);
+    pipFab.hidden = !('documentPictureInPicture' in window);
+    pipFab.addEventListener('click', (e) => (e.stopPropagation(), togglePip()));
+    lwrap.append(pipFab, lines, grip);
+    main.append(findRow, row1, row4, exportRow, warn, note, editor, tapbar, lwrap);
+    lyricTab.className = 'cols';
+    lyricTab.append(main, side);
+
+    // Popovers
+    const pop = (cls, label) => {
+      const p = el('div', 'pop ' + cls);
+      p.hidden = true;
+      p.setAttribute('role', 'dialog');
+      if (label) p.setAttribute('aria-label', label);
+      p.addEventListener('click', (e) => e.stopPropagation());
+      return p;
+    };
+    picks.className = 'pop picks';
+    picks.addEventListener('click', (e) => e.stopPropagation());
+    // Speed
+    const popSpeed = pop('speedpop', L('⏩ Tốc độ'));
+    popSpeed.append(el('h4', '', L('⏩ Tốc độ')), rowSp, rowSp2);
+    // Vocal cut
+    const popVocal = pop('vocalpop', L('🎤 Lọc giọng'));
+    popVocal.append(el('h4', '', L('🎤 Lọc giọng')), rowV);
+    // Sync: whole-song offset, 📍 pins, 🎯 captions
+    const popSync = pop('syncpop', L('Lệch'));
+    const offVal = el('div', 'offval');
+    offVal.append(offLabel, el('span', 'muted', 'Alt [ ]  ·  Shift 0.1s'));
+    const offBtns = el('div', 'offbtns');
+    const minus1 = el('button', 'outline', '−0.1s');
+    const plus1 = el('button', 'outline', '+0.1s');
+    minus.className = plus.className = 'outline';
+    minus1.title = minus.title;
+    plus1.title = plus.title;
+    minus1.addEventListener('click', () => nudge(-0.1));
+    plus1.addEventListener('click', () => nudge(0.1));
+    offBtns.append(minus, minus1, plus1, plus);
+    const pinList = el('div', 'pinlist');
+    const syncReset = el('button', 'text', L('Bỏ chỉnh lệch và các mốc 📍'));
+    syncReset.addEventListener('click', clearSync);
+    popSync.append(el('h4', '', L('Lệch')), offVal, offBtns, pinCount, pinList, row2, syncReset);
+    void offWrap;
+    // Settings: Kiểu chữ · Dịch lời, one height, each tab scrolls inside.
+    const popSet = pop('setpop', '⚙');
+    const setTabs = el('div', 'tabs');
+    const setBody = el('div', 'setbody');
+    const gallery = el('div', 'gallery');
+    const SET_TABS = [['look', L('Kiểu chữ')], ['trans', L('文A Dịch lời')]];
+    const tabBtns = SET_TABS.map(([k, t]) => {
+      const b = el('button', '', t);
+      b.dataset.tab = k;
+      b.setAttribute('role', 'tab');
+      b.addEventListener('click', () => showSetTab(k));
+      return b;
+    });
+    setTabs.append(...tabBtns);
+    popSet.append(setTabs, setBody);
+    const showSetTab = (k) => {
+      state.setTab = k;
+      for (const b of tabBtns) {
+        b.classList.toggle('on', b.dataset.tab === k);
+        b.setAttribute('aria-selected', String(b.dataset.tab === k));
+      }
+      if (k === 'look') setBody.replaceChildren(gallery, row3, studio);
+      else setBody.replaceChildren(rowT, rowTr);
+      setBody.scrollTop = 0;
+    };
+    // Translation from the chip in the sources column
+    const popTrans = pop('transpop', L('🌐 Song ngữ'));
+    // Dock
+    const dock = el('div', 'dock');
+    const saBtn = el('button', 'sa');
+    saBtn.setAttribute('role', 'switch');
+    saBtn.append(el('span', 'sw'), el('span', '', L('Hát cùng')));
+    saBtn.title = L('Hiện công cụ hát: tốc độ, lọc giọng, tông, mic');
+    saBtn.addEventListener('click', () => BYL.settings.set({ singTools: !singOn() }).then(paintDock));
+    const tools = el('div', 'tools');
+    const speedChip = el('button', 'chip2');
+    speedChip.title = rowSp.title;
+    const vocalChip = el('button', 'chip2');
+    vocalChip.title = vocalBtn.title;
+    // 🎚 Key: a chip like the others; − / + in its popover.
+    const keyStep = el('button', 'chip2 keychip');
+    keyStep.title = keyUp.title + ' · ' + keyDown.title;
+    const popKey = pop('keypop', L('🎚 Tông'));
+    const keyRow = el('div', 'row stepper keyrow');
+    keyRow.append(keyDown, keyLabel, keyUp);
+    popKey.append(el('h4', '', L('🎚 Tông')), keyRow);
+    scoreBtn.replaceChildren(ico('mic', 20), el('span', '', L('🎤 Hát').replace(/^🎤\s*/, '')));
+    tools.append(speedChip, vocalChip, keyStep, el('span', 'grow'), scoreBtn);
+    const setBtn = el('button', 'iconbtn setbtn');
+    setBtn.append(ico('tune', 22));
+    setBtn.title = L('Kiểu chữ');
+    dock.append(saBtn, tools, overlayBtn, setBtn, khint);
+
+    // ⋯ menu
+    const mi = (icon, text, fn, key) => {
+      const b = el('button', 'mi');
+      b.append(ico(icon, 20), el('span', 'mt', text));
+      if (key) b.append(el('span', 'mk', key));
+      b.addEventListener('click', () => ((menu.hidden = true), fn()));
+      return b;
+    };
+    const menuSep = () => el('div', 'sep');
+    findBtn.className = 'mi';
+    findBtn.replaceChildren(ico('search', 20), el('span', 'mt', L('🔍 Tìm theo tên').replace(/^🔍\s*/, '')));
+    favBtn.classList.add('mi');
+    autoBtn.classList.add('mi');
+    lang.classList.add('mi');
+    menu.append(
+      mi('edit', L('✏️ Chỉnh lời').replace(/^✏️\s*/, ''), () => setMode('edit', true)),
+      findBtn,
+      mi('history', L('Đã xem'), () => showPage('history')),
+      mi('pip', L('⧉ Cửa sổ nổi').replace(/^⧉\s*/, ''), togglePip, 'Alt P'),
+      mi('refresh', L('↻ Tìm lại').replace(/^↻\s*/, ''), () => api.onSearchAgain?.()),
+      mi('download', L('⬇ Xuất').replace(/^⬇\s*/, ''), () => {
+        setMode('edit', true);
+        exportRow.hidden = false;
+        exportBtn.classList.add('on');
+      }),
+      menuSep(),
+      favBtn,
+      autoBtn,
+      lang
+    );
+    void pipBtn;
+
+    // Popover plumbing: one open at a time, placed next to what opened it,
+    // inside the panel (so it never covers the video).
+    let shown = null;
+    function placePop(p, anchor, where) {
+      const w = wrap.getBoundingClientRect();
+      const a = anchor.getBoundingClientRect();
+      p.style.maxHeight = Math.max(160, w.height - 16) + 'px';
+      const pw = p.offsetWidth;
+      const ph = p.offsetHeight;
+      let x = a.right - w.left - pw;
+      let y = where === 'above' ? a.top - w.top - ph - 8 : where === 'left' ? a.top - w.top - 8 : a.bottom - w.top + 6;
+      if (where === 'left') x = a.left - w.left - pw - 8;
+      if (x < 8) x = Math.min(8, w.width - pw - 8);
+      x = Math.max(8, Math.min(x, w.width - pw - 8));
+      y = Math.max(8, Math.min(y, w.height - ph - 8));
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+    }
+    function openPop(p, anchor, where = 'above') {
+      if (shown === p) return closePop();
+      closePop();
+      menu.hidden = true;
+      shown = p;
+      p._anchor = anchor;
+      p._where = where;
+      p.hidden = false;
+      anchor.setAttribute('aria-expanded', 'true');
+      if (p === popSet) {
+        const w = wrap.getBoundingClientRect();
+        p.style.width = Math.min(600, w.width - 16) + 'px';
+        p.style.height = Math.min(440, w.height - 16) + 'px';
+        showSetTab(state.setTab || 'look');
+      }
+      if (p === popTrans) popTrans.replaceChildren(el('h4', '', L('🌐 Song ngữ')), rowT, rowTr);
+      placePop(p, anchor, where);
+    }
+    function closePop() {
+      if (!shown) return;
+      shown.hidden = true;
+      shown._anchor?.setAttribute('aria-expanded', 'false');
+      shown = null;
+    }
+    const repop = () => shown && !shown.hidden && placePop(shown, shown._anchor, shown._where);
+    speedChip.addEventListener('click', (e) => (e.stopPropagation(), openPop(popSpeed, speedChip)));
+    vocalChip.addEventListener('click', (e) => (e.stopPropagation(), openPop(popVocal, vocalChip)));
+    keyStep.addEventListener('click', (e) => (e.stopPropagation(), openPop(popKey, keyStep)));
+    syncIcon.addEventListener('click', (e) => (e.stopPropagation(), showPins(), openPop(popSync, syncIcon, wrap.classList.contains('wide') ? 'left' : 'below')));
+    setBtn.addEventListener('click', (e) => (e.stopPropagation(), openPop(popSet, setBtn)));
+    transChip.addEventListener('click', (e) => (e.stopPropagation(), openPop(popTrans, transChip, wrap.classList.contains('wide') ? 'left' : 'below')));
+    root.addEventListener('click', (e) => {
+      if (!shown) return;
+      const path = e.composedPath();
+      if (!path.includes(shown) && !path.includes(shown._anchor) && e.target.isConnected) closePop();
+    });
+    root.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (shown) return closePop();
+      if (!menu.hidden) return (menu.hidden = true);
+      if (!picks.hidden) return (picks.hidden = true);
+    });
+    // A click anywhere outside the panel closes what it opened.
+    document.addEventListener('click', (e) => {
+      if (e.composedPath().includes(panelHost)) return;
+      closePop();
+      menu.hidden = true;
+      picks.hidden = true;
+    });
+    // Two columns when there's room for them.
+    new ResizeObserver(() => {
+      const wide = wrap.clientWidth >= 560;
+      if (wide !== wrap.classList.contains('wide')) {
+        wrap.classList.toggle('wide', wide);
+        fitChips();
+      }
+      repop();
+    }).observe(wrap);
+
+    cleanText(wrap);
+    new MutationObserver((list) => {
+      for (const m of list) {
+        if (m.type === 'characterData') cleanText(m.target);
+        else m.addedNodes.forEach(cleanText);
+      }
+    }).observe(wrap, { subtree: true, childList: true, characterData: true });
+    wrap.append(header, menu, body, dock, picks, popSpeed, popVocal, popSync, popSet, popTrans, popKey);
     root.append(wrap);
 
+    Object.assign(P, { overlayBtnH, back, dock, saBtn, tools, speedChip, vocalChip, keyStep, syncIcon, pinList, transChip, gallery, popSet, placePop, openPop, closePop, repop, pickAnchor: null });
     Object.assign(P, { wrap, songTitle, songArtist, status, picks, autoBtn, resetBtn, khint, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
       row2, row3, row4, favBtn, hlist, hAll, hFav, historyTab, nav, modeBtns, lyricTab, karaokeTab, menu, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn, rowTr, trBtn, trLang,
       tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt, speedBtns, speedRange, speedLabel, starBtn });
@@ -673,6 +996,8 @@ BYL.ui = (() => {
     });
     setMode(BYL.settings.value.panelMode, false);
     paintAuto();
+    paintDock();
+    menuBtn.addEventListener('click', () => closePop());
     select.addEventListener('change', () => {
       const c = state.candidates.find((x) => x.id === select.value);
       if (c) choose(c, true);
@@ -809,6 +1134,7 @@ BYL.ui = (() => {
     }
     sel.value = slot().look ? '' : slot().style;
     if (sel.selectedIndex < 0) sel.value = 'red';
+    renderGallery();
     for (const b of P.posBtn.children) b.classList.toggle('on', b.dataset.pos === (v.overlayPosition === 'top' ? 'top' : 'bottom'));
     const pinned = !!chanSlot();
     P.chanBtn.hidden = !state.channel;
@@ -816,6 +1142,60 @@ BYL.ui = (() => {
     P.chanBtn.title = pinned
       ? L('Kênh "{0}" đang dùng kiểu chữ riêng. Bấm để dùng lại kiểu chung.', state.channel)
       : L('Ghi nhớ kiểu chữ này riêng cho kênh "{0}"', state.channel);
+  }
+
+  // The styles as tiles (Settings · Kiểu chữ): a small sample of each look.
+  function renderGallery() {
+    const g = P.gallery;
+    if (!g) return;
+    g.replaceChildren();
+    const cur = slot().look ? '' : slot().style;
+    const tiles = [...Object.entries(BYL.LOOKS).map(([k, p]) => [k, p.name]), ...(BYL.settings.value.overlayPresets || []).map((p) => ['u:' + p.name, '★ ' + p.name])];
+    const hex = (h, a) => {
+      const n = parseInt(String(h || '#000').slice(1), 16);
+      return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+    };
+    for (const [key, name] of tiles) {
+      const look = compose(key, null);
+      const t = el('button', 'tile' + (key === cur ? ' on' : ''));
+      t.setAttribute('aria-pressed', String(key === cur));
+      const prev = el('span', 'prev');
+      const line = el('span', 'sample');
+      const sung = el('span', '', look.upper ? 'LIGHT' : 'Light');
+      const rest = el('span', '', look.upper ? ' THE WAY' : ' the way');
+      sung.style.color = look.sung;
+      rest.style.color = look.text;
+      rest.style.opacity = Math.max(0.35, (look.dim ?? 100) / 100);
+      line.style.fontWeight = look.weight;
+      if (look.font) line.style.fontFamily = look.font;
+      if (look.strokeW) line.style.textShadow = `0 0 1px ${look.stroke}, 0 0 2px ${look.stroke}`;
+      else if (look.shadow) line.style.textShadow = '0 1px 3px rgba(0,0,0,.8)';
+      if (['box', 'pill', 'lines'].includes(look.shape)) {
+        line.style.background = hex(look.bg, (look.bgAlpha ?? 60) / 100);
+        line.style.borderRadius = look.shape === 'pill' ? '999px' : '4px';
+        line.style.padding = '2px 6px';
+      } else if (look.shape === 'band') prev.style.boxShadow = `inset 0 -22px 0 ${hex(look.bg, (look.bgAlpha ?? 50) / 100)}`;
+      line.style.fontSize = Math.round(11 * Math.min(1.25, Math.max(0.8, (look.scale || 100) / 100))) + 'px';
+      line.append(sung, rest);
+      prev.append(line);
+      t.append(prev, el('span', 'tn', name));
+      t.title = name;
+      t.addEventListener('click', () => {
+        setSlot({ style: key, look: null });
+        refreshLook();
+        if (!P.studio.hidden) buildStudio();
+        if (!state.overlayOn && !F) setOverlay(true, false);
+      });
+      g.append(t);
+    }
+    if (slot().look) {
+      const t = el('button', 'tile on custom');
+      const pv = el('span', 'prev');
+      pv.append(ico('palette', 24));
+      t.append(pv, el('span', 'tn', L('✎ Đang tuỳ chỉnh')));
+      t.addEventListener('click', () => P.studioBtn.click());
+      g.prepend(t);
+    }
   }
 
   // Re-apply the look everywhere after a settings change.
@@ -1213,7 +1593,20 @@ BYL.ui = (() => {
     if (!chip) {
       chip = el('button', 'chip');
       chip.dataset.k = key;
-      chip.addEventListener('click', () => onChip(key));
+      chip.addEventListener('click', (e) => (e.stopPropagation(), onChip(key)));
+      chip.setAttribute('aria-haspopup', 'dialog');
+      let hover;
+      chip.addEventListener('mouseenter', () => {
+        clearTimeout(hover);
+        hover = setTimeout(() => {
+          const list = state.candidates.filter((c) => c.source === key);
+          if (P.wrap.classList.contains('wide') && state.sourceStatus[key] === 'ok' && list.length > 1 && (P.picks.hidden || P.picks.dataset.k !== key)) {
+            P.picks.hidden = true;
+            openPicks(key, list, chip);
+          }
+        }, 450);
+      });
+      chip.addEventListener('mouseleave', () => clearTimeout(hover));
       P.status.append(chip);
     }
     const s = S[key];
@@ -1262,6 +1655,7 @@ BYL.ui = (() => {
     more.style.order = 99;
     more.hidden = true;
     if (more.parentElement !== box) box.append(more);
+    if (P.wrap.classList.contains('wide')) return;
     const lines = () => new Set([...box.children].filter((c) => !c.hidden).map((c) => c.offsetTop)).size;
     if (!box.clientWidth || lines() <= 2) return;
     more.hidden = false;
@@ -1297,30 +1691,52 @@ BYL.ui = (() => {
     openPicks(key, list);
   }
 
-  function openPicks(key, list) {
+  // A source's versions, over the panel next to its chip: pick one to play,
+  // ☆ marks the one that opens with this video next time.
+  function openPicks(key, list, anchor) {
     const box = P.picks;
     if (!box.hidden && box.dataset.k === key) return (box.hidden = true);
+    P.closePop();
     box.dataset.k = key;
-    box.replaceChildren(el('div', 'phead', `${S[key].icon} ${S[key].name}: ` + L('{0} bản, chọn một bản để phát', list.length)));
+    box.replaceChildren(el('div', 'phead', `${S[key].icon} ${S[key].name}`));
     for (const c of list) {
       const on = c === state.current;
-      const b = el('button', on ? 'on' : '');
+      const b = el('div', 'ver' + (on ? ' on' : ''));
+      b.setAttribute('role', 'button');
+      b.tabIndex = 0;
       const info = [c.synced ? L('⏱ có thời gian') : '', c.detail, L('{0} dòng', c.lines.filter((l) => !l.section).length)].filter(Boolean).join(' · ');
-      b.append(el('b', '', (on ? '✓ ' : c === bestTimed() ? '★ ' : '') + c.label), el('span', 'muted', info));
-      b.addEventListener('click', () => {
+      const txt = el('div', 'vt');
+      txt.append(el('b', '', c.label), el('span', 'muted', info));
+      const fav = state.starId === c.id;
+      const star = el('button', 'iconbtn star' + (fav ? ' on' : ''));
+      star.append(ico(fav ? 'star' : 'starB', 20));
+      star.title = fav ? L('★ Bản tiêu biểu') : L('☆ Chọn làm tiêu biểu');
+      star.setAttribute('aria-pressed', String(fav));
+      star.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleStar(c);
+        box.hidden = true;
+        openPicks(key, list, anchor);
+      });
+      b.append(el('span', 'rad'), txt, star);
+      const pick = () => {
         box.hidden = true;
         choose(c, true);
-      });
+      };
+      b.addEventListener('click', pick);
+      b.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), pick()));
       box.append(b);
     }
     box.hidden = false;
+    const chip = anchor || P.status.querySelector(`[data-k="${key}"]`);
+    if (chip) P.placePop(box, chip, P.wrap.classList.contains('wide') ? 'left' : 'below');
   }
 
   // ★: the version the user marked, or else the one timed to the singing that ranks first.
   const bestTimed = () => (state.starId && state.candidates.find((c) => c.id === state.starId)) || state.candidates.find((c) => c.synced && !c.tlang);
 
-  function toggleStar() {
-    const c = state.current;
+  function toggleStar(which) {
+    const c = which || state.current;
     if (!c || c.preview) return;
     if (state.starId === c.id) {
       state.starId = null;
@@ -1610,6 +2026,36 @@ BYL.ui = (() => {
     }
     P.pinCount.textContent = !pts?.length ? '' : mine ? L('📍{0} mốc', mine) : L('🎯 theo phụ đề');
     P.pinCount.title = pts?.length ? L('{0} điểm canh trong bài. Bấm số lệch để bỏ hết.', pts.length) : '';
+    paintSyncIcon();
+    // The pins, each with a way to take it off.
+    if (!P.pinList) return;
+    P.pinList.replaceChildren();
+    for (const p of pts || []) {
+      if (p.auto) continue;
+      const i = c.lines.findIndex((l) => Math.abs(l.t - p.t) < 0.01);
+      if (i < 0) continue;
+      const row = el('div', 'pinrow');
+      const x = el('button', 'iconbtn');
+      x.append(ico('close', 18));
+      x.title = L('Bỏ ghim');
+      x.addEventListener('click', () => pinLine(i));
+      row.append(el('span', 'pt', BYL.fmtTime(c.lines[i].t + p.d + state.offset) + ' · ' + c.lines[i].text), x);
+      P.pinList.append(row);
+    }
+    if (!P.pinList.childElementCount) P.pinList.append(el('div', 'muted', L('Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).')));
+    P.repop?.();
+  }
+
+  // ⟳ in the sources column: lit (with a dot) once the timing was changed.
+  function paintSyncIcon() {
+    if (!P.syncIcon) return;
+    const pts = state.current && state.warps[state.current.id];
+    const changed = !!state.offset || !!pts?.some((p) => !p.auto);
+    P.syncIcon.classList.toggle('adj', changed);
+    const tip = L('Lệch') + ' ' + fmtOffset(state.offset) + (P.pinCount.textContent ? ' · ' + P.pinCount.textContent : '');
+    P.syncIcon.title = tip;
+    P.syncIcon.setAttribute('aria-label', tip);
+    P.syncIcon.hidden = !state.current?.synced && !state.anchor;
   }
 
   function refreshTitles() {
@@ -1636,6 +2082,7 @@ BYL.ui = (() => {
     P.offLabel.classList.add('flash');
     state.lastActive = -2;
     refreshTitles();
+    paintSyncIcon();
     BYL.videoStore.patch(state.videoId, { offset: state.offset });
   }
   const fmtOffset = (v) => (v > 0 ? '+' : '') + v.toFixed(1) + 's';
@@ -1719,6 +2166,14 @@ BYL.ui = (() => {
     P.speedRange.style.setProperty('--fill', ((Math.min(3, Math.max(0.25, r)) - 0.25) / 2.75) * 100 + '%');
     P.speedLabel.textContent = (Math.round(r * 100) / 100).toFixed(2).replace('.', BYL.lang === 'vi' ? ',' : '.') + '×';
     P.speedLabel.classList.toggle('on', Math.abs(r - 1) > 0.001);
+    if (P.speedChip) {
+      const txt = (Math.round(r * 100) / 100).toString().replace('.', BYL.lang === 'vi' ? ',' : '.') + '×';
+      if (P.speedChip.dataset.v !== txt) {
+        P.speedChip.dataset.v = txt;
+        P.speedChip.replaceChildren(ico('speed', 18), el('span', '', txt));
+      }
+      P.speedChip.classList.toggle('on', Math.abs(r - 1) > 0.001);
+    }
   }
 
   function paintFx() {
@@ -1728,6 +2183,14 @@ BYL.ui = (() => {
     P.vocalBtn.textContent = BYL.fx.vocal > 0 ? L('✓ Đang lọc giọng') : L('Bật lọc giọng');
     P.vocalAmt.hidden = !(BYL.fx.vocal > 0);
     P.vocalAmt.style.setProperty('--fill', ((P.vocalAmt.value - P.vocalAmt.min) / (P.vocalAmt.max - P.vocalAmt.min)) * 100 + '%');
+    if (P.vocalChip) {
+      const on = BYL.fx.vocal > 0;
+      P.vocalChip.replaceChildren(ico(on ? 'check' : 'eq', 18), el('span', '', on ? L('🎤 Lọc giọng').replace(/^🎤\s*/, '') + ' ' + Math.round(BYL.fx.vocal * 100) + '%' : L('🎤 Lọc giọng').replace(/^🎤\s*/, '')));
+      P.vocalChip.classList.toggle('on', on);
+      P.keyStep.classList.toggle('on', !!BYL.fx.semis);
+      P.keyStep.replaceChildren(ico('tune', 18), el('span', '', L('🎚 Tông').replace(/^🎚\s*/, '') + ' ' + fmtKey(BYL.fx.semis)));
+      P.repop?.();
+    }
   }
   // The key is kept per video; byUser: from a button or shortcut (a click,
   // so the sound can start), otherwise the saved key on opening a video.
@@ -1899,7 +2362,8 @@ BYL.ui = (() => {
       if (c.synced) {
         d.title = BYL.fmtTime(effT(l.t));
         if (!l.section) {
-          const pin = el('span', 'pin', '📍');
+          const pin = el('span', 'pin');
+          pin.append(ico('pin', 16));
           pin.title = L('Đang hát dòng này: canh lời ngay theo dòng này');
           d.append(pin);
         }
@@ -2088,6 +2552,12 @@ BYL.ui = (() => {
     list.forEach(add);
     sel.value = state.trans?.source === 'roman' ? 'roman' : state.trans?.id || '';
     P.rowT.style.display = state.current ? '' : 'none';
+    if (P.transChip) {
+      const tr = state.trans;
+      P.transChip.textContent = !tr ? L('Không') : tr.tlang ? tr.tlang.split('-')[0].toUpperCase() : tr.source === 'roman' ? 'Aa' : '✓';
+      P.transChip.classList.toggle('on', !!tr);
+      P.transChip.parentElement.hidden = !state.current;
+    }
     P.swapBtn.hidden = !state.trans;
     P.rowTr.hidden = !(cur && singable(cur.lines).length);
   }
@@ -2254,6 +2724,8 @@ BYL.ui = (() => {
     if (!['sing', 'edit', 'karaoke'].includes(mode)) mode = 'sing'; // 👀 Xem lời is gone
     P.wrap.dataset.mode = mode;
     for (const b of P.modeBtns) b.classList.toggle('on', b.dataset.mode === mode);
+    P.closePop?.();
+    P.picks.hidden = true;
     showPage(null);
     if (byUser) BYL.settings.set({ panelMode: mode });
   }
@@ -2265,20 +2737,38 @@ BYL.ui = (() => {
     P.lyricTab.hidden = !!page || karaoke;
     P.karaokeTab.hidden = !karaoke;
     P.historyTab.hidden = page !== 'history';
+    P.wrap.classList.toggle('sub', !!page || P.wrap.dataset.mode !== 'sing');
+    P.wrap.dataset.page = page || '';
     if (page === 'history') renderHistory();
     if (karaoke) loadKaraoke();
+  }
+
+  // Hát cùng: the singing tools in the dock (speed, vocal cut, key, mic).
+  const singOn = () => BYL.settings.value.singTools !== false;
+  function paintDock() {
+    if (!P.dock) return;
+    const on = singOn();
+    P.wrap.classList.toggle('notools', !on);
+    P.saBtn.classList.toggle('on', on);
+    P.saBtn.setAttribute('aria-checked', String(on));
+    if (!on) P.closePop();
+    paintSpeed();
+    paintFx();
   }
 
   function paintAuto() {
     if (!P) return;
     const on = !!BYL.settings.value.karaokeAuto;
-    P.autoBtn.textContent = (on ? '☑ ' : '☐ ') + L('Tự bật Karaoke khi mở video');
+    P.autoBtn.replaceChildren(ico(on ? 'boxOn' : 'boxOff', 20), el('span', 'mt', L('Tự bật Karaoke khi mở video')));
     P.autoBtn.classList.toggle('on', on);
   }
 
   function setOverlay(on, byUser) {
     state.overlayOn = on;
-    P.overlayBtn.classList.toggle('on', on);
+    for (const b of [P.overlayBtn, P.overlayBtnH]) {
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-checked', String(on));
+    }
     paintPlayerBtn();
     if (byUser && on && !P.khint.hidden) {
       P.khint.hidden = true;
@@ -2746,7 +3236,7 @@ BYL.ui = (() => {
     return state.current && v ? position(v.currentTime).i : -1;
   };
   const api = { paintAuto, captionsReady: () => paintSync(), lineNow, mount, remount, relang, stale, hide, setOverlay, reset, setSong, setSourceStatus, addCandidates, state, actions, onLoadSource: null };
-  const ctx = { P, S, addCandidates, api, baseId, choose, closeEditor, effT, el, frame, maybeAutoPick, renderLines, renderSelect, saveCustom, saveWarps, say, setOffset, setSourceStatus, singable, slot, slotFor, state, stopTap, tap, tapping, video };
+  const ctx = { P, S, ico, addCandidates, api, baseId, choose, closeEditor, effT, el, frame, maybeAutoPick, renderLines, renderSelect, saveCustom, saveWarps, say, setOffset, setSourceStatus, singable, slot, slotFor, state, stopTap, tap, tapping, video };
   for (const k of ['editor', 'tap', 'tabs', 'compare']) parts[k] = BYL.uiParts[k](ctx);
   return api;
 })();

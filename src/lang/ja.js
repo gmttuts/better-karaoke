@@ -491,4 +491,10 @@
   "{0} dòng": "{0} 行",
   "🎯 Đã canh lại đoạn đang hát: \"{0}\" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.": "🎯 歌っている部分を合わせ直しました：「{0}」を字幕の {1} に。別の部分がずれたら、そこを歌っている時にもう一度押してください。",
   "✓ Đang lọc giọng": "✓ ボーカルカット中",
+  "👇 Bật nút này để lời hiện to trên video": "👇 ここをオンにすると動画に大きな歌詞を表示",
+  "Bỏ chỉnh lệch và các mốc 📍": "ずれと 📍 ピンをリセット",
+  "Hát cùng": "一緒に歌う",
+  "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "歌うツールを表示：速度・ボーカルカット・キー・マイク",
+  "Bỏ ghim": "ピンを外す",
+  "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "ピンはまだありません。歌っている行にカーソルを合わせて 📍 を押します（Alt K）。",
 };

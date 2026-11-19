@@ -491,4 +491,10 @@
   "{0} dòng": "{0} linhas",
   "🎯 Đã canh lại đoạn đang hát: \"{0}\" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.": "🎯 Trecho ressincronizado: \"{0}\" com as legendas em {1}. Outro trecho fora do tempo? Clique de novo enquanto ele toca.",
   "✓ Đang lọc giọng": "✓ Removendo a voz",
+  "👇 Bật nút này để lời hiện to trên video": "👇 Ative para ver a letra grande no vídeo",
+  "Bỏ chỉnh lệch và các mốc 📍": "Redefinir atraso e marcas 📍",
+  "Hát cùng": "Cantar junto",
+  "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Mostrar ferramentas de canto: velocidade, cortar voz, tom, microfone",
+  "Bỏ ghim": "Remover marca",
+  "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Ainda sem marcas. Passe o mouse na linha cantada e clique em 📍 (Alt K).",
 };

@@ -491,4 +491,10 @@
   "{0} dòng": "{0} baris",
   "🎯 Đã canh lại đoạn đang hát: \"{0}\" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.": "🎯 Bagian yang sedang dinyanyikan disinkronkan ulang: \"{0}\" ke teks pada {1}. Bagian lain meleset? Tekan lagi saat bagian itu diputar.",
   "✓ Đang lọc giọng": "✓ Vokal dihilangkan",
+  "👇 Bật nút này để lời hiện to trên video": "👇 Nyalakan ini untuk lirik besar di video",
+  "Bỏ chỉnh lệch và các mốc 📍": "Atur ulang selisih dan pin 📍",
+  "Hát cùng": "Ikut bernyanyi",
+  "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Tampilkan alat bernyanyi: kecepatan, hapus vokal, nada, mik",
+  "Bỏ ghim": "Lepas pin",
+  "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Belum ada pin. Arahkan ke baris yang sedang dinyanyikan lalu tekan 📍 (Alt K).",
 };

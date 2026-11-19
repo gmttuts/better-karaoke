@@ -491,4 +491,10 @@
   "{0} dòng": "{0} Zeilen",
   "🎯 Đã canh lại đoạn đang hát: \"{0}\" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.": "🎯 Gesungenen Teil neu angepasst: „{0}“ an die Untertitel bei {1}. Ein anderer Teil verrutscht? Nochmal drücken, während er läuft.",
   "✓ Đang lọc giọng": "✓ Gesang wird entfernt",
+  "👇 Bật nút này để lời hiện to trên video": "👇 Einschalten, um den Text groß im Video zu zeigen",
+  "Bỏ chỉnh lệch và các mốc 📍": "Versatz und 📍-Marken zurücksetzen",
+  "Hát cùng": "Mitsingen",
+  "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Sing-Werkzeuge zeigen: Tempo, Gesang entfernen, Tonart, Mikro",
+  "Bỏ ghim": "Marke entfernen",
+  "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Noch keine Marken. Auf die gesungene Zeile zeigen und 📍 drücken (Alt K).",
 };

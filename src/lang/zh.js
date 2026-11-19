@@ -491,4 +491,10 @@
   "{0} dòng": "{0} 行",
   "🎯 Đã canh lại đoạn đang hát: \"{0}\" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.": "🎯 已重新对齐正在唱的部分：“{0}”对应字幕 {1}。其他部分偏了？唱到那里时再按一次。",
   "✓ Đang lọc giọng": "✓ 正在消人声",
+  "👇 Bật nút này để lời hiện to trên video": "👇 打开这里，在视频上显示大字歌词",
+  "Bỏ chỉnh lệch và các mốc 📍": "重置偏移和 📍 标记",
+  "Hát cùng": "跟唱",
+  "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "显示唱歌工具：速度、消人声、调、麦克风",
+  "Bỏ ghim": "取消标记",
+  "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "还没有标记。将鼠标移到正在唱的那一行，点 📍（Alt K）。",
 };

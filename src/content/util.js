@@ -28,6 +28,7 @@ BYL.DEFAULTS = {
   overlayPresets: [], // [{ name, look }] saved by the user
   channelStyles: {}, // channel name -> { style, look } pinned with 📌
   panelCollapsed: false,
+  singTools: true, // Hát cùng: speed, vocal cut, key and the mic in the panel's dock
   panelMode: 'sing', // 🎤 Hát · ✏️ Chỉnh lời · 🎬 Karaoke
   linesHeight: 0, // lyric list height set by dragging its bottom edge (0 = auto)
 };
