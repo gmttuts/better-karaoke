@@ -17,6 +17,24 @@ BYL.ui = (() => {
   // so building them with innerHTML is safe.
   const ICONS = {"mic": "M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z", "search": "M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z", "more": "M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z", "down": "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z", "up": "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z", "note": "M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z", "speed": "M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44zm-9.79 6.84a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z", "eq": "M7 18h2V6H7v12zm4 4h2V2h-2v20zm-8-8h2v-4H3v4zm12 4h2V6h-2v12zm4-8v4h2v-4h-2z", "minus": "M19 13H5v-2h14v2z", "plus": "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z", "tune": "M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z", "check": "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z", "close": "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z", "edit": "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z", "history": "M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.95 8.95 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z", "pip": "M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z", "sync": "M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z", "download": "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z", "star": "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z", "starB": "M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z", "subt": "M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 12h4v2H4v-2zm10 6H4v-2h10v2zm6 0h-4v-2h4v2zm0-4H10v-2h10v2z", "kbd": "M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z", "back": "M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z", "video": "M21 3H3c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5a2 2 0 0 0-2-2zm0 14H3V5h18v12zm-5-6l-7 4V7z", "palette": "M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z", "pin": "M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z", "translate": "M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z", "refresh": "M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z", "upload": "M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z", "language": "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.92 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.99 7.99 0 0 1 5.08 16zm2.95-8H5.08a7.99 7.99 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2s.07-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"};
   ICONS.casino = 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z';
+  ICONS.shuffle = 'M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z';
+  Object.assign(ICONS, {
+    save: 'M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z',
+    play: 'M8 5v14l11-7z',
+    scan: 'M7 3H4v3H2V1h5v2zm15 3V1h-5v2h3v3h2zM7 21H4v-3H2v5h5v-2zm13-3v3h-3v2h5v-5h-2zM19 18c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v12zM15 8H9v2h6V8zm0 3H9v2h6v-2zm0 3H9v2h6v-2z',
+    stop: 'M6 6h12v12H6z',
+    swapH: 'M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z',
+    swapV: 'M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z',
+    timer: 'M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42A8.962 8.962 0 0 0 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z',
+    cloudUp: 'M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z',
+    target: 'M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z',
+    undo: 'M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z',
+    copy: 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z',
+    open: 'M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z',
+    arrUp: 'M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z',
+    arrDown: 'M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z',
+  });
+  ICONS.offset = 'M15 17v2h2v-2h2v-2h-2v-2h-2v2h-2v2h2zm5-15H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM5 5h6v2H5V5zm15 15H4L20 4v16z';
   ICONS.boxOff = 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z';
   ICONS.boxOn = 'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z';
   // The panel's own words go without emoji (the icons are drawn); lyrics,
@@ -24,19 +42,41 @@ BYL.ui = (() => {
   const EMOJI = /(?:\p{Extended_Pictographic}|[\u2190-\u21FF\u2300-\u23FF\u25A0-\u27BF\u2B00-\u2BFF\u2600-\u26FF]|文A)\uFE0F?\s?/gu;
   const KEEP = '.lines, .note, .warn, .stale, .editor, .tapbar, .cmp, .klist, .kitem, .tile .sample';
   const deEmoji = (s) => s.replace(EMOJI, '').replace(/\s{2,}/g, ' ');
+  // A button whose label starts with a symbol gets the matching icon instead.
+  const GLYPHS = [['💾', 'save'], ['🔠', 'scan'], ['▸', 'play'], ['▶', 'play'], ['■', 'stop'], ['⏹', 'stop'], ['↺', 'undo'], ['↻', 'refresh'],
+    ['🔎', 'search'], ['🔍', 'search'], ['↑', 'arrUp'], ['↓', 'arrDown'], ['⇆', 'swapH'], ['⇅', 'swapV'], ['⏱', 'timer'], ['✏️', 'edit'], ['✏', 'edit'],
+    ['✍', 'edit'], ['✎', 'edit'], ['📥', 'upload'], ['⬇', 'download'], ['☁', 'cloudUp'], ['🎯', 'target'], ['🌐', 'language'], ['📍', 'pin'], ['🎙', 'mic'],
+    ['🎤', 'mic'], ['✕', 'close'], ['文A', 'translate'], ['🎲', 'shuffle'], ['🎨', 'palette'], ['📌', 'pin'], ['⧉', 'pip'], ['🕘', 'history'], ['📋', 'copy'], ['⏵', 'play'], ['↶', 'undo'], ['⬆', 'upload'], ['🗑', 'close'], ['🔄', 'refresh'], ['⇐', 'back'], ['✓', 'check'], ['🎚', 'tune'], ['⏩', 'speed'], ['♭', 'minus'], ['♯', 'plus'], ['★', 'star'], ['☆', 'starB'], ['🔤', 'translate']];
+  function iconify(t) {
+    const b = t.parentElement;
+    if (!b || b.tagName !== 'BUTTON' || b.firstChild !== t || b.classList.contains('chip')) return;
+    const v = t.nodeValue.replace(/^\s+/, '');
+    const g = GLYPHS.find(([x]) => v.startsWith(x));
+    if (!g) return;
+    t.nodeValue = v.slice(g[0].length).replace(/^\uFE0F?\s*/, '');
+    b.insertBefore(ico(g[1], 18), t);
+    b.classList.add('wi');
+    if (!t.nodeValue.trim() && !b.getAttribute('aria-label')) b.setAttribute('aria-label', b.title || g[1]);
+  }
+  // Inside lyrics, notes and the editor only the controls are cleaned.
+  const CONTROLS = 'button, option, label, .chead b, .ccols span, h3, h4';
   function cleanText(root) {
     const scan = (n) => {
       if (n.nodeType === 3) {
         const p = n.parentElement;
-        if (!p || p.closest(KEEP) || p.closest('svg')) return;
+        if (!p || p.closest('svg, textarea, .mirror')) return;
+        iconify(n);
+        if (p.closest(KEEP) && !p.closest(CONTROLS)) return;
         const t = n.nodeValue;
         const c = deEmoji(t);
         if (c !== t && c.trim()) n.nodeValue = /^\s/.test(t) && !/^\s/.test(c) ? ' ' + c : c;
         return;
       }
+      if (n.nodeType === 11) return n.childNodes.forEach(scan);
       if (n.nodeType === 1) {
-        if (n.matches?.(KEEP)) return;
+        if (n.tagName === 'STYLE') return;
         if (n.tagName === 'OPTGROUP' && n.label) n.label = deEmoji(n.label).trim();
+        if (n.placeholder) n.placeholder = deEmoji(n.placeholder).trim();
         n.childNodes.forEach(scan);
       }
     };
@@ -741,16 +781,27 @@ BYL.ui = (() => {
       e.stopPropagation();
       setMode('karaoke', true);
     });
-    for (const b of [overlayBtnH, fold]) b.addEventListener('click', (e) => b === overlayBtnH && e.stopPropagation());
+    // Folded panel: the header's own switch for the lyrics on the video
+    // (it must not fold / unfold the panel as well).
+    overlayBtnH.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOverlay(!state.overlayOn, true);
+    });
     header.append(back, avatar, song, karaBtn, overlayBtnH, menuBtn, fold);
 
     // Sources column
     const side = el('div', 'side');
     const sideHead = el('div', 'colhead');
     const syncIcon = el('button', 'iconbtn syncbtn');
-    syncIcon.append(ico('sync', 20));
+    syncIcon.append(ico('offset', 20));
     syncIcon.setAttribute('aria-haspopup', 'dialog');
-    sideHead.append(el('span', 'ct', L('Nguồn lời')), syncIcon);
+    // ↻ search every source again, next to the timing (offset) button.
+    const againIcon = el('button', 'iconbtn again');
+    againIcon.append(ico('refresh', 20));
+    againIcon.title = againBtn.title;
+    againIcon.setAttribute('aria-label', L('↻ Tìm lại').replace(/^↻\s*/, ''));
+    againIcon.addEventListener('click', (e) => (e.stopPropagation(), api.onSearchAgain?.()));
+    sideHead.append(el('span', 'ct', L('Nguồn lời')), againIcon, syncIcon);
     const trRow = el('div', 'trrow');
     const transChip = el('button', 'chip2 trchip');
     transChip.title = L('Hiện thêm một bản lời khác (thường là lời dịch) dưới mỗi dòng');
@@ -861,7 +912,12 @@ BYL.ui = (() => {
     const setBtn = el('button', 'iconbtn setbtn');
     setBtn.append(ico('palette', 22));
     setBtn.title = L('Kiểu chữ');
-    dock.append(saBtn, tools, overlayBtn, setBtn, khint);
+    const editBtn2 = el('button', 'iconbtn editbtn');
+    editBtn2.append(ico('edit', 22));
+    editBtn2.title = L('✏️ Chỉnh lời').replace(/^✏️\s*/, '');
+    editBtn2.setAttribute('aria-label', editBtn2.title);
+    editBtn2.addEventListener('click', (e) => (e.stopPropagation(), setMode(wrap.dataset.mode === 'edit' ? 'sing' : 'edit', true)));
+    dock.append(saBtn, tools, overlayBtn, setBtn, editBtn2, khint);
 
     // ⋯ menu
     const mi = (icon, text, fn, key) => {
@@ -878,16 +934,8 @@ BYL.ui = (() => {
     autoBtn.classList.add('mi');
     lang.classList.add('mi');
     menu.append(
-      mi('edit', L('✏️ Chỉnh lời').replace(/^✏️\s*/, ''), () => setMode('edit', true)),
       findBtn,
       mi('history', L('Đã xem'), () => showPage('history')),
-      mi('pip', L('⧉ Cửa sổ nổi').replace(/^⧉\s*/, ''), togglePip, 'Alt P'),
-      mi('refresh', L('↻ Tìm lại').replace(/^↻\s*/, ''), () => api.onSearchAgain?.()),
-      mi('download', L('⬇ Xuất').replace(/^⬇\s*/, ''), () => {
-        setMode('edit', true);
-        exportRow.hidden = false;
-        exportBtn.classList.add('on');
-      }),
       menuSep(),
       favBtn,
       autoBtn,
@@ -979,6 +1027,15 @@ BYL.ui = (() => {
         else m.addedNodes.forEach(cleanText);
       }
     }).observe(wrap, { subtree: true, childList: true, characterData: true });
+    BYL.uiClean = (node) => {
+      cleanText(node);
+      new MutationObserver((list) => {
+        for (const m of list) {
+          if (m.type === 'characterData') cleanText(m.target);
+          else m.addedNodes.forEach(cleanText);
+        }
+      }).observe(node, { subtree: true, childList: true, characterData: true });
+    };
     wrap.append(header, menu, body, dock, picks, popSpeed, popVocal, popSync, popSet, popTrans, popKey);
     root.append(wrap);
 
@@ -1457,8 +1514,9 @@ BYL.ui = (() => {
     // On top: 🎲 a whole new look, ↺ back to the chosen style, and save
     // what you see as your own preset straight away.
     const top = el('div', 'presets top');
-    const dice = el('button', 'text');
-    dice.append(ico('casino', 18), el('span', '', L('🎲 Ngẫu nhiên')));
+    const dice = el('button', 'iconbtn');
+    dice.append(ico('shuffle', 20));
+    dice.setAttribute('aria-label', L('🎲 Ngẫu nhiên'));
     dice.title = L('Thử một kiểu ngẫu nhiên');
     dice.addEventListener('click', () => {
       editLook(randomLook(), true);
@@ -1470,8 +1528,9 @@ BYL.ui = (() => {
     name.placeholder = L('Tên preset…');
     name.maxLength = 24;
     const save = el('button', 'primary', L('Lưu preset'));
-    const reset = el('button', 'text');
-    reset.append(ico('refresh', 18), el('span', '', L('↺ Mặc định')));
+    const reset = el('button', 'iconbtn');
+    reset.append(ico('refresh', 20));
+    reset.setAttribute('aria-label', L('↺ Mặc định'));
     reset.title = L('Quay về kiểu đang chọn, bỏ các chỉnh sửa');
     const del = el('button', 'danger', L('Xoá preset'));
     const style = slot().style;
@@ -1523,8 +1582,13 @@ BYL.ui = (() => {
       b.addEventListener('click', () => show(i));
       nav.append(b);
     });
-    nav.append(top);
-    pane.append(...sections, presets);
+    const tabs = el('div', 'stabs');
+    tabs.append(...nav.childNodes);
+    nav.append(tabs, top);
+    // Saving the look as your own preset, in its own box.
+    const presetBox = el('div', 'presetbox');
+    presetBox.append(presets);
+    pane.append(...sections, presetBox);
     box.append(nav, pane);
     show(Math.min(state.studioGroup || 0, sections.length - 1));
   }
@@ -2943,6 +3007,7 @@ BYL.ui = (() => {
 
   const ICON = {
     play: 'M8 5v14l11-7z',
+    scan: 'M7 3H4v3H2V1h5v2zm15 3V1h-5v2h3v3h2zM7 21H4v-3H2v5h5v-2zm13-3v3h-3v2h5v-5h-2zM19 18c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v12zM15 8H9v2h6V8zm0 3H9v2h6v-2zm0 3H9v2h6v-2z',
     pause: 'M6 5h4v14H6zm8 0h4v14h-4z',
     prevSong: 'M6 6h2v12H6zm3.5 6 8.5 6V6z',
     nextSong: 'M16 6h2v12h-2zM6 18l8.5-6L6 6z',
