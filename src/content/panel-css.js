@@ -587,7 +587,7 @@ BYL.PANEL_CSS = `
   /* dropdown chevron: never tiled, whatever background a select has */
   .byl select, .byl .studio select { background-repeat: no-repeat; background-position: right 8px center; background-size: 20px 20px; }
   .byl .studio select { background-color: var(--surface); border: 1px solid var(--outline-var); border-radius: 8px; padding-top: 7px; padding-bottom: 7px; }
-  /* 🎨 customiser: groups on the left, their settings on the right */
+  /* 🎨 customiser */
   .setbody { container-type: inline-size; }
   .setbody .studio { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 0; padding: 0; margin: 0 0 12px;
     background: transparent; border: 1px solid var(--outline-var); border-radius: 12px; overflow: hidden; }
@@ -617,14 +617,6 @@ BYL.PANEL_CSS = `
   .studio .presets { padding-top: 12px; border-top: 1px solid var(--outline-var); }
   .studio .presets input[type=text] { background: var(--surface); border: 1px solid var(--outline-var); }
   .studio .presets button.primary { background: var(--primary); color: var(--on-primary); }
-  @container (max-width: 420px) {
-    .studio { display: block; }
-    .studio .snav { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--outline-var); }
-    .studio .snav .sg { flex: none; height: 32px; border-radius: 8px; border: 1px solid var(--outline-var); }
-    .studio .snav .sg.on { border-color: transparent; }
-    .studio .snav .presets.top { display: none; }
-  }
-  @container (max-width: 420px) { .setbody .studio { display: block; } }
   /* Translate tab: label, language, then the action on the right */
   .setbody .row, .transpop .row { flex-wrap: nowrap; gap: 8px; }
   .row .lbl { flex: none; font-size: 13px; color: var(--fg2); min-width: 92px; }
@@ -638,4 +630,38 @@ BYL.PANEL_CSS = `
   .setbody .studio { border: 0; background: var(--surface-low); }
   .setpop .sethead { padding: 16px 16px 4px; flex: none; }
   .setpop .sethead h4 { margin: 0; font-size: 16px; font-weight: 600; }
+  /* 🎨 customiser: horizontal tabs, no borders; shuffle / reset as icons */
+  .setbody .studio { display: block; background: transparent; border: 0; padding: 0; }
+  .studio .snav { display: flex; flex-direction: row; align-items: center; gap: 4px; padding: 0; border: 0 !important; }
+  .studio .stabs { display: flex; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; box-shadow: inset 0 -1px 0 var(--outline-var); }
+  .studio .stabs::-webkit-scrollbar { display: none; }
+  .studio .snav .sg { flex: none; height: 44px; padding: 0 14px; border: 0 !important; border-radius: 0; background: transparent; color: var(--fg2);
+    font-size: 14px; font-weight: 500; border-bottom: 2px solid transparent !important; }
+  .studio .snav .sg:hover { background: var(--chip); color: var(--fg); }
+  .studio .snav .sg.on { background: transparent; color: var(--fg); border-bottom-color: var(--primary) !important; }
+  .studio .snav .presets.top { display: flex !important; flex-direction: row; gap: 0; margin: 0; padding: 0; border: 0 !important; }
+  .studio .snav .presets.top .iconbtn { width: 36px; height: 36px; color: var(--fg2); background: transparent; }
+  .studio .snav .presets.top .iconbtn:hover { background: var(--chip); color: var(--fg); }
+  .studio .spane { padding: 12px 0 0; }
+  .studio section > h4 { display: none; }
+  .studio .grid { padding-bottom: 12px; }
+  .studio select, .byl .studio select { border: 0 !important; background-color: var(--surface-low); }
+  .studio .presets { border: 0 !important; padding: 0; margin: 0; }
+  .presetbox { padding: 12px; border-radius: 12px; background: var(--surface); }
+  .presetbox .presets { flex-wrap: nowrap; }
+  .presetbox .presets input[type=text] { border: 0 !important; background: var(--surface-low); }
+  :host-context(html[dark]) .setbody .studio select { background-color: #3f3f3f; }
+  .presetbox { background: var(--surface-low); }
+  :host-context(html[dark]) .presetbox { background: var(--surface); }
+  .presetbox .presets input[type=text] { background: var(--surface); }
+  :host-context(html[dark]) .presetbox .presets input[type=text] { background: #272727; }
+  /* buttons with a drawn icon in front of the label */
+  button.wi { display: inline-flex; align-items: center; gap: 6px; }
+  button.wi .ico { color: inherit; opacity: .9; }
+  .cmp select { background-repeat: no-repeat !important; background-position: right 8px center !important; background-size: 20px 20px !important; padding-right: 34px; }
+  .editbtn.on, .byl[data-mode=edit] .editbtn { background: var(--sec-cont); color: var(--primary); }
+  /* folded: only the song, lyrics on video, ⋯ and unfold */
+  .byl.collapsed .kara { display: none; }
+  .colhead .again { width: 32px; height: 32px; margin: -6px 2px -6px 0; color: var(--fg2); }
+  .colhead .again:hover { color: var(--fg); }
 `;
