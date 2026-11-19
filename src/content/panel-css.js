@@ -574,4 +574,14 @@ BYL.PANEL_CSS = `
   .pipfab:hover { background: var(--surface-low); color: var(--fg); }
   .lwrap:hover .pipfab, .pipfab:focus-visible { opacity: 1; }
   .pipfab[hidden], .lines[hidden] ~ .pipfab { display: none; }
+  /* Style tiles: plain grey thumbnails, three to a row */
+  .gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tile, .tile.on, .tile:hover, .tile.on:hover { background: transparent; }
+  .tile .prev { height: 64px; background: #4d4d4d; }
+  :host-context(html[dark]) .tile .prev { background: #3f3f3f; }
+  /* Dropdowns: a drawn chevron instead of the browser's arrow */
+  select { -webkit-appearance: none; appearance: none; padding-right: 34px; background-repeat: no-repeat; background-position: right 8px center;
+    background-size: 20px 20px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20'%3E%3Cpath fill='%23606060' d='M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z'/%3E%3C/svg%3E"); }
+  :host-context(html[dark]) select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20' height='20'%3E%3Cpath fill='%23aaaaaa' d='M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z'/%3E%3C/svg%3E"); }
+  .menu > .lang select { background-image: none; }
 `;

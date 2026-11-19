@@ -503,8 +503,9 @@ BYL.ui = (() => {
     // ⬆ / ⬇: where the lyrics sit on the video; the one in use is lit.
     const posBtn = el('div', 'seg pos');
     posBtn.title = L('Đặt lời ở trên hoặc dưới video (tránh che chữ có sẵn trong video)');
-    for (const [where, text] of [['top', '⬆'], ['bottom', '⬇']]) {
-      const b = el('button', '', text);
+    for (const [where, text] of [['top', 'up'], ['bottom', 'down']]) {
+      const b = el('button');
+      b.append(ico(text, 18));
       b.dataset.pos = where;
       b.title = where === 'top' ? L('⬆ Trên') : L('⬇ Dưới');
       b.addEventListener('click', () => {
@@ -767,6 +768,8 @@ BYL.ui = (() => {
     lyricTab.className = 'cols';
     lyricTab.append(main, side);
 
+    // Rows that moved into popovers show in every view (no data-m).
+    for (const r of [rowK, rowV, rowSp, rowSp2, rowS, rowT, rowTr, row2, row3, studio]) delete r.dataset.m;
     // Popovers
     const pop = (cls, label) => {
       const p = el('div', 'pop ' + cls);
@@ -1660,7 +1663,7 @@ BYL.ui = (() => {
     if (!box.clientWidth || lines() <= 2) return;
     more.hidden = false;
     if (state.chipsOpen) {
-      more.textContent = '▴';
+      more.replaceChildren(ico('up', 16));
       more.title = '';
       return;
     }
