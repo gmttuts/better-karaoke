@@ -499,4 +499,5 @@
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Aucun repère. Survolez la ligne chantée et cliquez sur 📍 (Alt K).",
   "Dịch sang": "Traduire en",
   "Nguồn": "Sources",
+  "(Gốc)": "(Original)",
 };

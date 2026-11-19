@@ -499,4 +499,5 @@
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Belum ada pin. Arahkan ke baris yang sedang dinyanyikan lalu tekan 📍 (Alt K).",
   "Dịch sang": "Terjemahkan ke",
   "Nguồn": "Sumber",
+  "(Gốc)": "(Asli)",
 };

@@ -508,6 +508,10 @@ BYL.ui = (() => {
     trBtn.title = L('Dịch lời đang hiện sang ngôn ngữ đã chọn, giữ đúng giờ từng dòng. Bản dịch hiện dưới lời chính và được lưu thành bản lời thứ 2 của bạn. Lời được gửi tới Google Dịch.');
     const trLang = el('select');
     trLang.title = L('Dịch sang ngôn ngữ nào');
+    // "Không" turns the translation off.
+    const trOff = el('option', '', L('Không'));
+    trOff.value = '';
+    trLang.append(trOff);
     for (const [code, name] of BYL.translate.TARGETS) {
       const o = el('option', '', name);
       o.value = code;
@@ -515,7 +519,12 @@ BYL.ui = (() => {
     }
     trLang.value = BYL.translate.defaultLang(BYL.settings.value.transLang);
     trBtn.className = 'tonal';
-    rowTr.append(el('span', 'muted lbl', L('Dịch sang')), trLang, trBtn);
+    // ⇅ puts the translation in the lyrics' place, and back.
+    const trSwap = el('button', 'iconbtn trswap');
+    trSwap.append(ico('swapV', 20));
+    trSwap.title = L('Đổi chỗ lời chính và lời dịch');
+    trSwap.setAttribute('aria-label', trSwap.title);
+    rowTr.append(el('span', 'muted lbl', L('Dịch sang')), trLang, trBtn, trSwap);
 
     const row2 = el('div', 'row');
     row2.dataset.m = 'edit';
@@ -1041,7 +1050,7 @@ BYL.ui = (() => {
 
     Object.assign(P, { overlayBtnH, back, dock, saBtn, tools, speedChip, vocalChip, keyStep, syncIcon, pinList, transChip, gallery, popSet, placePop, openPop, closePop, repop, pickAnchor: null });
     Object.assign(P, { wrap, songTitle, songArtist, status, picks, autoBtn, resetBtn, khint, select, overlayBtn, pipBtn, offLabel, warn, lines, open, kchips, klist,
-      row2, row3, row4, favBtn, hlist, hAll, hFav, historyTab, nav, modeBtns, lyricTab, karaokeTab, menu, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn, rowTr, trBtn, trLang,
+      row2, row3, row4, favBtn, hlist, hAll, hFav, historyTab, nav, modeBtns, lyricTab, karaokeTab, menu, lookSel, posBtn, studioBtn, chanBtn, studio, note, syncBtn, editor, grip, pinCount, rowT, transSel, swapBtn, rowTr, trBtn, trLang, trSwap,
       tapBtn, tapbar, keyLabel, vocalBtn, vocalAmt, speedBtns, speedRange, speedLabel, starBtn });
     editBtn.addEventListener('click', () => openEditor());
     tapBtn.addEventListener('click', () => (tapping() ? stopTap(false) : startTap()));
@@ -1051,8 +1060,16 @@ BYL.ui = (() => {
       setTrans(state.candidates.find((x) => x.id === id) || (state.trans?.id === id ? state.trans : null), true);
     });
     swapBtn.addEventListener('click', () => state.trans && choose(state.trans, true));
+    trSwap.addEventListener('click', () => state.trans && choose(state.trans, true));
     trBtn.addEventListener('click', () => translateTo(trLang.value));
-    trLang.addEventListener('change', () => BYL.settings.set({ transLang: trLang.value }));
+    trLang.addEventListener('change', () => {
+      if (!trLang.value) {
+        setTrans(null, true);
+        return renderTransSelect();
+      }
+      trBtn.disabled = false;
+      BYL.settings.set({ transLang: trLang.value });
+    });
 
     syncBtn.addEventListener('click', () => state.current && syncNow(state.current));
     header.addEventListener('click', () => {
@@ -1595,7 +1612,14 @@ BYL.ui = (() => {
 
   // ---------- state changes ----------
 
-  const say = (t) => (P.note.textContent = t);
+  // Messages and warnings above the lyrics go away on their own after 10s.
+  const MSG_MS = 10000;
+  const flash = (box, t) => {
+    box.textContent = t;
+    clearTimeout(box._hide);
+    if (t && t.trim()) box._hide = setTimeout(() => box.textContent === t && (box.textContent = ''), MSG_MS);
+  };
+  const say = (t) => flash(P.note, t);
 
   function reset({ videoId, saved }) {
     // Caption helpers belong to the previous video until main.js sets new ones.
@@ -1921,7 +1945,7 @@ BYL.ui = (() => {
     // A Latin spelling follows the lyrics it was made from.
     if (state.trans?.romanOf && state.trans.romanOf !== c.id) romanTrans(c, false);
     renderTransSelect();
-    P.warn.textContent = warnOf(c);
+    flash(P.warn, warnOf(c));
     P.note.textContent = '';
     P.open.hidden = !c.url;
     P.resetBtn.hidden = c.source !== 'custom';
@@ -2660,13 +2684,32 @@ BYL.ui = (() => {
       P.transChip.classList.toggle('on', !!tr);
       P.transChip.parentElement.hidden = !state.current;
     }
-    P.swapBtn.hidden = !state.trans;
+    P.swapBtn.hidden = P.trSwap.hidden = !state.trans;
+    markOriginal();
     P.rowTr.hidden = !(cur && singable(cur.lines).length);
+    // The language list shows what is on: "Không" with no translation, else its language.
+    if (!state.trans) P.trLang.value = '';
+    else if (state.trans.tlang) P.trLang.value = state.trans.tlang;
+    else if (!P.trLang.value) P.trLang.value = BYL.translate.defaultLang(BYL.settings.value.transLang);
+    P.trBtn.disabled = !P.trLang.value;
   }
 
   // 🌐 The lyrics playing, translated line for line (times kept), saved as the
   // user's second version and shown under each line. The slot: the one not
   // holding the user's own lyrics (a translation made before is replaced).
+  // "(Gốc)" after the language the lyrics are in: of the two shown, the one
+  // that is not a translation.
+  function markOriginal() {
+    const orig = [state.current, state.trans].find((c) => c && !c.tlang && c.source !== 'roman');
+    if (orig && !orig._lang) orig._lang = BYL.translate.langOf(orig.lines.map((l) => l.text).join('\n')) || '-';
+    const code = orig?._lang;
+    for (const o of P.trLang.options) {
+      if (!o.value) continue;
+      const name = BYL.translate.nameOf(o.value);
+      o.textContent = o.value === code ? `${name} ${L('(Gốc)')}` : name;
+    }
+  }
+
   async function translateTo(tl) {
     const c = state.current;
     if (!c) return;
@@ -2684,7 +2727,8 @@ BYL.ui = (() => {
     } catch (err) {
       say(L('Không dịch được lời: {0}', err?.message || err));
     }
-    P.transSel.disabled = P.trBtn.disabled = P.trLang.disabled = false;
+    P.transSel.disabled = P.trLang.disabled = false;
+    P.trBtn.disabled = !P.trLang.value;
     if (!r || state.current !== c) return renderTransSelect();
     // Times on the video's clock (offset folded in), like any lyrics the user saves.
     const at = new Map(idx.map((i, k) => [i, r.lines[k]]));

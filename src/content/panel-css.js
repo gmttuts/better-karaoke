@@ -531,6 +531,8 @@ BYL.PANEL_CSS = `
   .transpop .row { flex-wrap: wrap; }
   .transpop { width: min(420px, calc(100% - 16px)); }
   .transpop .row.tr { padding-bottom: 0; }
+  .transpop .trswap { width: 36px; height: 36px; }
+  .transpop .trswap[hidden] { display: none; }
     select { border-radius: 8px; background: transparent; border: 1px solid var(--outline-var); }
   button.on { background: var(--sec-cont); color: var(--on-sec-cont); }
   .row.speed.steps button.on { background: var(--sec-cont); color: var(--on-sec-cont); }

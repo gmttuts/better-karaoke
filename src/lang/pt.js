@@ -499,4 +499,5 @@
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Ainda sem marcas. Passe o mouse na linha cantada e clique em 📍 (Alt K).",
   "Dịch sang": "Traduzir para",
   "Nguồn": "Fontes",
+  "(Gốc)": "(Original)",
 };

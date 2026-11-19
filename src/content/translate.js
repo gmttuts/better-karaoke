@@ -77,5 +77,34 @@ BYL.translate = (() => {
     if (ui === 'zh') return /tw|hk|mo|hant/.test(nav) ? 'zh-TW' : 'zh-CN';
     return TARGETS.find(([c]) => c === ui)?.[0] || 'en';
   }
-  return { TARGETS, lines, nameOf, defaultLang };
+  // A rough guess at which of TARGETS some lyrics are in (no network): by
+  // script, then Vietnamese marks, then common words. null when unsure.
+  const WORDS = {
+    en: ['the', 'you', 'and', 'my', 'me', 'is', 'love', 'your', 'it', 'to', 'in', 'of', "i'm", "don't"],
+    es: ['el', 'la', 'que', 'de', 'y', 'mi', 'te', 'tu', 'no', 'es', 'amor', 'por', 'con', 'una', 'yo'],
+    pt: ['o', 'a', 'que', 'de', 'e', 'meu', 'você', 'não', 'eu', 'é', 'um', 'uma', 'com', 'amor', 'te'],
+    fr: ['le', 'la', 'je', 'tu', 'et', 'de', 'les', 'que', 'pas', 'mon', 'est', 'moi', 'des', "c'est", 'une'],
+    de: ['ich', 'du', 'und', 'die', 'der', 'das', 'nicht', 'ist', 'mich', 'mir', 'ein', 'es', 'wir', 'dich', 'zu'],
+    id: ['aku', 'kau', 'yang', 'dan', 'di', 'ini', 'itu', 'tak', 'cinta', 'kamu', 'dengan', 'ku', 'untuk', 'akan', 'tidak'],
+  };
+  function langOf(text) {
+    const t = String(text || '');
+    const n = (re) => (t.match(re) || []).length;
+    if (n(/[가-힯]/g) > 5) return 'ko';
+    if (n(/[぀-ヿ]/g) > 5) return 'ja';
+    if (n(/[一-鿿]/g) > 5) return n(/[這們說來個時會愛為們妳對還]/g) > n(/[这们说来个时会爱为们对还]/g) ? 'zh-TW' : 'zh-CN';
+    if (n(/[฀-๿]/g) > 5) return 'th';
+    if (n(/[Ѐ-ӿ]/g) > 5) return 'ru';
+    if (n(/[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/gi) > 5) return 'vi';
+    const words = t.toLowerCase().match(/[\p{L}']+/gu) || [];
+    let best = null;
+    let top = 0;
+    for (const [code, list] of Object.entries(WORDS)) {
+      const set = new Set(list);
+      const hits = words.filter((w) => set.has(w)).length;
+      if (hits > top) (best = code), (top = hits);
+    }
+    return top >= 3 ? best : null;
+  }
+  return { TARGETS, lines, nameOf, defaultLang, langOf };
 })();

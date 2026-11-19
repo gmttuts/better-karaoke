@@ -499,4 +499,5 @@
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "还没有标记。将鼠标移到正在唱的那一行，点 📍（Alt K）。",
   "Dịch sang": "翻译成",
   "Nguồn": "来源",
+  "(Gốc)": "(原文)",
 };
