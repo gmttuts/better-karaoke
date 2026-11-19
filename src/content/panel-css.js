@@ -411,7 +411,8 @@ BYL.PANEL_CSS = `
     border: 1px solid var(--outline-var); display: inline-flex; align-items: center; gap: 6px; }
   .status .chip:hover { background: var(--chip); border-color: var(--outline-var); }
   .status .chip.cur { background: var(--sec-cont); border-color: transparent; color: var(--on-sec-cont); }
-  .status .chip.cur::after { content: '✓'; margin-left: auto; font-weight: 700; }
+  .status .chip .tick { display: none; margin-left: auto; }
+  .status .chip.cur .tick { display: inline-grid; }
   .status .chip.loading::after { content: ' …'; }
   .status .chip.none { opacity: .55; border-style: dashed; }
   .status .chip.best { font-weight: 600; }

@@ -1712,6 +1712,9 @@ BYL.ui = (() => {
     chip.className = 'chip ' + status + (state.current?.source === key ? ' cur' : '') + (bestTimed()?.source === key ? ' best' : '');
     const tail = { ok: ` ${count}`, none: ' –', error: ' ⚠', idle: ' ▸' }[status] || '';
     chip.textContent = `${s.icon} ${s.name}${tail}`;
+    const tick = ico('check', 18);
+    tick.classList.add('tick');
+    chip.append(tick);
     // The user asked for this source (onChip): tell them how it went.
     if (state.waitingFor === key && status !== 'loading') {
       state.waitingFor = null;
