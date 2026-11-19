@@ -73,7 +73,7 @@ try {
   check('Panel hiện cạnh video', panel);
   if (EN) {
     const tabs = await ev(`return [...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('nav button')].map((b) => b.textContent).join()`);
-    check('Panel in English', tabs === '🎤 Sing,✏️ Edit,🎬 Karaoke', tabs);
+    check('Panel in English', tabs === 'Sing,Edit,Karaoke', tabs);
     // 🌐 on the panel switches the language on the spot, keeping the song.
     const pick = (code) => ev(`
       const sr = document.getElementById('byl-panel-host').shadowRoot;
@@ -90,23 +90,27 @@ try {
       await sleep(1000);
     }
     const ja = await pick('ja');
-    check('🌐 đổi sang 日本語 ngay', /JA/.test(ja?.lang) && !/Lyrics|Lời/.test(ja?.tabs) && ja.song === ja.before && ja.hosts === 1, JSON.stringify(ja));
+    check('🌐 đổi sang 日本語 ngay', /^日本語/.test(ja?.lang) && !/Lyrics|Lời/.test(ja?.tabs) && ja.song === ja.before && ja.hosts === 1, JSON.stringify(ja));
     const back = await pick('en');
-    check('🌐 đổi lại English', back?.tabs === '🎤 Sing,✏️ Edit,🎬 Karaoke' && back.hosts === 1, JSON.stringify(back));
+    check('🌐 đổi lại English', back?.tabs === 'Sing,Edit,Karaoke' && back.hosts === 1, JSON.stringify(back));
     throw 'done';
   }
   await sleep(4000);
   const r = await ev(`
     const sr = document.getElementById('byl-panel-host').shadowRoot;
     const btn = (t) => [...sr.querySelectorAll('button')].find((b) => b.textContent.trim() === t);
-    btn('🎨').click();
+    // Labels are icons now: buttons are found by their class or tooltip.
+    sr.querySelector('button.setbtn').click();
+    await new Promise((r) => setTimeout(r, 300));
+    [...sr.querySelectorAll('.setpop button')].find((b) => b.title.startsWith('Tuỳ chỉnh màu')).click();
     await new Promise((r) => setTimeout(r, 400));
     const studio = [...sr.querySelectorAll('.studio section')].map((s) => s.querySelector('h4').firstChild.textContent);
     const overlay = !!document.getElementById('byl-overlay-host')?.isConnected;
-    const before = btn('🎤 Karaoke').classList.contains('on');
-    btn('🎤 Karaoke').click();
-    const toggled = btn('🎤 Karaoke').classList.contains('on') !== before && !!document.getElementById('byl-overlay-host')?.isConnected === !before;
-    btn('🎤 Karaoke').click();
+    const kara = sr.querySelector('.dock button.lytg');
+    const before = kara.classList.contains('on');
+    kara.click();
+    const toggled = kara.classList.contains('on') !== before && !!document.getElementById('byl-overlay-host')?.isConnected === !before;
+    kara.click();
     return { studio, acts: sr.querySelectorAll('.studio h4 .acts').length, overlay, toggled, title: sr.querySelector('.song b').textContent };`);
   check('Bảng 🎨 có đủ 4 nhóm, mỗi nhóm có 🎲 ↺', r?.studio?.join() === 'Chữ,Màu,Nền,Bố cục' && r?.acts === 4, r?.studio?.join() + ' acts ' + r?.acts);
   check('Mở 🎨 hiện lời trên video', r?.overlay);
@@ -135,6 +139,8 @@ try {
   // 📌 pins the style to the channel and back.
   const pin = await ev(`
     const sr = document.getElementById('byl-panel-host').shadowRoot;
+    sr.querySelector('button.setbtn').click();
+    await new Promise((r) => setTimeout(r, 300));
     const b = sr.querySelector('button.chan');
     if (!b || b.hidden) return { shown: false };
     b.click();
@@ -150,7 +156,7 @@ try {
   for (let t = 0; t < 15; t++) {
     const picked = await ev(`
       const sel = document.getElementById('byl-panel-host').shadowRoot.querySelector('select.src');
-      const o = [...sel.options].find((o) => /⏱|🎯/.test(o.textContent));
+      const o = [...sel.options].find((o) => o.dataset.timed);
       if (!o) return false;
       if (sel.value !== o.value) { sel.value = o.value; sel.dispatchEvent(new Event('change')); }
       return true;`);
@@ -161,13 +167,13 @@ try {
   // 🎚 ♯ raises the key (the video's sound goes through the pitch worklet), the label resets it.
   const key = await ev(`
     const sr = document.getElementById('byl-panel-host').shadowRoot;
-    const [down, up] = sr.querySelectorAll('.fx button');
+    const [down, up] = sr.querySelectorAll('.keyrow button');
     up.click();
     await new Promise((r) => setTimeout(r, 1500));
-    const raised = sr.querySelector('.fx .off').textContent;
-    sr.querySelector('.fx .off').click();
+    const raised = sr.querySelector('.keyrow .off').textContent;
+    sr.querySelector('.keyrow .off').click();
     await new Promise((r) => setTimeout(r, 500));
-    return { raised, back: sr.querySelector('.fx .off').textContent, playing: !document.querySelector('video').paused };`);
+    return { raised, back: sr.querySelector('.keyrow .off').textContent, chip: sr.querySelector('.keychip').textContent, playing: !document.querySelector('video').paused };`);
   check('🎚 Đổi tông và về tông gốc', key?.raised === '+1' && key.back === '0', JSON.stringify(key));
 
   // ⬇ Xuất → SRT downloads a file (or explains that the lyrics have no timing).
@@ -176,9 +182,9 @@ try {
   const ex = await ev(`
     const sr = document.getElementById('byl-panel-host').shadowRoot;
     const btn = (t) => [...sr.querySelectorAll('button')].find((b) => b.textContent.trim() === t);
-    btn('⬇ Xuất').click();
+    btn('Xuất').click();
     const shown = !sr.querySelector('.exports').hidden;
-    btn('⬇ File SRT').click();
+    btn('File SRT').click();
     await new Promise((r) => setTimeout(r, 1500));
     return { shown, note: sr.querySelector('.note').textContent };`);
   const files = (await import('fs')).readdirSync(dl);
@@ -189,7 +195,7 @@ try {
     // .ass with the overlay's look and karaoke sweep.
     await ev(`
       const sr = document.getElementById('byl-panel-host').shadowRoot;
-      [...sr.querySelectorAll('button')].find((b) => b.textContent.trim() === '⬇ File ASS').click();
+      [...sr.querySelectorAll('button')].find((b) => b.textContent.trim() === 'File ASS').click();
       await new Promise((r) => setTimeout(r, 1500));`);
     const ass = (await import('fs')).readdirSync(dl).find((f) => f.endsWith('.ass'));
     const assText = ass ? (await import('fs')).readFileSync(join(dl, ass), 'utf8') : '';
@@ -199,7 +205,7 @@ try {
 
   // ☁ opens the publish page with the lyrics filled in (nothing is sent).
   if (srt) {
-    await ev(`[...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('button')].find((b) => b.textContent.trim() === '☁ Gửi lên LRCLIB').click()`);
+    await ev(`[...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Gửi lên LRCLIB').click()`);
     await sleep(2000);
     const { result: { targetInfos } } = await send('Target.getTargets');
     const pub = targetInfos.find((t) => t.url.includes('/src/publish/publish.html'));
@@ -212,7 +218,7 @@ try {
     check('Trang gửi LRCLIB mở và điền sẵn lời', !!filled?.track && filled.lines > 3 && filled.send === true, JSON.stringify(filled) + ' ' + (filled ? '' : note + ' ' + targetInfos.map((t) => t.url).join(' ')));
   }
   // 🎙 opens the score window, which connects to this tab.
-  await ev(`[...document.getElementById('byl-panel-host').shadowRoot.querySelectorAll('button')].find((b) => b.textContent.trim().startsWith('🎙')).click()`);
+  await ev(`document.getElementById('byl-panel-host').shadowRoot.querySelector('button.mic').click()`);
   await sleep(3000);
   {
     const { result: { targetInfos } } = await send('Target.getTargets');

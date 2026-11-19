@@ -2433,6 +2433,7 @@ BYL.ui = (() => {
       const s = S[c.source];
       const o = el('option', '', `${c === bestTimed() ? '★ ' : ''}${s.icon} ${s.name}${c.aligned ? ' 🎯' : c.synced ? ' ⏱' : ''} · ${c.label}${c.detail ? ' · ' + c.detail : ''}`);
       o.value = c.id;
+      if (c.aligned || c.synced) o.dataset.timed = c.aligned ? 'aligned' : 'synced';
       sel.append(o);
     }
     if (state.current) sel.value = state.current.id;
