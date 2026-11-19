@@ -498,4 +498,5 @@
   "Bỏ ghim": "Marke entfernen",
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Noch keine Marken. Auf die gesungene Zeile zeigen und 📍 drücken (Alt K).",
   "Dịch sang": "Übersetzen in",
+  "Nguồn": "Quellen",
 };

@@ -14,7 +14,7 @@ BYL.PANEL_CSS = `
   /* Surfaces, text and borders follow YouTube's own theme (light / dark);
      the brand pink #FF2E63 marks what is on or playing. */
   .byl { --surface: #fff; --surface-low: #f2f2f2; --surface-high: #e5e5e5; --surface-bright: #fff; --on-surface: #0f0f0f; --on-surface-var: #606060;
-    --outline: #909090; --outline-var: rgba(0,0,0,.1); --primary: #ff2e63; --on-primary: #fff; --primary-cont: rgba(255,46,99,.12); --on-primary-cont: #c2003f;
+    --outline: #909090; --outline-var: #cccccc; --primary: #ff2e63; --on-primary: #fff; --primary-cont: rgba(255,46,99,.12); --on-primary-cont: #c2003f;
     --sec-cont: rgba(255,46,99,.12); --on-sec-cont: #0f0f0f; --scrim: rgba(0,0,0,.3);
     --base: var(--surface); --fg: var(--on-surface); --fg2: var(--on-surface-var); --chip: rgba(34,25,26,.06); --line: var(--outline-var); --raised: var(--surface-bright);
     --accent: var(--primary); --accent2: #ffb800;
@@ -49,7 +49,7 @@ BYL.PANEL_CSS = `
   button:hover { background: var(--line); }
   button.on { background: var(--fg); color: var(--base); }
   :host-context(html[dark]) .byl { --surface: #0f0f0f; --surface-low: #272727; --surface-high: #3f3f3f; --surface-bright: #282828; --on-surface: #f1f1f1;
-    --on-surface-var: #aaa; --outline: #717171; --outline-var: rgba(255,255,255,.2); --primary: #ff4f7b; --on-primary: #fff; --primary-cont: rgba(255,79,123,.18); --on-primary-cont: #ff8fab;
+    --on-surface-var: #aaa; --outline: #717171; --outline-var: #303030; --primary: #ff4f7b; --on-primary: #fff; --primary-cont: rgba(255,79,123,.18); --on-primary-cont: #ff8fab;
     --sec-cont: rgba(255,79,123,.18); --on-sec-cont: #f1f1f1; --chip: rgba(255,255,255,.1); color-scheme: dark; }
   :host-context(html[dark]) select option, :host-context(html[dark]) select optgroup { color: #f1f1f1; background: #272727; }
   /* Sources on two lines at most (+N for the rest): the one in use first,
@@ -64,9 +64,9 @@ BYL.PANEL_CSS = `
   .status .chip[hidden] { display: none; }
   .status .chip.more { font-weight: 600; color: var(--fg); }
   /* ⇆ So sánh lời: a dialog over the page, two versions line by line. */
-  .cmp { --cb: #fff; --cf: #0f0f0f; --cm: #606060; --cl: rgba(0,0,0,.1); --cd: #fff4d6; position: fixed; inset: 0; z-index: 2147483000;
+  .cmp { --cb: #fff; --cf: #0f0f0f; --cm: #606060; --cl: #cccccc; --cd: #fff4d6; position: fixed; inset: 0; z-index: 2147483000;
     background: rgba(0,0,0,.45); display: grid; place-items: center; padding: 24px; font: 13px Roboto, Arial, sans-serif; color: var(--cf); }
-  :host-context(html[dark]) .cmp { --cb: #212121; --cf: #f1f1f1; --cm: #aaa; --cl: rgba(255,255,255,.14); --cd: #4a3b12; }
+  :host-context(html[dark]) .cmp { --cb: #212121; --cf: #f1f1f1; --cm: #aaa; --cl: #303030; --cd: #4a3b12; }
   .cmp .dlg { width: min(980px, 100%); max-height: calc(100vh - 48px); display: flex; flex-direction: column; background: var(--cb); border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0,0,0,.4); overflow: hidden; }
   .cmp .chead, .cmp .cfoot { display: flex; align-items: center; gap: 10px; padding: 14px 18px; flex-wrap: wrap; }

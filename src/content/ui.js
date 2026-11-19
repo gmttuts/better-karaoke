@@ -801,7 +801,7 @@ BYL.ui = (() => {
     againIcon.title = againBtn.title;
     againIcon.setAttribute('aria-label', L('↻ Tìm lại').replace(/^↻\s*/, ''));
     againIcon.addEventListener('click', (e) => (e.stopPropagation(), api.onSearchAgain?.()));
-    sideHead.append(el('span', 'ct', L('Nguồn lời')), againIcon, syncIcon);
+    sideHead.append(el('span', 'ct', L('Nguồn')), againIcon, syncIcon);
     const trRow = el('div', 'trrow');
     const transChip = el('button', 'chip2 trchip');
     transChip.title = L('Hiện thêm một bản lời khác (thường là lời dịch) dưới mỗi dòng');

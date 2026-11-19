@@ -498,4 +498,5 @@
   "Bỏ ghim": "Unpin",
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "No pins yet. Hover the line being sung and press 📍 (Alt K).",
   "Dịch sang": "Translate into",
+  "Nguồn": "Sources",
 };

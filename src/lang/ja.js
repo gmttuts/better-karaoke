@@ -498,4 +498,5 @@
   "Bỏ ghim": "ピンを外す",
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "ピンはまだありません。歌っている行にカーソルを合わせて 📍 を押します（Alt K）。",
   "Dịch sang": "翻訳先",
+  "Nguồn": "ソース",
 };
