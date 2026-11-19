@@ -644,7 +644,7 @@ BYL.PANEL_CSS = `
   .studio .snav { display: flex; flex-direction: row; align-items: center; gap: 4px; padding: 0; border: 0 !important; }
   .studio .stabs { display: flex; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; box-shadow: inset 0 -1px 0 var(--outline-var); }
   .studio .stabs::-webkit-scrollbar { display: none; }
-  .studio .snav .sg { flex: none; height: 44px; padding: 0 14px; border: 0 !important; border-radius: 0; background: transparent; color: var(--fg2);
+  .studio .snav .sg { flex: 1 0 auto; height: 44px; padding: 0 8px; border: 0 !important; border-radius: 0; background: transparent; color: var(--fg2);
     font-size: 14px; font-weight: 500; border-bottom: 2px solid transparent !important; }
   .studio .snav .sg:hover { background: var(--chip); color: var(--fg); }
   .studio .snav .sg.on { background: transparent; color: var(--fg); border-bottom-color: var(--primary) !important; }

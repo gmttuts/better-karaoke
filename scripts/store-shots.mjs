@@ -147,7 +147,12 @@ const openStudio = `(async () => {
   await new Promise((x) => setTimeout(x, 400));
   // The studio opens under the presets in the popover: scroll it into view.
   const body = ${R}.querySelector('.setpop .setbody');
-  body.scrollTop = ${R}.querySelector('.setpop .studio').offsetTop - body.offsetTop;
+  // The studio with the size / position row above it (A− A+ ⬆ ⬇ 🎨 📌): the
+  // preset gallery is left out of this shot (styles have their own image).
+  const hide = document.createElement('style');
+  hide.textContent = '.setpop .gallery{display:none!important}';
+  ${R}.append(hide);
+  body.scrollTop = 0;
   return true;
 })()`;
 const CUSTOM = { font: '"BYL Condensed", "Arial Narrow"', weight: 900, text: '#ffffff', textGrad: false, dim: 100, upper: true, tracking: 2, sung: '#00e5ff', sung2: '#c77dff', mark: '',
