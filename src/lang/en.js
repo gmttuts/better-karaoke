@@ -491,4 +491,13 @@
   "{0} dòng": "{0} lines",
   "🎯 Đã canh lại đoạn đang hát: \"{0}\" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.": "🎯 Re-synced the part being sung: \"{0}\" to the captions at {1}. Another part off? Press again while it plays.",
   "✓ Đang lọc giọng": "✓ Cutting the vocals",
+  "👇 Bật nút này để lời hiện to trên video": "👇 Turn this on to show big lyrics on the video",
+  "Bỏ chỉnh lệch và các mốc 📍": "Reset offset and 📍 pins",
+  "Hát cùng": "Sing along",
+  "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Show the singing tools: speed, vocal cut, key, mic",
+  "Bỏ ghim": "Unpin",
+  "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "No pins yet. Hover the line being sung and press 📍 (Alt K).",
+  "Dịch sang": "Translate into",
+  "Nguồn": "Sources",
+  "(Gốc)": "(Original)",
 };

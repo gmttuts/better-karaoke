@@ -4,7 +4,7 @@
 // Part of the panel in ui.js, which passes in the state and helpers it uses
 // (see "parts" there).
 BYL.uiParts = BYL.uiParts || {};
-BYL.uiParts.tabs = ({ P, el, state }) => {
+BYL.uiParts.tabs = ({ P, el, ico, state }) => {
   async function loadKaraoke(extra) {
     if (!state.song) return;
     const key = state.videoId + '|' + (extra || '');
@@ -56,7 +56,7 @@ BYL.uiParts.tabs = ({ P, el, state }) => {
 
   function paintFav(on) {
     P.favBtn.classList.toggle('on', on);
-    P.favBtn.textContent = on ? '★ ' + L('Bỏ khỏi bài yêu thích') : '☆ ' + L('Thêm vào bài yêu thích');
+    P.favBtn.replaceChildren(ico(on ? 'star' : 'starB', 20), el('span', 'mt', on ? L('Bỏ khỏi bài yêu thích') : L('Thêm vào bài yêu thích')));
     P.favBtn.title = on ? L('Bỏ khỏi bài yêu thích') : L('Thêm vào bài yêu thích (xem ở tab "Đã xem")');
   }
 
@@ -87,9 +87,11 @@ BYL.uiParts.tabs = ({ P, el, state }) => {
       img.alt = '';
       const meta = el('div');
       meta.append(el('b', '', x.title || x.id), el('div', 'muted', [x.artist, ago(x.at), x.n > 1 ? x.n + L(' lần') : ''].filter(Boolean).join(' · ')));
-      const star = el('button', 'fav' + (x.fav ? ' on' : ''), x.fav ? '★' : '☆');
+      const star = el('button', 'fav' + (x.fav ? ' on' : ''));
+      star.append(ico(x.fav ? 'star' : 'starB', 20));
       star.title = x.fav ? L('Bỏ khỏi bài yêu thích') : L('Thêm vào bài yêu thích');
-      const del = el('button', 'x', '✕');
+      const del = el('button', 'x');
+      del.append(ico('close', 18));
       del.title = L('Xoá khỏi lịch sử');
       for (const b of [star, del]) b.addEventListener('click', (e) => (e.preventDefault(), e.stopPropagation()));
       star.addEventListener('click', async () => {

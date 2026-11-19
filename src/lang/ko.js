@@ -491,4 +491,13 @@
   "{0} dòng": "{0}줄",
   "🎯 Đã canh lại đoạn đang hát: \"{0}\" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.": "🎯 부르는 부분을 다시 맞췄습니다: \"{0}\"을(를) 자막 {1}에. 다른 부분이 어긋나면 그 부분을 부를 때 다시 누르세요.",
   "✓ Đang lọc giọng": "✓ 보컬 제거 중",
+  "👇 Bật nút này để lời hiện to trên video": "👇 켜면 영상 위에 가사가 크게 표시됩니다",
+  "Bỏ chỉnh lệch và các mốc 📍": "오프셋과 📍 핀 초기화",
+  "Hát cùng": "따라 부르기",
+  "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "노래 도구 표시: 속도, 보컬 제거, 키, 마이크",
+  "Bỏ ghim": "핀 해제",
+  "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "아직 핀이 없습니다. 지금 부르는 줄에 마우스를 올리고 📍 를 누르세요 (Alt K).",
+  "Dịch sang": "번역할 언어",
+  "Nguồn": "소스",
+  "(Gốc)": "(원문)",
 };

@@ -310,6 +310,7 @@ BYL.uiParts.compare = ({ P, S, baseId, effT, el, maybeAutoPick, renderLines, ren
     // Keys typed here must not reach YouTube's shortcuts (k, j, m, f…).
     for (const type of ['keydown', 'keypress', 'keyup']) root.addEventListener(type, (e) => e.stopPropagation());
     root.append(style, box);
+    BYL.uiClean?.(root);
     document.body.append(host);
     tick();
   }

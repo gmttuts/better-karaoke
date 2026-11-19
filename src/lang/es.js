@@ -491,4 +491,13 @@
   "{0} dòng": "{0} líneas",
   "🎯 Đã canh lại đoạn đang hát: \"{0}\" theo phụ đề lúc {1}. Đoạn khác lệch thì bấm lại khi đang hát đoạn đó.": "🎯 Resincronizada la parte que suena: \"{0}\" con los subtítulos en {1}. ¿Otra parte desfasada? Pulsa otra vez mientras suena.",
   "✓ Đang lọc giọng": "✓ Quitando la voz",
+  "👇 Bật nút này để lời hiện to trên video": "👇 Actívalo para ver la letra grande sobre el vídeo",
+  "Bỏ chỉnh lệch và các mốc 📍": "Restablecer desfase y marcas 📍",
+  "Hát cùng": "Cantar",
+  "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Mostrar herramientas de canto: velocidad, quitar voz, tono, micro",
+  "Bỏ ghim": "Quitar marca",
+  "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Aún no hay marcas. Pasa el ratón por la línea que suena y pulsa 📍 (Alt K).",
+  "Dịch sang": "Traducir al",
+  "Nguồn": "Fuentes",
+  "(Gốc)": "(Original)",
 };
