@@ -4,9 +4,9 @@
 - Ảnh chụp 1280×800, tải lên theo ngôn ngữ của trang: `vi/1-hero.png` …
   `vi/5-studio.png` (tiếng Việt), `en/1-hero.png` … `en/5-studio.png` (English).
   Nguồn: `mockups.html` dựng quanh ảnh chụp thật trên YouTube ở `shots/`
-  (kiểu chữ: bản 0.24; panel: bản 0.28):
+  (kiểu chữ: bản 0.29; panel: bản 0.29):
   9 kiểu chữ ở chế độ rạp (`style-*`, 1280 rộng), panel ở chế độ Hát với
-  文A Dịch lời (tiếng Việt / tiếng Tây Ban Nha) (`panel-*`), chế độ Hát với lọc giọng và tông +2 (`sing-*`), bảng 🎨 với một
+  文A Dịch lời (tiếng Việt / tiếng Tây Ban Nha) (`panel-*`), thanh Hát cùng với lọc giọng và tông +2 (`sing-*`), bảng Kiểu chữ 🎨 với một
   kiểu tự chỉnh (`studio-*`), các ảnh panel 1440 rộng; tất cả chụp ở độ nét 2x.
 - Ô quảng cáo nhỏ 440×280 (bắt buộc, là "thumbnail" trong danh sách Store): `promo-440x280.png`. Store chỉ cho một ô dùng chung mọi ngôn ngữ; `vi/promo-440x280.png` là bản chữ tiếng Việt nếu muốn dùng thay.
 - Ô quảng cáo và marquee được vẽ trong **`design-kit.html`** (mở bằng trình duyệt) quanh icon mới: đổi ngôn ngữ, xuất PNG 1×–8× hoặc SVG, hoặc lưu tất cả thành .zip; `node scripts/store-assets.mjs` cũng lưu sẵn các bản PNG 1× và 2×. Nộp Store thì dùng 1×.
@@ -51,17 +51,18 @@ Mở một video nhạc trên YouTube là có lời bài hát ở cột bên ph�
 • Tự tìm lời ở nhiều nơi: mô tả video, comment, các bản đăng lại cùng bài, thư viện mở LRCLIB, Hợp âm chuẩn, Genius, phụ đề YouTube.
 • 🎤 Karaoke trên video: chữ đổi màu theo nhịp hát, cả khi toàn màn hình và trên YouTube Shorts. Tô theo từng chữ khi có thời gian từng chữ. Bật tắt bằng nút 🎤 ngay trên thanh điều khiển của YouTube.
 • 🧭 Panel gọn với 3 chế độ: Hát · Chỉnh lời · Karaoke (các bản karaoke của bài trên YouTube). Ưu tiên lời có thời gian khớp với bài hát; ★ chọn bản tiêu biểu cho từng video.
+• 🎛 Thanh Hát cùng ở cuối panel: tốc độ, lọc giọng, tông và nút 🎙 Hát luôn trong tầm tay; bảng Kiểu chữ có ảnh xem trước từng kiểu.
 • 🎨 9 kiểu chữ có sẵn, 6 kiểu nền, chỉnh màu, viền, phông, lề… bấm 🎲 để thử kiểu ngẫu nhiên, ↺ để về mặc định, lưu thành preset, ghim 📌 kiểu riêng cho từng kênh.
 • ⏱ Gõ nhịp bằng phím Space, 📍 ghim dòng đang hát để sửa lệch từng đoạn, ✏️ đặt giờ bắt đầu / kết thúc từng dòng theo video, ⇆ so sánh hai bản lời và lấy từng dòng.
 • 🎚 Đổi tông (nâng / hạ nửa cung, không đổi tốc độ), 🎤 Lọc giọng ca sĩ để hát trên bài gốc, ⏩ đổi tốc độ từ 0,25× đến 3×, chạy ngay trên máy.
 • ⬇ Xuất file LRC / SRT / ASS (phụ đề karaoke đúng kiểu chữ, ghép cứng được vào video của bạn) với đúng thời gian bạn đã canh; ☁ chia sẻ lên LRCLIB (chỉ khi bạn xác nhận).
 • 📥 Nhập lại file .lrc / .srt / .ass để chia sẻ lời đã canh nhịp và kiểu chữ với bạn bè.
-• 文A Dịch lời sang 13 ngôn ngữ (có tiếng Việt), giữ đúng nhịp từng dòng, hiện dưới lời gốc và lưu thành bản lời thứ 2 của bạn. 🔤 Phiên âm Latin cho lời Hàn, Nhật, Trung.
+• 文A Dịch lời sang 13 ngôn ngữ (có tiếng Việt), giữ đúng nhịp từng dòng, hiện dưới lời gốc (nút Song ngữ cạnh các nguồn lời) và lưu thành bản lời thứ 2 của bạn. 🔤 Phiên âm Latin cho lời Hàn, Nhật, Trung.
 • 🔠 Đọc chữ karaoke in sẵn trên video thành lời có thời gian (chạy ngay trên máy).
 • 🎙 Chấm điểm karaoke: hát vào micro, mỗi dòng có điểm (đủ lời, đúng nốt).
 • ⧉ Cửa sổ lời nổi luôn nằm trên cùng, kể cả khi chuyển tab.
 • ✏️ Sửa hoặc tự nhập lời, 🔍 tìm lại theo tên bài, ★ bài yêu thích, lịch sử bài đã xem, phím tắt Alt + phím.
-• Giao diện 12 ngôn ngữ (Việt, Anh, Trung, Nhật, Hàn, Thái, Indonesia, Tây Ban Nha, Bồ Đào Nha, Pháp, Đức, Nga), đổi ngay trên đầu panel.
+• Giao diện 12 ngôn ngữ (Việt, Anh, Trung, Nhật, Hàn, Thái, Indonesia, Tây Ban Nha, Bồ Đào Nha, Pháp, Đức, Nga), đổi ngay trong menu ⋯ của panel.
 
 Không quảng cáo, không thu thập dữ liệu. Mã nguồn mở: https://github.com/gmttuts/better-karaoke
 
@@ -74,21 +75,47 @@ Open a music video on YouTube and the lyrics appear in the right column, with th
 • Finds lyrics in many places: the video description, comments, other uploads of the song, the open LRCLIB library, Hợp âm chuẩn, Genius, YouTube captions.
 • 🎤 Karaoke on the video: words change colour as they are sung, in full screen and on YouTube Shorts too. Word-by-word when the timing allows. Turn it on and off with the 🎤 button on YouTube's own control bar.
 • 🧭 A tidy panel with three modes: Sing · Edit · Karaoke (karaoke versions of the song on YouTube). Lyrics timed to the song come first; ★ pick the featured version for each video.
+• 🎛 A Sing along bar at the bottom of the panel keeps speed, vocal cut, key and the 🎙 Sing button at hand; the Styles picker previews every look.
 • 🎨 9 built-in styles, 6 background shapes, colours, outline, font, padding… roll 🎲 for a random look, ↺ to go back, save it as a preset, or pin 📌 one per channel.
 • ⏱ Tap along with Space, 📍 pin the line being sung to fix one part of the song, ✏️ set each line's start and end from the video, ⇆ compare two versions and take lines from either.
 • 🎚 Change the key (semitones up / down, same speed), 🎤 cut the singer's voice to sing over the original, ⏩ change the speed from 0.25× to 3×, all on your device.
 • ⬇ Export LRC / SRT / ASS files (styled karaoke subtitles you can burn into your own video) with your timing; ☁ share them on LRCLIB (only after you confirm).
 • 📥 Import .lrc / .srt / .ass files to share timed lyrics and styles with friends.
-• 文A Translate the lyrics into 13 languages, line by line with the timing kept, shown under the original and saved as your second version. 🔤 Latin spelling for Korean, Japanese and Chinese lyrics.
+• 文A Translate the lyrics into 13 languages, line by line with the timing kept, shown under the original (the Translation chip by the sources) and saved as your second version. 🔤 Latin spelling for Korean, Japanese and Chinese lyrics.
 • 🔠 Read karaoke text burnt into the video into timed lyrics (on your device).
 • 🎙 Karaoke scoring: sing into your microphone and get a mark for every line (in time, in tune).
 • ⧉ A floating, always-on-top lyrics window that keeps going when you switch tabs.
 • ✏️ Edit or type lyrics, 🔍 search again by name, ★ favourites, watch history, Alt + key shortcuts.
-• Interface in 12 languages (Vietnamese, English, Chinese, Japanese, Korean, Thai, Indonesian, Spanish, Portuguese, French, German, Russian), switchable at the top of the panel.
+• Interface in 12 languages (Vietnamese, English, Chinese, Japanese, Korean, Thai, Indonesian, Spanish, Portuguese, French, German, Russian), switchable from the panel's ⋯ menu.
 
 No ads, no data collection. Open source: https://github.com/gmttuts/better-karaoke
 
 ☕ If Better Karaoke is useful to you, you can support the developer at: https://buymeacoffee.com/gmttuts
+
+## Có gì mới · What's new (0.29.0)
+Store không có ô ghi chú phiên bản; đoạn này để dán vào GitHub Release, bài
+giới thiệu, hoặc đầu phần mô tả nếu muốn. (0.28.0 chưa từng được nộp, nên bản
+trên Store sẽ nhảy thẳng từ bản cũ lên 0.29.0: gộp cả hai.)
+
+**vi:**
+• Giao diện mới: icon thay cho emoji, phông Google Sans Flex, panel gọn hơn.
+• Thanh Hát cùng ở cuối panel: tốc độ, lọc giọng, tông và nút 🎙 Hát; bật / tắt bằng một công tắc.
+• Bảng Kiểu chữ có ảnh xem trước từng kiểu, tuỳ chỉnh 🎨 và ghim 📌 theo kênh ở cùng chỗ.
+• 文A Dịch lời sang 13 ngôn ngữ, mở từ nút Song ngữ cạnh các nguồn lời.
+• Bấm một nguồn lời là thấy ngay các bản của nguồn đó để chọn.
+• Đổi tốc độ phát 0,25×–3×, so sánh hai bản lời, đọc chữ karaoke in trên video.
+• Trang cài đặt (bấm icon extension) làm lại theo cùng kiểu với panel.
+• Icon mới.
+
+**en:**
+• New look: icons instead of emoji, Google Sans Flex, a tidier panel.
+• A Sing along bar at the bottom of the panel: speed, vocal cut, key and the 🎙 Sing button, behind one switch.
+• The Styles picker previews every look, with 🎨 customise and 📌 pin per channel in the same place.
+• 文A Translate the lyrics into 13 languages from the Translation chip by the sources.
+• Pressing a source shows its versions to pick from.
+• Playback speed 0.25×–3×, compare two versions, read karaoke text burnt into the video.
+• The settings page (the extension's icon) redone to match the panel.
+• New icon.
 
 ## Danh mục · Category
 Entertainment (Giải trí)

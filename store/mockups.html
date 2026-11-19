@@ -115,6 +115,8 @@
   // The default layout at 1440 wide: video and panel.
   const PANEL = [1021, 68, 388];
   const PLAYER = [16, 68, 989, 556];
+  // The bottom of the panel in the 🎤 Hát shots (lyrics and the dock: speed, vocal cut, key, mic).
+  const SING_Y = 414;
   // The 4:3 video in the theater-mode screenshots.
   const VIDEO = [212, 56, 840, 630];
 
@@ -141,7 +143,7 @@
     html = `<div class="stage">${brand}<h1>${T.soundH}</h1><p class="sub">${T.soundS}</p>
       <div style="display:flex;gap:40px;align-items:flex-start">
         <div class="cards" style="width:560px">${T.soundC.map(([b, s]) => `<div class="card"><b>${b}</b><span>${s}</span></div>`).join('')}</div>
-        <div class="frame" style="background:#fff">${crop('sing-' + lang, PANEL[0], PANEL[1], PANEL[2], 560, 1.0)}</div>
+        <div class="frame" style="background:#fff">${crop('sing-' + lang, PANEL[0], SING_Y, PANEL[2], 560, 1.0)}</div>
       </div></div>`;
   } else if (scene === 'studio') {
     html = `<div class="stage">${brand}<h1>${T.studioH}</h1><p class="sub" style="margin-bottom:22px">${T.studioS}</p>
@@ -150,7 +152,7 @@
           <div class="frame">${crop('studio-' + lang, ...PLAYER, 756 / 989)}</div>
           <div class="chips">${T.studioC.map((c) => `<span>${c}</span>`).join('')}</div>
         </div>
-        <div class="frame" style="background:#fff">${crop('studio-' + lang, PANEL[0], 420, PANEL[2], 568, 1.0)}</div>
+        <div class="frame" style="background:#fff">${crop('studio-' + lang, PANEL[0], 466, PANEL[2], 568, 1.0)}</div>
       </div></div>`;
   } else if (scene === 'promo') {
     // The tile in the Store's lists: icon, name and a line being sung, readable small.

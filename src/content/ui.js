@@ -2311,7 +2311,7 @@ BYL.ui = (() => {
     P.vocalAmt.style.setProperty('--fill', ((P.vocalAmt.value - P.vocalAmt.min) / (P.vocalAmt.max - P.vocalAmt.min)) * 100 + '%');
     if (P.vocalChip) {
       const on = BYL.fx.vocal > 0;
-      P.vocalChip.replaceChildren(ico(on ? 'check' : 'eq', 18), el('span', '', on ? L('🎤 Lọc giọng').replace(/^🎤\s*/, '') + ' ' + Math.round(BYL.fx.vocal * 100) + '%' : L('🎤 Lọc giọng').replace(/^🎤\s*/, '')));
+      P.vocalChip.replaceChildren(ico(on ? 'check' : 'eq', 18), el('span', '', L('🎤 Lọc giọng').replace(/^🎤\s*/, '')));
       P.vocalChip.classList.toggle('on', on);
       P.keyStep.classList.toggle('on', !!BYL.fx.semis);
       P.keyStep.replaceChildren(ico('tune', 18), el('span', '', L('🎚 Tông').replace(/^🎚\s*/, '') + ' ' + fmtKey(BYL.fx.semis)));

@@ -107,6 +107,9 @@ const PREP = `(async () => {
   const r = ${R};
   r.querySelector('.chip[data-k=lrclib]')?.click();
   await new Promise((x) => setTimeout(x, 800));
+  // Since 0.29 a source chip also opens its list of versions: close it.
+  r.querySelector('.byl').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }));
+  await new Promise((x) => setTimeout(x, 300));
   const ns = document.createElement('style');
   ns.textContent = '.note{display:none!important}';
   r.append(ns);
@@ -125,9 +128,28 @@ const at = (t) => `(async () => {
   await new Promise((r) => setTimeout(r, 300));
   return true;
 })()`;
-const look = (k) => `(() => { const s = ${R}.querySelector('select.look'); s.value = '${k}'; s.dispatchEvent(new Event('change')); return s.value; })()`;
+const closePops = `${R}.querySelector('.byl').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }))`;
+const look = (k) => `(async () => {
+  ${R}.querySelector('button.setbtn').click();
+  await new Promise((x) => setTimeout(x, 300));
+  const s = ${R}.querySelector('select.look');
+  s.value = '${k}';
+  s.dispatchEvent(new Event('change'));
+  await new Promise((x) => setTimeout(x, 200));
+  ${closePops};
+  return s.value;
+})()`;
 const mode = (m) => `(${R}.querySelector('nav button[data-mode=${m}]').click(), true)`;
-const studioBtn = `[...${R}.querySelectorAll('.row button')].find((b) => b.textContent === '🎨')`;
+const openStudio = `(async () => {
+  ${R}.querySelector('button.setbtn').click();
+  await new Promise((x) => setTimeout(x, 300));
+  [...${R}.querySelectorAll('.setpop button')].find((b) => b.title.startsWith('Tuỳ chỉnh màu') || /^Customi/.test(b.title)).click();
+  await new Promise((x) => setTimeout(x, 400));
+  // The studio opens under the presets in the popover: scroll it into view.
+  const body = ${R}.querySelector('.setpop .setbody');
+  body.scrollTop = ${R}.querySelector('.setpop .studio').offsetTop - body.offsetTop;
+  return true;
+})()`;
 const CUSTOM = { font: '"BYL Condensed", "Arial Narrow"', weight: 900, text: '#ffffff', textGrad: false, dim: 100, upper: true, tracking: 2, sung: '#00e5ff', sung2: '#c77dff', mark: '',
   glow: true, stroke: '#101010', sstroke: '#101010', strokeW: 12, shadow: true, shape: 'none', bg: '#000000', bgAlpha: 60, layout: 'center2', nextScale: 70, scale: 135, margin: 12, wipe: 'word' };
 const BASE = { panelMode: 'sing', karaokeAuto: true, overlayPosition: 'bottom', overlayStyle: 'red', panelCollapsed: false };
@@ -152,7 +174,7 @@ if (doStyles) {
 }
 
 if (doPanels)
-  for (const lang of ['vi', 'en']) {
+  for (const lang of (process.env.SHOT_LANGS || 'vi,en').split(',')) {
     // 🎤 Hát with a translation under each line, then with the key and the vocal cut.
     let b = await browser(1440, 1500);
     try {
@@ -161,11 +183,15 @@ if (doPanels)
       await b.go(VIDEO);
       console.log(`  ${lang} lyrics:`, await b.evaluate(PREP.replace('HIDE_CONTROLS', 'false')));
       console.log(`  ${lang} translation:`, await b.evaluate(`(async () => {
-        const row = ${R}.querySelector('.row.tr');
+        ${R}.querySelector('button.trchip').click(); // 文A lives in the Song ngữ popover
+        await new Promise((x) => setTimeout(x, 300));
+        const row = ${R}.querySelector('.transpop .row.tr');
         row.querySelector('select').value = '${lang === 'vi' ? 'vi' : 'es'}';
+        row.querySelector('select').dispatchEvent(new Event('change')); // enables 文A Dịch lời
         row.querySelector('button').click();
-        for (let i = 0; i < 30 && !${R}.querySelector('.lines .tr'); i++) await new Promise((x) => setTimeout(x, 500));
+        for (let i = 0; i < 120 && !${R}.querySelector('.lines .tr'); i++) await new Promise((x) => setTimeout(x, 500));
         ${R}.querySelector('.status .msg, .msg')?.remove();
+        ${closePops};
         return ${R}.querySelector('.lines .tr')?.textContent;
       })()`));
       await b.evaluate(at(LINE));
@@ -174,12 +200,12 @@ if (doPanels)
       await sleep(600);
       await b.evaluate(`(async () => {
         const r = ${R};
-        const btn = (t) => [...r.querySelectorAll('.row.fx button')].find((x) => x.textContent.includes(t));
-        btn('♯').click();
+        const up = r.querySelectorAll('.keyrow button')[1]; // ♯ in the Tông popover
+        up.click();
         await new Promise((x) => setTimeout(x, 300));
-        btn('♯').click();
+        up.click();
         await new Promise((x) => setTimeout(x, 500));
-        r.querySelectorAll('.row.fx')[1].querySelector('button').click(); // Bật lọc giọng
+        r.querySelector('.vocalpop button').click(); // Bật lọc giọng
         await new Promise((x) => setTimeout(x, 800));
         return true;
       })()`);
@@ -195,7 +221,7 @@ if (doPanels)
       await b.cookies([['PREF', 'hl=en'], ['wide', '0']]);
       await b.go(VIDEO);
       await b.evaluate(PREP.replace('HIDE_CONTROLS', 'false'));
-      await b.evaluate(`(${studioBtn}.click(), true)`);
+      await b.evaluate(openStudio);
       await sleep(300);
       await b.evaluate(at(SHORT));
       await b.shot('studio-' + lang);

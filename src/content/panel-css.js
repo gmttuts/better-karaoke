@@ -456,6 +456,10 @@ BYL.PANEL_CSS = `
   .byl.notools .tools { display: none; }
   .dock .lytg { margin-left: auto; }
   .tools .grow { flex: 1; }
+  /* A long chip ("Lọc giọng 100%", "Tông +2") shrinks with … so 🎙 Hát stays inside the panel. */
+  .tools .chip2 { flex: 0 1 auto; min-width: 0; padding: 0 10px; gap: 5px; }
+  .tools .chip2 > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .tools button.mic, .tools .chip2 .ico { flex: none; }
   .keypop .keyrow { flex-wrap: nowrap; justify-content: space-between; gap: 8px; padding: 0; border: 0; height: auto; }
   .keypop .keyrow button { width: auto; height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--outline-var); background: transparent; }
   .keypop .keyrow .off { font-size: 24px; font-weight: 500; color: var(--primary); min-width: 48px; }
