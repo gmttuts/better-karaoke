@@ -497,4 +497,5 @@
   "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Show the singing tools: speed, vocal cut, key, mic",
   "Bỏ ghim": "Unpin",
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "No pins yet. Hover the line being sung and press 📍 (Alt K).",
+  "Dịch sang": "Translate into",
 };

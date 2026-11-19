@@ -497,4 +497,5 @@
   "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "歌うツールを表示：速度・ボーカルカット・キー・マイク",
   "Bỏ ghim": "ピンを外す",
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "ピンはまだありません。歌っている行にカーソルを合わせて 📍 を押します（Alt K）。",
+  "Dịch sang": "翻訳先",
 };

@@ -497,4 +497,5 @@
   "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Tampilkan alat bernyanyi: kecepatan, hapus vokal, nada, mik",
   "Bỏ ghim": "Lepas pin",
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Belum ada pin. Arahkan ke baris yang sedang dinyanyikan lalu tekan 📍 (Alt K).",
+  "Dịch sang": "Terjemahkan ke",
 };

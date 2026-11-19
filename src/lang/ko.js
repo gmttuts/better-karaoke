@@ -497,4 +497,5 @@
   "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "노래 도구 표시: 속도, 보컬 제거, 키, 마이크",
   "Bỏ ghim": "핀 해제",
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "아직 핀이 없습니다. 지금 부르는 줄에 마우스를 올리고 📍 를 누르세요 (Alt K).",
+  "Dịch sang": "번역할 언어",
 };

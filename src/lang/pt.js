@@ -497,4 +497,5 @@
   "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Mostrar ferramentas de canto: velocidade, cortar voz, tom, microfone",
   "Bỏ ghim": "Remover marca",
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Ainda sem marcas. Passe o mouse na linha cantada e clique em 📍 (Alt K).",
+  "Dịch sang": "Traduzir para",
 };

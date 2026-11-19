@@ -497,4 +497,5 @@
   "Hiện công cụ hát: tốc độ, lọc giọng, tông, mic": "Sing-Werkzeuge zeigen: Tempo, Gesang entfernen, Tonart, Mikro",
   "Bỏ ghim": "Marke entfernen",
   "Chưa có mốc. Rê chuột lên dòng đang hát rồi bấm 📍 (Alt K).": "Noch keine Marken. Auf die gesungene Zeile zeigen und 📍 drücken (Alt K).",
+  "Dịch sang": "Übersetzen in",
 };
